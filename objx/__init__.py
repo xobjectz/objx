@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0401,W0614,E0402
 
 
-"specification"
+"objects library"
 
 
 from .brokers import *
@@ -32,25 +32,16 @@ def __dir__():
         'Storage',
         'Thread',
         'Timer',
-        'brokers',
         'byorig',
         'cdir',
-        'clients',
-        'command',
         'construct',
         'debug',
-        'defines',
         'edit',
-        'excepts',
         'fetch',
         'find',
         'fmt',
         'fntime',
         'fqn',
-        'get_day',
-        'get_hour',
-        'get_time',
-        'handler',
         'ident',
         'items',
         'keys',
@@ -58,18 +49,12 @@ def __dir__():
         'last',
         'launch',
         'name',
-        'objects',
         'parse_command',
         'parse_time',
-        'parsers',
         'read',
         'search',
         'spl',
-        'storage',
         'sync',
-        'threads',
-        'to_day',
-        'today',
         'update',
         'values',
         'write'

@@ -152,13 +152,6 @@ def main():
         debug(f"{Cfg.name.upper()} started {Cfg.opts.upper()} started {dte}")
     if "d" in Cfg.opts:
         daemon(Cfg.pidfile)
-        moddir = os.path.join(Storage.wd, "mods")
-        if os.path.exists(moddir) and "m" in Cfg.opts:
-            sys.path.insert(0, os.path.dirname(moddir))
-            import mods
-            if "a" in Cfg.opts:
-                Cfg.mod += "," +  ",".join(mods.__dir__())
-            scan(mods, Cfg.mod, True)
         privileges(Cfg.user)
         scan(modules, Cfg.mod, True)
         forever()
@@ -167,14 +160,15 @@ def main():
         import mods
         if "a" in Cfg.opts:
             Cfg.mod += "," +  ",".join(mods.__dir__())
-        scan(mods, Cfg.mod)
     csl = Console()
     if "c" in Cfg.opts:
         scan(modules, Cfg.mod, True, True)
+        scan(mods, Cfg.mod, True, True)
         csl.start()
         forever()
     if Cfg.otxt:
         scan(modules, Cfg.mod)
+        scan(mods, Cfg.mod)
         return cmnd(Cfg.otxt)
 
 
