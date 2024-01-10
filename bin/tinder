@@ -26,7 +26,13 @@ from objx import Storage
 from objx import keys, laps, launch, parse_command, spl
 
 
-from objx import modules as mods
+from objx import modules
+
+
+if os.path.exists("mods"):
+    import mods
+else:
+    mods = None
 
 
 STARTTIME = time.time()
@@ -34,7 +40,9 @@ STARTTIME = time.time()
 
 Cfg = Default()
 Cfg.debug = True
-Cfg.mod =  ",".join(mods.__dir__())
+Cfg.mod =  ",".join(modules.__dir__())
+if mods:
+    Cfg.mod +=  ",".join(mods.__dir__())
 Cfg.name = "tinder"
 Cfg.silent = False
 Cfg.skip = ["debug",]
@@ -161,6 +169,8 @@ def main() -> None:
     global nrcommand
     global percall
     Error.output = cprint
+    for mod in scan(modules, Cfg.mod):
+        mod.DEBUG = True
     for mod in scan(mods, Cfg.mod):
         mod.DEBUG = True
     nrs = Cfg.index or 1

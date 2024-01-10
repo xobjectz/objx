@@ -52,7 +52,7 @@ Storage.wd  = Cfg.wd
 
 from . import modules
 
-if os.path.exists("mods") and "m" in Cfg.opts:
+if os.path.exists("mods"):
     import mods
 else:
     mods = None
@@ -166,12 +166,14 @@ def main():
     csl = Console()
     if "c" in Cfg.opts:
         scan(modules, Cfg.mod, True, True)
-        scan(mods, Cfg.mod, True, True)
+        if "m" in Cfg.opts:
+            scan(mods, Cfg.mod, True, True)
         csl.start()
         forever()
     if Cfg.otxt:
         scan(modules, Cfg.mod)
-        scan(mods, Cfg.mod)
+        if "m" in Cfg.opts:
+            scan(mods, Cfg.mod)
         return cmnd(Cfg.otxt)
 
 
