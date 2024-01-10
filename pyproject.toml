@@ -24,11 +24,6 @@ classifiers = [
 ]
 
 
-[project.scripts]
-objx = "objx.__main__:wrapped"
-objd = "objx.__main__:daemoned"
-
-
 [project.urls]
 "home" = "https://pypi.org/project/objx"
 "bugs" = "https://github.com/botlibx/objx/issues"
@@ -36,6 +31,10 @@ objd = "objx.__main__:daemoned"
 
 
 [tool.setuptools]
+script-files = [
+    "bin/objx",
+    "bin/objd"
+]
 packages = [
     "objx",
     "objx.modules"
