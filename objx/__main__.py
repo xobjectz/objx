@@ -43,7 +43,7 @@ __all__ = __dir__()
 Cfg         = Default()
 Cfg.mod     = "cmd,err,mod,mre,pwd,thr"
 Cfg.name    = "objx"
-Cfg.version = "21"
+Cfg.version = "31"
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Cfg.user    = getpass.getuser()
@@ -52,7 +52,9 @@ Storage.wd  = Cfg.wd
 
 from . import modules
 
+
 if os.path.exists("mods"):
+    sys.path.insert(0, os.getcwd())
     import mods
 else:
     mods = None
