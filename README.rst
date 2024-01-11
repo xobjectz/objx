@@ -197,8 +197,8 @@ CODE
     >>> write(o, "test")
     >>> oo = Object()
     >>> read(oo, "test")
-    >>> print(oo)
-     {"a": "b"}
+    >>> oo
+    {"a": "b"}
 
 
 FILES
