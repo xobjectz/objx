@@ -131,7 +131,7 @@ rss
     $ objx rss <url>
     $ objx dpl <url> <item1,item2>
     $ objx rem <url>
-    $ objx nme <url< <name>
+    $ objx nme <url> <name>
 
 
 COMMANDS
