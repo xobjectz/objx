@@ -9,7 +9,7 @@ SYNOPSIS
 
 ::
 
-    >>> from objx import Object
+    >>> from objx import Object, read, write
     >>> o = Object()
     >>> o.a = "b"
     >>> write(o, "test")
