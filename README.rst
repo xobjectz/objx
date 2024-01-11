@@ -2,7 +2,7 @@ NAME
 
 ::
 
-    OBJX - objects library.
+    OBJX - objects library
 
 
 SYNOPSIS
