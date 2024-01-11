@@ -9,6 +9,13 @@ NAME
     OBJX - objects
 
 
+INSTALL
+
+::
+
+    $ pipx install objx
+
+
 SYNOPSIS
 
 ::
@@ -41,16 +48,7 @@ DESCRIPTION
     OBJX is Public Domain.
 
 
-INSTALL
-
-::
-
-    $ pipx install objx
-
-
 USAGE
-
-
 
 
 without any argument the program does nothing
