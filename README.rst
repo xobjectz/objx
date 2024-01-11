@@ -29,8 +29,7 @@ DESCRIPTION
     that only has dunder methods, so the namespace is not cluttered with
     method names. This makes storing and reading to/from json possible.
 
-    OBJX is a python3 library implementing the 'objx' package. It
-    provides all the tools to program a unix cli program, such as
+    OBJX has all the tools to program a unix cli program, such as
     disk perisistence for configuration files, event handler to
     handle the client/server connection, code to introspect modules
     for commands, deferred exception handling to not crash on an
@@ -60,7 +59,7 @@ synopsis
 
     objx <cmd> [key=val] 
     objx <cmd> [key==val]
-    objx [-c] [-v] [-d]
+    objx [-c] [-v] [-d] [-a] [-m]
 
 
 without any argument the program does nothing
@@ -208,7 +207,7 @@ AUTHOR
 
 ::
 
-    Bart Thate <libbotx@gmail.com>
+    Bart Thate <objx@proton.me>
 
 
 COPYRIGHT

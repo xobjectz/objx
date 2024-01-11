@@ -26,8 +26,8 @@ classifiers = [
 
 [project.urls]
 "home" = "https://pypi.org/project/objx"
-"bugs" = "https://github.com/botlibx/objx/issues"
-"source" = "https://github.com/botlibx/objx"
+"bugs" = "https://github.com/xobjectz/objx/issues"
+"source" = "https://github.com/xobjectz/objx"
 
 
 [tool.setuptools]
