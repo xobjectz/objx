@@ -4,7 +4,7 @@
 # pylint: disable=C,R,W0212,E1101
 
 
-"runtime"
+"objects"
 
 
 import getpass
@@ -22,25 +22,6 @@ sys.path.insert(0, os.getcwd())
 
 from objx import Client, Command, Default, Error, Event, Object, Storage
 from objx import cdir, debug, launch, parse_command, spl
-
-
-def __dir__():
-    return (
-        'Cfg',
-        'Console',
-        'cmnd',
-        'daemon',
-        'daemoned',
-        'forever',
-        'main',
-        'privileges',
-        'scan',
-        'wrap',
-        'wrapped'
-    )
-
-
-__all__ = __dir__()
 
 
 Cfg         = Default()
@@ -171,14 +152,12 @@ def main():
     csl = Console()
     if "c" in Cfg.opts:
         scan(modules, Cfg.mod, True, True)
-        if "m" in Cfg.opts:
-            scan(mods, Cfg.mod, True, True)
+        scan(mods, Cfg.mod, True, True)
         csl.start()
         forever()
     if Cfg.otxt:
         scan(modules, Cfg.mod)
-        if "m" in Cfg.opts:
-            scan(mods, Cfg.mod)
+        scan(mods, Cfg.mod)
         return cmnd(Cfg.otxt)
 
 
