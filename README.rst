@@ -194,11 +194,11 @@ CODE
     >>> from objx import Object, read, write
     >>> o = Object()
     >>> o.a = "b"
-    >>> write(o, ".test/test")
+    >>> write(o, "test")
     >>> oo = Object()
-    >>> read(oo, ".test/test")
-    >>> oo
-    {"a": "b"}  
+    >>> read(oo, "test")
+    >>> print(oo)
+     {"a": "b"}
 
 
 FILES

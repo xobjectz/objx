@@ -19,7 +19,7 @@ basic usage is:
    >>> oo = Object()
    >>> read(oo, "test")
    >>> oo
-   {"a": "b"}  
+   {"a": "b"}
 
 
 """
