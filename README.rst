@@ -59,7 +59,7 @@ synopsis
 
     objx <cmd> [key=val] 
     objx <cmd> [key==val]
-    objx [-c] [-v] [-d] [-a] 
+    objx [-a] [-c] [-d] [-v] 
 
 
 without any argument the program does nothing
