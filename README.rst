@@ -1,3 +1,7 @@
+README
+######
+
+
 NAME
 
 ::
@@ -24,7 +28,7 @@ DESCRIPTION
 
 ::
 
-    OBJX has all the tools to program a unix cli program, such as
+    OBJX has all the python3 code to program a unix cli program, such as
     disk perisistence for configuration files, event handler to
     handle the client/server connection, code to introspect modules
     for commands, deferred exception handling to not crash on an
@@ -35,10 +39,10 @@ DESCRIPTION
     that only has dunder methods, so the namespace is not cluttered with
     method names. This makes storing and reading to/from json possible.
 
-    OBJX provides a demo bot, if you also it can connect to IRC, fetch and
-    display RSS feeds, take todo notes, keep a shopping list
-    and log text. You can also copy/paste the service file and run
-    it under systemd for 24/7 presence in a IRC channel.
+    OBJX provides a demo bot, it can connect to IRC, fetch and display RSS
+    feeds, take todo notes, keep a shopping list and log text. You can also
+    copy/paste the service file and run it under systemd for 24/7 presence
+    in a IRC channel.
 
     OBJX is Public Domain.
 
