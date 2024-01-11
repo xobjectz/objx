@@ -13,15 +13,9 @@ SYNOPSIS
 
 ::
 
-    >>> from objx import Object, read, write
-    >>> o = Object()
-    >>> o.a = "b"
-    >>> write(o, ".test/test")
-    >>> oo = Object()
-    >>> read(oo, ".test/test")
-    >>> oo
-    {"a": "b"}  
-
+    objx <cmd> [key=val] 
+    objx <cmd> [key==val]
+    objx [-a] [-c] [-d] [-v] 
 
 
 DESCRIPTION
@@ -57,13 +51,6 @@ INSTALL
 USAGE
 
 
-synopsis
-
-::
-
-    objx <cmd> [key=val] 
-    objx <cmd> [key==val]
-    objx [-a] [-c] [-d] [-v] 
 
 
 without any argument the program does nothing
@@ -200,6 +187,20 @@ then run this
     $ sudo systemctl enable objx --now
 
 default channel/server is #objx on localhost
+
+
+CODE
+
+::
+
+    >>> from objx import Object, read, write
+    >>> o = Object()
+    >>> o.a = "b"
+    >>> write(o, ".test/test")
+    >>> oo = Object()
+    >>> read(oo, ".test/test")
+    >>> oo
+    {"a": "b"}  
 
 
 FILES
