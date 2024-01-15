@@ -109,7 +109,7 @@ class Output():
         return txt
 
     def oput(self, channel, txt):
-        if channel not in dir(Output.cache):
+        if channel and channel not in dir(Output.cache):
             setattr(Output.cache, channel, [])
         self.oqueue.put_nowait((channel, txt))
 
@@ -303,7 +303,6 @@ class IRC(Client, Output):
         self.events.authed.wait()
         self.direct(f'NICK {nck}')
         self.direct(f'USER {nck} {server} {server} {nck}')
-
 
     def parsing(self, txt):
         rawstr = str(txt)
