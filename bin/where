@@ -2,4 +2,3 @@ grep -R "print(" objx
 grep -R importlib objx
 grep -R sys objx
 grep -R __import__ objx
-grep -R inspect objx
