@@ -248,6 +248,18 @@ def rem(event):
     event.reply('ok')
 
 
+def res(event):
+    if len(event.args) != 1:
+        event.reply('res <stringinurl>')
+        return
+    selector = {'rss': event.args[0]}
+    for fnm, feed in find('rss', selector, deleted=True):
+        if feed:
+            feed.__deleted__ = False
+            sync(feed, fnm)
+    event.reply('ok')
+
+
 def rss(event):
     if not event.rest:
         nrs = 0
