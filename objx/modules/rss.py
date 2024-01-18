@@ -84,7 +84,7 @@ class Fetcher(Object):
     def fetch(self, feed):
         with fetchlock:
             counter = 0
-            res = []
+            result = []
             for obj in reversed(list(getfeed(feed.rss, feed.display_list))):
                 fed = Feed()
                 update(fed, obj)
@@ -101,14 +101,14 @@ class Fetcher(Object):
                 counter += 1
                 if self.dosave:
                     sync(fed)
-                res.append(fed)
-        if res:
+                result.append(fed)
+        if result:
             sync(Fetcher.seen, Fetcher.seenfn)
         txt = ''
         feedname = getattr(feed, 'name', None)
         if feedname:
             txt = f'[{feedname}] '
-        for obj in res:
+        for obj in result:
             txt2 = txt + self.display(obj)
             for bot in Fleet.objs:
                 if "announce" in dir(bot):
@@ -147,14 +147,14 @@ class Parser(Object):
 
     @staticmethod
     def parse(txt, item='title,link'):
-        res = []
+        result = []
         for line in txt.split('<item>'):
             line = line.strip()
             obj = Object()
             for itm in item.split(","):
                 setattr(obj, itm, Parser.getitem(line, itm))
-            res.append(obj)
-        return res
+            result.append(obj)
+        return result
 
 
 def getfeed(url, item):
@@ -275,8 +275,8 @@ def rss(event):
     if 'http' not in url:
         event.reply('i need an url')
         return
-    for fnm, res in find('rss', {'rss': url}):
-        if res:
+    for fnm, result in find('rss', {'rss': url}):
+        if result:
             event.reply(f'already got {url}')
             return
     feed = Rss()
