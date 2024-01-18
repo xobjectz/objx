@@ -26,7 +26,6 @@ from objx import cdir, cmnd, debug, forever, parse_command, scan
 Cfg         = Default()
 Cfg.mod     = "cmd,err,mod,mre,pwd,thr"
 Cfg.name    = "objx"
-Cfg.version = "31"
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Cfg.user    = getpass.getuser()
