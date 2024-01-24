@@ -13,7 +13,8 @@ import time
 import _thread
 
 
-from .objects import Default, Object, fqn, items, update
+from .objects import Object, dump, fqn, load, items, update
+from .handler import Default
 from .parsers import spl
 
 

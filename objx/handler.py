@@ -12,18 +12,31 @@ import _thread
 
 
 from .brokers import Fleet
-from .objects import Default, Object
+from .objects import Object
 from .threads import launch
 
 
 def __dir__():
     return (
+        'Default',
         'Event',
         'Handler'
    ) 
 
 
 __all__ = __dir__()
+
+
+class Default(Object):
+
+    __slots__ = ("__default__",)
+
+    def __init__(self):
+        Object.__init__(self)
+        self.__default__ = ""
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, self.__default__)
 
 
 class Handler(Object):

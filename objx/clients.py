@@ -13,7 +13,7 @@ import _thread
 
 from .brokers import Fleet
 from .command import Command
-from .handler import Event, Handler
+from .handler import Default, Event, Handler
 from .objects import Object
 from .parsers import spl
 from .storage import Storage
