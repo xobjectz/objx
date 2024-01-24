@@ -14,6 +14,7 @@ from .objects import *
 from .parsers import *
 from .storage import *
 from .threads import *
+from .utility import *
 
 
 def __object__():
