@@ -7,7 +7,6 @@
 
 
 from .brokers import *
-from .clients import *
 from .command import *
 from .excepts import *
 from .handler import *
@@ -36,7 +35,6 @@ def __object__():
 
 def __dir__():
     return (
-        'Client',
         'Command',
         'Error',
         'Event',

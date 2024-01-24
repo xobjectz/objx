@@ -17,7 +17,7 @@ import _thread
 
 
 from .. import Default, Object, edit, fmt, keys
-from .. import Client, Command, Error, Event
+from .. import Handler, Command, Error, Event
 from .. import byorig, debug, last, launch, sync
 
 
@@ -141,10 +141,10 @@ class Output():
         return 0
 
 
-class IRC(Client, Output):
+class IRC(Handler, Output):
 
     def __init__(self):
-        Client.__init__(self)
+        Handler.__init__(self)
         Output.__init__(self)
         self.buffer = []
         self.cfg = Config()
@@ -455,7 +455,7 @@ class IRC(Client, Output):
         self.events.connected.clear()
         self.events.joined.clear()
         launch(Output.out, self)
-        Client.start(self)
+        Handler.start(self)
         launch(
                self.doconnect,
                self.cfg.server or "localhost",
@@ -469,7 +469,7 @@ class IRC(Client, Output):
         self.disconnect()
         self.dostop.set()
         self.oput(None, None)
-        Client.stop(self)
+        Handler.stop(self)
 
     def wait(self):
         self.events.ready.wait()
