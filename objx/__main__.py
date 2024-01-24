@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0212,W0611,W0613,E0401,E0402
 
 
-"runtime"
+"main"
 
 
 
@@ -42,6 +42,18 @@ def __dir__():
 __all__ = __dir__()
 
 
+Cfg         = Default()
+Cfg.mod     = "cmd,flt,mod,mre,pwd,thr"
+Cfg.name    = __file__.split(os.sep)[-2]
+Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
+Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
+Cfg.user    = getpass.getuser()
+Storage.wd  = Cfg.wd
+
+
+from . import modules
+
+
 class Client(Handler):
 
     def __init__(self):
@@ -57,59 +69,6 @@ class Client(Handler):
 
     def raw(self, txt):
         pass
-
-
-def cmnd(txt):
-    evn = Event()
-    evn.txt = txt
-    Command.handle(evn)
-    evn.wait()
-    return evn
-
-
-def forever():
-    while 1:
-        try:
-            time.sleep(1.0)
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-
-
-def scan(pkg, modstr, initer=False, disable="", wait=True) -> []:
-    mds = []
-    for modname in spl(modstr):
-        if modname in spl(disable):
-            continue
-        module = getattr(pkg, modname, None)
-        if not module:
-            continue
-        for _key, cmd in inspect.getmembers(module, inspect.isfunction):
-            if 'event' in cmd.__code__.co_varnames:
-                Command.add(cmd)
-        for _key, clz in inspect.getmembers(module, inspect.isclass):
-            if not issubclass(clz, Object):
-                continue
-            Storage.add(clz)
-        if initer and "init" in dir(module):
-            module._thr = launch(module.init, name=f"init {modname}")
-            mds.append(module)
-    if wait and initer:
-        for mod in mds:
-            mod._thr.join()
-    return mds
-
-
-
-Cfg         = Default()
-Cfg.mod     = "cmd,flt,mod,mre,pwd,thr"
-Cfg.name    = __file__.split(os.sep)[-2]
-Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
-Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
-Cfg.user    = getpass.getuser()
-Storage.wd  = Cfg.wd
-
-
-from . import modules
 
 
 class Console(Client):
@@ -131,6 +90,14 @@ class Console(Client):
     def say(self, channel, txt):
         txt = txt.encode('utf-8', 'replace').decode()
         print(txt)
+
+
+def cmnd(txt):
+    evn = Event()
+    evn.txt = txt
+    Command.handle(evn)
+    evn.wait()
+    return evn
 
 
 def daemon(pidfile, verbose=False):
@@ -164,10 +131,44 @@ def daemoned():
     forever()
 
 
+def forever():
+    while 1:
+        try:
+            time.sleep(1.0)
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
+
+
+
+
 def privileges(username):
     pwnam = pwd.getpwnam(username)
     os.setgid(pwnam.pw_gid)
     os.setuid(pwnam.pw_uid)
+
+
+def scan(pkg, modstr, initer=False, disable="", wait=True) -> []:
+    mds = []
+    for modname in spl(modstr):
+        if modname in spl(disable):
+            continue
+        module = getattr(pkg, modname, None)
+        if not module:
+            continue
+        for _key, cmd in inspect.getmembers(module, inspect.isfunction):
+            if 'event' in cmd.__code__.co_varnames:
+                Command.add(cmd)
+        for _key, clz in inspect.getmembers(module, inspect.isclass):
+            if not issubclass(clz, Object):
+                continue
+            Storage.add(clz)
+        if initer and "init" in dir(module):
+            module._thr = launch(module.init, name=f"init {modname}")
+            mds.append(module)
+    if wait and initer:
+        for mod in mds:
+            mod._thr.join()
+    return mds
 
 
 def wrap(func):
@@ -183,6 +184,9 @@ def wrap(func):
     finally:
         if old2:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
+
+
+"runtime"
 
 
 def main():
