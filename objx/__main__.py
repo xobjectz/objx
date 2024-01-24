@@ -1,31 +1,41 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0212,W0613,E0402
+# pylint: disable=C,R,W0212,W0611,W0613,E0401,E0402
 
 
-"clients"
+"runtime"
 
 
+
+import getpass
 import inspect
+import os
+import pwd
+import readline
+import sys
+import termios
 import time
 import _thread
 
 
-from .brokers import Fleet
-from .command import Command
-from .handler import Default, Event, Handler
-from .objects import Object
-from .parsers import spl
-from .storage import Storage
-from .threads import launch
+from . import Command, Default, Error, Event, Fleet, Handler, Object, Storage
+from . import cdir, debug, launch, parse_command, spl
 
 
 def __dir__():
     return (
+        'Cfg',
+        'Console',
         "Client",
         'cmnd',
+        'daemon',
+        'daemoned',
         'forever',
-        'scan'
+        'main',
+        'privileges',
+        'scan',
+        'wrap',
+        'wrapped'
     )
 
 
@@ -88,44 +98,6 @@ def scan(pkg, modstr, initer=False, disable="", wait=True) -> []:
             mod._thr.join()
     return mds
 
-
-# This file is placed in the Public Domain.
-#
-# pylint: disable=C,R,W0212,W0611,W0613,E0401
-
-
-"runtime"
-
-
-import getpass
-import inspect
-import os
-import pwd
-import readline
-import sys
-import termios
-import time
-import _thread
-
-
-from . import Command, Default, Error, Event, Object, Storage
-from . import cdir, debug, launch, parse_command, spl
-
-
-def __dir__():
-    return (
-        'Cfg',
-        'Console',
-        'daemon',
-        'daemoned',
-        'main',
-        'privileges',
-        'wrap',
-        'wrapped'
-    )
-
-
-__all__ = __dir__()
 
 
 Cfg         = Default()
@@ -214,6 +186,7 @@ def wrap(func):
 
 
 def main():
+    readline.redisplay()
     Storage.skel()
     parse_command(Cfg, " ".join(sys.argv[1:]))
     if "a" in Cfg.opts:
