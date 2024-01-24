@@ -17,7 +17,7 @@ import _thread
 
 
 from .. import Default, Object, edit, fmt, keys
-from .. import Handler, Command, Error, Event
+from .. import Handler, Command, Error, Event, Fleet
 from .. import byorig, debug, last, launch, sync
 
 
@@ -171,6 +171,7 @@ class IRC(Handler, Output):
         self.register('PRIVMSG', cb_privmsg)
         self.register('QUIT', cb_quit)
         self.register("366", cb_ready)
+        Fleet.add(self)
 
     def announce(self, txt):
         for channel in self.channels:

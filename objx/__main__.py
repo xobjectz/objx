@@ -43,7 +43,7 @@ __all__ = __dir__()
 
 
 Cfg         = Default()
-Cfg.mod     = "cmd,flt,mod,mre,pwd,thr"
+Cfg.mod     = "cmd,flt,hlp,mod,thr"
 Cfg.name    = __file__.split(os.sep)[-2]
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
@@ -203,7 +203,7 @@ def main():
     csl = Console()
     if "h" in Cfg.opts:
         scan(modules, Cfg.mod)
-        cmnd("man")
+        cmnd("hlp")
     if "c" in Cfg.opts:
         scan(modules, Cfg.mod, True, Cfg.sets.dis, True)
         csl.start()
