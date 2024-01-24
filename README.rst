@@ -6,7 +6,7 @@ NAME
 
 ::
 
-    OBJX - objects
+    OBJX - objects library
 
 
 INSTALL
@@ -20,9 +20,8 @@ SYNOPSIS
 
 ::
 
-    objx <cmd> [key=val] 
-    objx <cmd> [key==val]
-    objx [-a] [-c] [-d] [-v] 
+    objx <cmd> [key=val] [key==val]
+    objx [-a] [-c] [-d] [-h] [-v] 
 
 
 DESCRIPTION
@@ -183,6 +182,7 @@ then run this
 
     $ mkdir ~/.objx
     $ sudo systemctl enable objx --now
+
 
 default channel/server is #objx on localhost
 
