@@ -6,41 +6,25 @@
 "a clean namespace"
 
 
-import pathlib
 import json
-import os
-import _thread
 
 
 def __dir__():
     return (
         'Default',
         'Object',
-        'cdir',
         'construct',
         'edit',
         'fmt',
         'fqn',
         'items',
         'keys',
-        'read',
         'update',
         'values',
-        'write'
     )
 
 
 __all__ = __dir__()
-
-
-lock = _thread.allocate_lock()
-
-
-def cdir(pth) -> None:
-    if os.path.exists(pth):
-        return
-    pth = pathlib.Path(pth)
-    os.makedirs(pth, exist_ok=True)
 
 
 class Object:
@@ -232,12 +216,6 @@ def keys(obj):
     return list(obj.__dict__.keys())
 
 
-def read(obj, pth):
-    with lock:
-        with open(pth, 'r', encoding='utf-8') as ofile:
-            update(obj, load(ofile))
-
-
 def update(obj, data, empty=True):
     for key, value in items(data):
         if empty and not value:
@@ -247,10 +225,3 @@ def update(obj, data, empty=True):
 
 def values(obj):
     return obj.__dict__.values()
-
-
-def write(obj, pth):
-    with lock:
-        cdir(os.path.dirname(pth))
-        with open(pth, 'w', encoding='utf-8') as ofile:
-            dump(obj, ofile)

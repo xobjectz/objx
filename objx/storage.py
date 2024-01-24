@@ -7,28 +7,43 @@
 
 
 import datetime
+import pathlib
 import os
 import time
+import _thread
 
 
-from .objects import Default, Object, cdir, fqn, items, read, update, write
+from .objects import Default, Object, fqn, items, update
 from .parsers import spl
 
 
 def __dir__():
     return (
         'Storage',
+        'cdir',
         'fetch',
         'find',
         'fntime',
         'ident',
         'last',
+        'read',
         'search',
-        'sync'
+        'sync',
+        'write'
     )
 
 
 __all__ = __dir__()
+
+
+lock = _thread.allocate_lock()
+
+
+def cdir(pth) -> None:
+    if os.path.exists(pth):
+        return
+    pth = pathlib.Path(pth)
+    os.makedirs(pth, exist_ok=True)
 
 
 class Storage(Object):
@@ -142,6 +157,12 @@ def last(obj, selector=None):
         return inp[0]
 
 
+def read(obj, pth):
+    with lock:
+        with open(pth, 'r', encoding='utf-8') as ofile:
+            update(obj, load(ofile))
+
+
 def search(obj, selector):
     res = False
     if not selector:
@@ -166,3 +187,10 @@ def sync(obj, pth=None):
     pth2 = Storage.store(pth)
     write(obj, pth2)
     return pth
+
+
+def write(obj, pth):
+    with lock:
+        cdir(os.path.dirname(pth))
+        with open(pth, 'w', encoding='utf-8') as ofile:
+            dump(obj, ofile)
