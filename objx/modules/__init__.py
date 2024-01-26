@@ -17,10 +17,8 @@ def __dir__():
         'log',
         'mod',
         'rss',
-        'rst',
         'tdo',
         'thr',
-        'udp'
     )
 
 

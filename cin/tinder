@@ -29,20 +29,12 @@ from objx import keys, laps, launch, parse_command, spl
 from objx import modules
 
 
-if os.path.exists("mods"):
-    import mods
-else:
-    mods = None
-
-
 STARTTIME = time.time()
 
 
 Cfg = Default()
 Cfg.debug = True
 Cfg.mod =  ",".join(modules.__dir__())
-if mods:
-    Cfg.mod +=  ",".join(mods.__dir__())
 Cfg.name = "tinder"
 Cfg.silent = False
 Cfg.skip = ["debug",]
@@ -122,10 +114,7 @@ def payload(clt) -> None:
                 evt.orig = object.__repr__(clt)
                 evt.txt = cmd + " " + ex
                 evt.type = "command"
-                if "t" in Cfg.opts:
-                    Command.threaded(evt)
-                else:
-                    clt.put(evt)
+                clt.put(evt)
                 events.append(evt)
                 nmr += 1
         return nmr
@@ -178,8 +167,6 @@ def main() -> None:
     global percall
     Error.output = cprint
     for mod in scan(modules, Cfg.mod):
-        mod.DEBUG = True
-    for mod in scan(mods, Cfg.mod):
         mod.DEBUG = True
     nrs = Cfg.index or 1
     nrcommand = len(Command.cmds) or 1
