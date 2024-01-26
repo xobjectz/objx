@@ -11,7 +11,8 @@ import sys
 import time
 
 
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.parse import quote
+from http.server  import HTTPServer, BaseHTTPRequestHandler
 
 
 from .. import Default, Object
@@ -88,12 +89,14 @@ class RESTHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        if self.path == "/favicon.ico":
+            return
         if self.path == "/":
             self.write_header("text/html")
             txt = ""
             for fnm in Storage.fns():
-                txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a>\n'
-            self.send(html(txt.strip()))
+                txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>'
+            self.send(html(txt.strip()) + "\n")
             return
         fnm = Storage.wd + os.sep + "store" + os.sep + self.path
         try:

@@ -194,4 +194,4 @@ def write(obj, pth):
     with lock:
         cdir(os.path.dirname(pth))
         with open(pth, 'w', encoding='utf-8') as ofile:
-            dump(obj, ofile)
+            dump(obj, ofile, indent=4)

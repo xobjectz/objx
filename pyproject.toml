@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "objx"
 description = "objects library"
-version = "33"
+version = "34"
 authors = [
     {name = "Bart Thate",email = "objx@proton.me"},
 ]
@@ -33,7 +33,6 @@ classifiers = [
 [tool.setuptools]
 script-files = [
     "bin/objx",
-    "bin/objd"
 ]
 packages = [
     "objx",

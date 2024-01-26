@@ -38,7 +38,7 @@ class Object:
         return len(self.__dict__)
 
     def __repr__(self):
-        return dumps(self)
+        return dumps(self, indent=4)
 
     def __str__(self):
         return str(self.__dict__)

@@ -6,27 +6,21 @@
 "modules"
 
 
-from . import cmd, irc, log, mdl, mod, mre, pwd, req, rss, slg, tdo, wsd
-from . import flt, hlp, thr
+from . import cmd, flt, irc, log, mod, rst, rss, tdo, thr, udp
 
 
 def __dir__():
     return (
         'cmd',
         'flt',
-        'hlp',
         'irc',
         'log',
         'mod',
-        'mdl',
-        'mre',
-        'pwd',
-        'req',
         'rss',
-        'slg',
+        'rst',
         'tdo',
         'thr',
-        'wsd'
+        'udp'
     )
 
 
