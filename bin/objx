@@ -418,7 +418,8 @@ def main():
     readline.redisplay()
     Storage.skel()
     parse_command(Cfg, " ".join(sys.argv[1:]))
-    Cfg.mod = ",".join(modules.__dir__())
+    if "a" in Cfg.opts:
+        Cfg.mod = ",".join(modules.__dir__())
     if "v" in Cfg.opts:
         dte = time.ctime(time.time()).replace("  ", " ")
         debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
