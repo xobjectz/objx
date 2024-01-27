@@ -11,7 +11,6 @@ import sys
 import time
 
 
-from urllib.parse import quote
 from http.server  import HTTPServer, BaseHTTPRequestHandler
 
 
