@@ -147,7 +147,6 @@ COMMANDS
     mre - displays cached output
     pwd - sasl nickserv name/pass
     rem - removes a rss feed
-    req - reconsider
     rss - add a feed
     thr - show the running threads
 
@@ -207,7 +206,6 @@ FILES
 
     ~/.objx
     ~/.local/bin/objx
-    ~/.local/bin/objd
     ~/.local/pipx/venvs/objx/
 
 

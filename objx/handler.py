@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0212,E0402
+# pylint: disable=C,R,W0212,W0719,E0402
 
 
 "event handler"

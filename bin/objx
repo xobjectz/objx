@@ -4,35 +4,15 @@
 # pylint: disable=C,R,W0212,W0611,W0613,W0105,E0401,E0402
 
 
-"""OBJX
-####
-
-
-NAME
-
-::
+"""NAME
 
     OBJX - objects library
 
-
 INSTALL
-
-::
 
     $ pipx install objx
 
-
-SYNOPSIS
-
-::
-
-    objx <cmd> [key=val] [key==val]
-    objx [-a] [-c] [-d] [-h] [-v] 
-
-
 DESCRIPTION
-
-::
 
     OBJX has all the python3 code to program a unix cli program, such as
     disk perisistence for configuration files, event handler to
@@ -52,118 +32,67 @@ DESCRIPTION
 
     OBJX is Public Domain.
 
-
 USAGE
 
-
-without any argument the program does nothing
-
-::
+    without any argument the program does nothing
 
     $ objx
     $
 
-
-see list of commands
-
-::
+    see list of commands
 
     $ objx cmd
     cmd,err,mod,req,thr,ver
 
-
-list of modules
-
-::
+    list of modules
 
     $ objx mod
     cmd,err,fnd,irc,log,mod,req,rss,tdo,thr
 
-
-use mod=<name1,name2> to load additional modules
-
-::
+    use mod=<name1,name2> to load additional modules
 
     $ objx cfg mod=irc
 
-
-start a console
-
-::
+    start a console
 
     $ objx -c mod=irc,rss
     >
 
-
-use -v for verbose
-
-::
+    use -v for verbose
 
     $ objx -cv mod=irc
     OBJX started CV started Sat Dec 2 17:53:24 2023
     >
 
-
-start daemon
-
-::
+    start daemon
 
     $ objd
     $ 
 
-
 CONFIGURATION
 
-irc
-
-::
+    irc
 
     $ objx cfg server=<server>
     $ objx cfg channel=<channel>
     $ objx cfg nick=<nick>
 
-sasl
-
-::
+    sasl
 
     $ objx pwd <nsvnick> <nspass>
     $ objx cfg password=<frompwd>
 
-rss
-
-::
+    rss
 
     $ objx rss <url>
     $ objx dpl <url> <item1,item2>
     $ objx rem <url>
     $ objx nme <url> <name>
 
-
-COMMANDS
-
-::
-
-    cmd - commands
-    cfg - irc configuration
-    dlt - remove a user
-    dpl - sets display items
-    fnd - find objects 
-    log - log some text
-    met - add a user
-    mre - displays cached output
-    pwd - sasl nickserv name/pass
-    rem - removes a rss feed
-    req - reconsider
-    rss - add a feed
-    thr - show the running threads
-
-
 SYSTEMD
 
-save the following it in /etc/systems/system/objx.service and
-replace "<user>" with the user running pipx
-
-::
+    save the following it in /etc/systems/system/objx.service and
+    replace "<user>" with the user running pipx
 
     [Unit]
     Description=objects daemon
@@ -181,21 +110,14 @@ replace "<user>" with the user running pipx
     [Install]
     WantedBy=multi-user.target
 
-
-then run this
-
-::
+    then run this
 
     $ mkdir ~/.objx
     $ sudo systemctl enable objx --now
 
-
-default channel/server is #objx on localhost
-
+    default channel/server is #objx on localhost
 
 CODE
-
-::
 
     >>> from objx import Object, read, write
     >>> o = Object()
@@ -206,29 +128,41 @@ CODE
     >>> oo
     {"a": "b"}
 
-
 FILES
-
-::
 
     ~/.objx
     ~/.local/bin/objx
-    ~/.local/bin/objd
     ~/.local/pipx/venvs/objx/
 
 
 AUTHOR
 
-::
-
     Bart Thate <objx@proton.me>
-
 
 COPYRIGHT
 
-::
-
     OBJX is Public Domain.
+
+SYNOPSIS
+
+    objx <cmd> [key=val] [key==val]
+    objx [-a] [-c] [-d] [-h] [-v] [-x]
+
+COMMANDS
+
+    cmd - commands
+    cfg - irc configuration
+    dlt - remove a user
+    dpl - sets display items
+    fnd - find objects 
+    log - log some text
+    met - add a user
+    mre - displays cached output
+    pwd - sasl nickserv name/pass
+    rem - removes a rss feed
+    req - reconsider
+    rss - add a feed
+    thr - show the running threads
 """
 
 
@@ -243,8 +177,12 @@ import time
 import _thread
 
 
-from objx import Broker, Command, Default, Error, Event, Handler, Object, Storage
-from objx import cdir, debug, launch, parse_command, spl
+sys.path.insert(0, os.getcwd())
+
+
+from objx import Broker, Client, Command, Default, Error, Event, Handler
+from objx import Object, Storage
+from objx import cdir, cmnd, debug, forever, launch, parse_command, scan, spl
 
 
 def __dir__():
@@ -279,23 +217,6 @@ Storage.wd  = Cfg.wd
 from objx import modules
 
 
-class Client(Handler):
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.register("command", Command.handle)
-        Broker.add(self)
-
-    def announce(self, txt):
-        self.raw(txt)
-
-    def say(self, channel, txt):
-        self.raw(txt)
-
-    def raw(self, txt):
-        pass
-
-
 class Console(Client):
 
     def announce(self, txt):
@@ -315,16 +236,6 @@ class Console(Client):
     def say(self, channel, txt):
         txt = txt.encode('utf-8', 'replace').decode()
         print(txt)
-
-
-def cmnd(txt):
-    clt = Console()
-    evn = Event()
-    evn.orig = object.__repr__(clt)
-    evn.txt = txt
-    Command.handle(evn)
-    evn.wait()
-    return evn
 
 
 def daemon(pidfile, verbose=False):
@@ -358,44 +269,10 @@ def daemoned():
     forever()
 
 
-def forever():
-    while 1:
-        try:
-            time.sleep(1.0)
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-
-
-
-
 def privileges(username):
     pwnam = pwd.getpwnam(username)
     os.setgid(pwnam.pw_gid)
     os.setuid(pwnam.pw_uid)
-
-
-def scan(pkg, modstr, initer=False, disable="", wait=True) -> []:
-    mds = []
-    for modname in spl(modstr):
-        if modname in spl(disable):
-            continue
-        module = getattr(pkg, modname, None)
-        if not module:
-            continue
-        for _key, cmd in inspect.getmembers(module, inspect.isfunction):
-            if 'event' in cmd.__code__.co_varnames:
-                Command.add(cmd)
-        for _key, clz in inspect.getmembers(module, inspect.isclass):
-            if not issubclass(clz, Object):
-                continue
-            Storage.add(clz)
-        if initer and "init" in dir(module):
-            module._thr = launch(module.init, name=f"init {modname}")
-            mds.append(module)
-    if wait and initer:
-        for mod in mds:
-            mod._thr.join()
-    return mds
 
 
 def wrap(func):
@@ -413,9 +290,6 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
 
 
-"runtime"
-
-
 def main():
     readline.redisplay()
     Storage.skel()
@@ -427,16 +301,17 @@ def main():
         debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
     if "d" in Cfg.opts:
         daemoned()
+        return 
     csl = Console()
     if "h" in Cfg.opts:
         return print(__doc__)
     if "c" in Cfg.opts:
-        scan(modules, Cfg.mod, True, Cfg.sets.dis, True)
+        scan(modules, Cfg.mod, "x" in Cfg.opts, Cfg.sets.dis, "w" in Cfg.opts)
         csl.start()
         forever()
     if Cfg.otxt:
         scan(modules, Cfg.mod)
-        return cmnd(Cfg.otxt)
+        return cmnd(csl, Cfg.otxt)
 
 
 def wrapped():

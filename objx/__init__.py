@@ -12,6 +12,7 @@ from .excepts import *
 from .handler import *
 from .objects import *
 from .parsers import *
+from .runtime import *
 from .storage import *
 from .threads import *
 from .utility import *
@@ -36,6 +37,7 @@ def __object__():
 
 def __dir__():
     return (
+        'Client',
         'Command',
         'Error',
         'Event',

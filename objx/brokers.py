@@ -6,7 +6,7 @@
 "list of bots"
 
 
-from .objects import Object, items, keys
+from .objects import Object, keys, values
 
 
 def __dir__():
@@ -31,7 +31,7 @@ class Broker(Object):
 
     @staticmethod
     def all():
-        return items(Broker.objs)
+        return values(Broker.objs)
 
     @staticmethod
     def first():
