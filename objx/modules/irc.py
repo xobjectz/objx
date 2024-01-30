@@ -17,13 +17,13 @@ import time
 import _thread
 
 
-from .. import Default, Object, edit, fmt, keys
-from .. import Handler, Command, Error, Event, Fleet
-from .. import byorig, debug, last, launch, sync
+from .. import Broker, Default, Object, edit, fmt, keys
+from .. import Handler, Command, Error, Event
+from .. import debug, last, launch, sync
 
 
 Error.filter = ["PING", "PONG", "PRIVMSG"]
-
+byorig = Broker.byorig
 
 NAME = __file__.split(os.sep)[-3]
 
@@ -172,7 +172,7 @@ class IRC(Handler, Output):
         self.register('PRIVMSG', cb_privmsg)
         self.register('QUIT', cb_quit)
         self.register("366", cb_ready)
-        Fleet.add(self)
+        Broker.add(self)
 
     def announce(self, txt):
         for channel in self.channels:

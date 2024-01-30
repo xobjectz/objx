@@ -6,44 +6,42 @@
 "list of bots"
 
 
-from .objects import Object
+from .objects import Object, items, keys
 
 
 def __dir__():
     return (
-        "Fleet",
-        "byorig"
+        "Broker",
     )
 
 
 __all__ = __dir__()
 
 
-class Fleet(Object):
+rpr = object.__repr__
 
-    objs = []
+
+class Broker(Object):
+
+    objs = Object()
 
     @staticmethod
     def add(obj):
-        Fleet.objs.append(obj)
+        setattr(Broker.objs, rpr(obj), obj)
+
+    @staticmethod
+    def all():
+        return items(Broker.objs)
 
     @staticmethod
     def first():
-        if Fleet.objs:
-            return Fleet.objs[0]
+        for key in keys(Broker.objs):
+            return getattr(Broker.objs, key)
 
     @staticmethod
     def remove(obj):
-        if obj in Fleet.objs:
-            Fleet.objs.remove(obj)
+        delattr(Broker.objs, rpr(obj))
 
     @staticmethod
     def byorig(orig):
-        for obj in Fleet.objs:
-            if object.__repr__(obj) == orig:
-                return obj
-        return None
-
-
-def byorig(orig):
-    return Fleet.byorig(orig)
+        return getattr(Broker.objs, orig, None)

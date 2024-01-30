@@ -11,7 +11,7 @@ import threading
 import _thread
 
 
-from .brokers import Fleet
+from .brokers import Broker
 from .objects import Object
 from .threads import launch
 from .utility import Default
@@ -83,8 +83,10 @@ class Event(Default):
         self.result.append(txt)
 
     def show(self):
+        if not self.orig:
+            raise Exception("no orig")
         for txt in self.result:
-            bot = Fleet.byorig(self.orig) or Fleet.first()
+            bot = Broker.byorig(self.orig) or Broker.first()
             if bot:
                 bot.say(self.channel, txt)
 
