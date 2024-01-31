@@ -19,7 +19,7 @@ from urllib.parse import quote_plus, urlencode
 
 
 from objx import Broker, Default, Object, Repeater
-from objx import fmt, fntime, find, items, laps, last, launch, sync, update
+from objx import fmt, fntime, find, laps, last, launch, sync, update
 
 
 def init():
@@ -165,8 +165,8 @@ def getfeed(url, item):
         return [Object(), Object()]
     if not result:
         return [Object(), Object()]
-    html = str(result.data, 'utf-8')
-    res = Parser.parse(html, item)
+    htm = str(result.data, 'utf-8')
+    res = Parser.parse(htm, item)
     return res
 
 

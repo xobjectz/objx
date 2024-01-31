@@ -13,14 +13,7 @@ import threading
 import time
 
 
-from objx import Object
-
-
-from . import getmain
-
-
-Fleet = getmain("Fleet")
-launch = getmain("launch")
+from objx import Broker, Object, launch
 
 
 def init():
@@ -51,7 +44,7 @@ class UDP(Object):
     def output(self, txt, addr=None):
         if addr:
             Cfg.addr = addr
-        for bot in Fleet.objs:
+        for bot in Broker.all():
             bot.announce(txt.replace("\00", ""))
 
     def loop(self):

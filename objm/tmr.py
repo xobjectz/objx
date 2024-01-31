@@ -9,16 +9,9 @@
 import time
 
 
-from objx         import Broker, find, write, update
+from objx         import Broker, Event, Timer
+from objx         import find, launch, sync, update
 from objx.parsers import NoDate, laps, today, to_day, get_day, get_hour
-
-
-from . import getmain
-
-
-Event = getmain("Event")
-Timer = getmain("Timer")
-launch = getmain("launch")
 
 
 def init():
@@ -79,5 +72,5 @@ def tmr(event):
     event.result.append(event.rest)
     timer = Timer(diff, event.show)
     update(timer, event)
-    write(timer)
+    sync(timer)
     launch(timer.start)

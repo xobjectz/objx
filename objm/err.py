@@ -6,13 +6,7 @@
 "status of bots"
 
 
-from objx import Broker, items
-
-
-from . import getmain
-
-
-Error = getmain("Error")
+from objx import Broker, Error, items
 
 
 def err(event):

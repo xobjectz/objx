@@ -9,7 +9,7 @@
 import time
 
 
-from objx import Object, find, fntime, laps, write
+from objx import Object, find, fntime, laps, sync
 
 
 class NoDate(Exception):
@@ -33,7 +33,7 @@ def dne(event):
     for fnm, obj in find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
-        write(obj, fnm)
+        sync(obj, fnm)
         event.reply('ok')
         break
     if not nmr:
@@ -52,5 +52,5 @@ def tdo(event):
         return
     obj = Todo()
     obj.txt = event.rest
-    write(obj)
+    sync(obj)
     event.reply('ok')

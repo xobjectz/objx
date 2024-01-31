@@ -20,9 +20,6 @@ from objx import Broker, Client, Command, Default, Error, Event, Object
 from objx import debug, edit, fmt, keys, last, launch, write
 
 
-from . import getmain
-
-
 NAME = "objx"
 
 
