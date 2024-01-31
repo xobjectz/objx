@@ -8,7 +8,6 @@
 
     OBJX - objects library
 
-
 SYNOPSIS
 
     objx <cmd> [key=val] [key==val]
