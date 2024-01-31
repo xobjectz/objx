@@ -8,6 +8,12 @@
 
     OBJX - objects library
 
+
+SYNOPSIS
+
+    objx <cmd> [key=val] [key==val]
+    objx [-a] [-c] [-d] [-h] [-v] [-x]
+
 INSTALL
 
     $ pipx install objx
@@ -128,26 +134,6 @@ CODE
     >>> oo
     {"a": "b"}
 
-FILES
-
-    ~/.objx
-    ~/.local/bin/objx
-    ~/.local/pipx/venvs/objx/
-
-
-AUTHOR
-
-    Bart Thate <objx@proton.me>
-
-COPYRIGHT
-
-    OBJX is Public Domain.
-
-SYNOPSIS
-
-    objx <cmd> [key=val] [key==val]
-    objx [-a] [-c] [-d] [-h] [-v] [-x]
-
 COMMANDS
 
     cmd - commands
@@ -163,6 +149,21 @@ COMMANDS
     req - reconsider
     rss - add a feed
     thr - show the running threads
+
+FILES
+
+    ~/.objx
+    ~/.local/bin/objx
+    ~/.local/pipx/venvs/objx/
+
+AUTHOR
+
+    Bart Thate <objx@proton.me>
+
+COPYRIGHT
+
+    OBJX is Public Domain.
+
 """
 
 
