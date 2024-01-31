@@ -14,8 +14,8 @@ import time
 from http.server  import HTTPServer, BaseHTTPRequestHandler
 
 
-from .. import Default, Object
-from .. import Error, Storage, debug, launch
+from objx import Default, Object
+from objx import Error, Storage, debug, launch
 
 
 def init():
