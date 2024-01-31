@@ -11,11 +11,18 @@ import sys
 import time
 
 
-from http.server  import HTTPServer, BaseHTTPRequestHandler
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from objx import Default, Object
-from objx import Error, Storage, debug, launch
+from objx import Default, Object, Storage
+
+
+from . import getmain
+
+
+Error = getmain("Error")
+debug = getmain("debug")
+launch = getmain("launch")
 
 
 def init():
@@ -88,14 +95,12 @@ class RESTHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if self.path == "/favicon.ico":
-            return
         if self.path == "/":
             self.write_header("text/html")
             txt = ""
             for fnm in Storage.fns():
-                txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a><br>'
-            self.send(html(txt.strip()) + "\n")
+                txt += f'<a href="http://{Config.hostname}:{Config.port}/{fnm}">{fnm}</a>\n'
+            self.send(html(txt.strip()))
             return
         fnm = Storage.wd + os.sep + "store" + os.sep + self.path
         try:

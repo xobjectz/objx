@@ -214,7 +214,16 @@ Cfg.user    = getpass.getuser()
 Storage.wd  = Cfg.wd
 
 
-from objx import modules
+try:
+    import objm as modules
+except ModuleNotFoundError:
+    modules = None
+
+
+if os.path.exists("mods"):
+    import mods
+else:
+    mods = None
 
 
 class Console(Client):
@@ -291,20 +300,20 @@ def wrap(func):
 
 
 def main():
-    Storage.skel()
     parse_command(Cfg, " ".join(sys.argv[1:]))
-    readline.redisplay()
+    Storage.skel()
     usemods = False
     if Cfg.mod:
         usemods = True
     if "a" in Cfg.opts:
-        Cfg.mod = ",".join(modules.__dir__())
+        Cfg.mod = ",".join(mods.__dir__()) + ",".join(modules.__dir__())
     if "d" in Cfg.opts:
         daemoned()
         return 
     csl = Console()
     if Cfg.txt:
         scan(modules, Cfg.mod)
+        scan(mods, Cfg.mod)
         return cmnd(csl, Cfg.otxt)
     if "h" in Cfg.opts:
         return print(__doc__)
@@ -312,6 +321,13 @@ def main():
         dte = time.ctime(time.time()).replace("  ", " ")
         debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
     if "c" in Cfg.opts:
+        scan(
+             mods,
+             Cfg.mod,
+             usemods,
+             Cfg.sets.dis,
+             "w" in Cfg.opts or usemods
+        )
         scan(
              modules,
              Cfg.mod,
