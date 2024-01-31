@@ -291,27 +291,36 @@ def wrap(func):
 
 
 def main():
-    readline.redisplay()
     Storage.skel()
     parse_command(Cfg, " ".join(sys.argv[1:]))
+    readline.redisplay()
+    usemods = False
+    if Cfg.mod:
+        usemods = True
     if "a" in Cfg.opts:
         Cfg.mod = ",".join(modules.__dir__())
-    if "v" in Cfg.opts:
-        dte = time.ctime(time.time()).replace("  ", " ")
-        debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
     if "d" in Cfg.opts:
         daemoned()
         return 
     csl = Console()
-    if "h" in Cfg.opts:
-        return print(__doc__)
-    if "c" in Cfg.opts:
-        scan(modules, Cfg.mod, "x" in Cfg.opts, Cfg.sets.dis, "w" in Cfg.opts)
-        csl.start()
-        forever()
-    if Cfg.otxt:
+    if Cfg.txt:
         scan(modules, Cfg.mod)
         return cmnd(csl, Cfg.otxt)
+    if "h" in Cfg.opts:
+        return print(__doc__)
+    if "v" in Cfg.opts:
+        dte = time.ctime(time.time()).replace("  ", " ")
+        debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
+    if "c" in Cfg.opts:
+        scan(
+             modules,
+             Cfg.mod,
+             usemods,
+             Cfg.sets.dis,
+             "w" in Cfg.opts or usemods
+        )
+        csl.start()
+        forever()
 
 
 def wrapped():
