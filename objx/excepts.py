@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0125,E0402,E1102
 
 
-"deferred exception handling"
+"exceptions"
 
 
 import io

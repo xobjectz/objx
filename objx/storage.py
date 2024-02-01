@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0105,E0402
 
 
-"directory of objects"
+"database"
 
 
 import datetime

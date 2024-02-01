@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0212
 
 
-"scan modules"
+"scanning"
 
 
 import inspect

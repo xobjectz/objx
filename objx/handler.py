@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0212,W0719,E0402
 
 
-"event handler"
+"handling"
 
 
 import queue

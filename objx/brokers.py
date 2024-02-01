@@ -3,7 +3,7 @@
 # pylint: disable=C,R, E0402
 
 
-"list of bots"
+"broker"
 
 
 from .objects import Object, keys, values
