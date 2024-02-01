@@ -3,7 +3,7 @@
 # pylint: disable=C0115,C0116,E0402,R0903,E0611
 
 
-"logging"
+"witness"
 
 
 import time

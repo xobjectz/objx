@@ -3,7 +3,7 @@
 # pylint: disable=C,R,E1101,W0105,W0718,W0612,E0611
 
 
-"internet relay chat"
+"chat"
 
 
 import base64

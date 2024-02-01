@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0612,W0201,E0611
 
 
-"rich site syndicate"
+"feeds"
 
 
 import html.parser
