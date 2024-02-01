@@ -15,7 +15,7 @@ def getmain(name):
 
 
 from . import cmd, err, fnd, irc, log, mod, mre, pwd, rss, tdo, thr, tmr
-from . import req, rst, udp
+from . import rst, udp
 
 
 
