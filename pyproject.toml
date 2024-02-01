@@ -8,8 +8,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "objx"
-description = "objects"
-version = "34"
+description = "objects library"
+version = "40"
 authors = [
     {name = "Bart Thate",email = "objx@proton.me"},
 ]
@@ -31,12 +31,8 @@ classifiers = [
 
 
 [tool.setuptools]
-script-files = [
-    "bin/objx",
-]
 packages = [
     "objx",
-    "objm"
 ]
 zip-safe=true
 

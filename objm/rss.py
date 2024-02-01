@@ -145,9 +145,9 @@ class Parser(Object):
         return lne
 
     @staticmethod
-    def parse(txt, item='title,author,link'):
+    def parse(txt, item='title,author,link', splitter='<item>'):
         res = []
-        for line in txt.split('<entry>'):
+        for line in txt.split(splitter):
             line = line.strip()
             obj = Object()
             for itm in item.split(","):
@@ -166,7 +166,10 @@ def getfeed(url, item):
     if not result:
         return [Object(), Object()]
     htm = str(result.data, 'utf-8')
-    res = Parser.parse(htm, item)
+    if '<item>' in  htm:
+        res = Parser.parse(htm, item)
+    else:
+        res = Parser.parse(htm, item, '<entry>')
     return res
 
 
