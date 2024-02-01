@@ -13,10 +13,6 @@ SYNOPSIS
     objx <cmd> [key=val] [key==val]
     objx [-a] [-c] [-d] [-h] [-v] [-x]
 
-INSTALL
-
-    $ pipx install objx
-
 DESCRIPTION
 
     OBJX has all the python3 code to program a unix cli program, such as
@@ -36,6 +32,19 @@ DESCRIPTION
     in a IRC channel.
 
     OBJX is Public Domain.
+
+
+CODE
+
+    >>> from objx import Object, read, write
+    >>> o = Object()
+    >>> o.a = "b"
+    >>> write(o, "test")
+    >>> oo = Object()
+    >>> read(oo, "test")
+    >>> oo
+    {"a": "b"}
+
 
 USAGE
 
@@ -74,6 +83,7 @@ USAGE
     $ objd
     $ 
 
+
 CONFIGURATION
 
     irc
@@ -93,6 +103,24 @@ CONFIGURATION
     $ objx dpl <url> <item1,item2>
     $ objx rem <url>
     $ objx nme <url> <name>
+
+
+COMMANDS
+
+    cmd - commands
+    cfg - irc configuration
+    dlt - remove a user
+    dpl - sets display items
+    fnd - find objects 
+    log - log some text
+    met - add a user
+    mre - displays cached output
+    pwd - sasl nickserv name/pass
+    rem - removes a rss feed
+    req - reconsider
+    rss - add a feed
+    thr - show the running threads
+
 
 SYSTEMD
 
@@ -121,33 +149,6 @@ SYSTEMD
     $ sudo systemctl enable objx --now
 
     default channel/server is #objx on localhost
-
-CODE
-
-    >>> from objx import Object, read, write
-    >>> o = Object()
-    >>> o.a = "b"
-    >>> write(o, "test")
-    >>> oo = Object()
-    >>> read(oo, "test")
-    >>> oo
-    {"a": "b"}
-
-COMMANDS
-
-    cmd - commands
-    cfg - irc configuration
-    dlt - remove a user
-    dpl - sets display items
-    fnd - find objects 
-    log - log some text
-    met - add a user
-    mre - displays cached output
-    pwd - sasl nickserv name/pass
-    rem - removes a rss feed
-    req - reconsider
-    rss - add a feed
-    thr - show the running threads
 
 FILES
 

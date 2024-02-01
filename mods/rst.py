@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0612,W0613
 
 
-""" rest interface. """
+"rest server"
 
 
 import os

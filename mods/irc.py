@@ -6,6 +6,7 @@
 "internet relay chat"
 
 
+import base64
 import os
 import queue
 import socket
@@ -555,9 +556,6 @@ def cb_quit(evt):
         bot.stop()
 
 
-"commands"
-
-
 def cfg(event):
     config = Config()
     path = last(config)
@@ -573,3 +571,35 @@ def cfg(event):
         edit(config, event.sets)
         write(config, path)
         event.reply('ok')
+
+
+def mre(event):
+    if not event.channel:
+        event.reply('channel is not set.')
+        return
+    bot = Broker.byorig(event.orig)
+    if 'cache' not in dir(bot):
+        event.reply('bot is missing cache')
+        return
+    if event.channel not in bot.cache:
+        event.reply(f'no output in {event.channel} cache.')
+        return
+    for _x in range(3):
+        txt = bot.gettxt(event.channel)
+        if txt:
+            bot.say(event.channel, txt)
+    size = bot.size(event.channel)
+    event.reply(f'{size} more in cache')
+
+
+def pwd(event):
+    if len(event.args) != 2:
+        event.reply('pwd <nick> <password>')
+        return
+    arg1 = event.args[0]
+    arg2 = event.args[1]
+    txt = f'\x00{arg1}\x00{arg2}'
+    enc = txt.encode('ascii')
+    base = base64.b64encode(enc)
+    dcd = base.decode('ascii')
+    event.reply(dcd)

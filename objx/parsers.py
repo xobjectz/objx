@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0718,W0702,E0402
 
 
-"parsing text"
+"parsing"
 
 
 import datetime
