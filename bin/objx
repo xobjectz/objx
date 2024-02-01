@@ -6,7 +6,7 @@
 
 """NAME
 
-    OBJX - objects 
+    OBJX - objects library
 
 SYNOPSIS
 
@@ -314,7 +314,7 @@ def main():
     if Cfg.txt:
         scan(modules, Cfg.mod)
         scan(mods, Cfg.mod)
-        return cmnd(csl, Cfg.otxt)
+        return cmnd(Cfg.otxt, print)
     if "h" in Cfg.opts:
         return print(__doc__)
     if "v" in Cfg.opts:

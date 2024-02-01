@@ -21,12 +21,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx import Command, Default, Error, Event, Handler, Fleet, Object
+from objx import Broker, Command, Default, Error, Event, Handler, Object
 from objx import Storage
 from objx import keys, laps, launch, parse_command, spl
 
 
-from objx import modules
+import objm
 
 
 STARTTIME = time.time()
@@ -34,7 +34,7 @@ STARTTIME = time.time()
 
 Cfg = Default()
 Cfg.debug = True
-Cfg.mod =  ",".join(modules.__dir__())
+Cfg.mod =  ",".join(objm.__dir__())
 Cfg.name = "tinder"
 Cfg.silent = False
 Cfg.skip = ["debug",]
@@ -71,7 +71,7 @@ class CLI(Handler):
     def __init__(self):
         Handler.__init__(self)
         self.register("command", Command.handle)
-        Fleet.add(self)
+        Broker.add(self)
 
     def announce(self, txt):
         pass
@@ -166,7 +166,7 @@ def main() -> None:
     global nrcommand
     global percall
     Error.output = cprint
-    for mod in scan(modules, Cfg.mod):
+    for mod in scan(objm, Cfg.mod):
         mod.DEBUG = True
     nrs = Cfg.index or 1
     nrcommand = len(Command.cmds) or 1

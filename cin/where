@@ -1,4 +1,4 @@
-grep -R "print(" objx objm
-grep -R importlib objx objm
-grep -R sys objx objm
-grep -R __import__ objx objm
+grep -R "print(" objx
+grep -R importlib objx
+grep -R sys objx
+grep -R __import__ objx

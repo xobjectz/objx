@@ -561,7 +561,7 @@ def cb_quit(evt):
 def cfg(event):
     config = Config()
     path = last(config)
-    if not event.sets:
+    if not path or not event.sets:
         event.reply(
                     fmt(
                         config,
