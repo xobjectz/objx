@@ -34,7 +34,6 @@ def __dir__():
         'tdo',
         'thr',
         'tmr',
-        'req',
         'rst',
         'udp'
     )

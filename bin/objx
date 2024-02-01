@@ -318,6 +318,7 @@ def main():
     if "h" in Cfg.opts:
         return print(__doc__)
     if "v" in Cfg.opts:
+        Error.output = print
         dte = time.ctime(time.time()).replace("  ", " ")
         debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
     if "c" in Cfg.opts:
