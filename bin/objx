@@ -11,7 +11,7 @@
 SYNOPSIS
 
     objx <cmd> [key=val] [key==val]
-    objx [-a] [-c] [-d] [-h] [-v] [-x]
+    objx [-a] [-c] [-d] [-h] [-v]
 
 DESCRIPTION
 
@@ -215,12 +215,6 @@ Cfg.user    = getpass.getuser()
 Storage.wd  = Cfg.wd
 
 
-try:
-    import objm as modules
-except ModuleNotFoundError:
-    modules = None
-
-
 if os.path.exists("mods"):
     import mods
 else:
@@ -275,7 +269,7 @@ def daemon(pidfile, verbose=False):
 def daemoned():
     daemon(Cfg.pidfile)
     privileges(Cfg.user)
-    scan(modules, Cfg.mod, True)
+    scan(mods, Cfg.mod, True)
     forever()
 
 
@@ -307,13 +301,12 @@ def main():
     if Cfg.mod:
         usemods = True
     if "a" in Cfg.opts:
-        Cfg.mod = ",".join(mods.__dir__()) + ",".join(modules.__dir__())
+        Cfg.mod = ",".join(mods.__dir__())
     if "d" in Cfg.opts:
         daemoned()
         return 
     csl = Console()
     if Cfg.txt:
-        scan(modules, Cfg.mod)
         scan(mods, Cfg.mod)
         return cmnd(Cfg.otxt, print)
     if "h" in Cfg.opts:
@@ -325,13 +318,6 @@ def main():
     if "c" in Cfg.opts:
         scan(
              mods,
-             Cfg.mod,
-             usemods,
-             Cfg.sets.dis,
-             "w" in Cfg.opts or usemods
-        )
-        scan(
-             modules,
              Cfg.mod,
              usemods,
              Cfg.sets.dis,
