@@ -3,7 +3,7 @@
 # pylint: disable=C,R
 
 
-"preimport"
+"modules"
 
 
 import sys
