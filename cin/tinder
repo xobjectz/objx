@@ -21,12 +21,12 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx import Broker, Command, Default, Error, Event, Handler, Object
+from objx import Broker, Client, Command, Default, Error, Event, Handler, Object
 from objx import Storage
-from objx import keys, laps, launch, parse_command, spl
+from objx import keys, laps, launch, parse_command, scan, spl
 
 
-import objm
+import mods
 
 
 STARTTIME = time.time()
@@ -34,7 +34,7 @@ STARTTIME = time.time()
 
 Cfg = Default()
 Cfg.debug = True
-Cfg.mod =  ",".join(objm.__dir__())
+Cfg.mod =  ",".join(mods.__dir__())
 Cfg.name = "tinder"
 Cfg.silent = False
 Cfg.skip = ["debug",]
@@ -66,12 +66,7 @@ param.rss = ["http://hnrss.org/newest"]
 param.ver = [""]
 
 
-class CLI(Handler):
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.register("command", Command.handle)
-        Broker.add(self)
+class CLI(Client):
 
     def announce(self, txt):
         pass
@@ -120,25 +115,6 @@ def payload(clt) -> None:
         return nmr
 
 
-def scan(pkg, modstr) -> []:
-    for modname in spl(modstr):
-        module = getattr(pkg, modname, None)
-        if not module:
-            continue
-        for key, cmd in inspect.getmembers(module, inspect.isfunction):
-            if key.startswith("cb"):
-                continue
-            if 'event' in cmd.__code__.co_varnames:
-                Command.add(cmd)
-        for key, clz in inspect.getmembers(module, inspect.isclass):
-            if key.startswith("cb"):
-                continue
-            if not issubclass(clz, Object):
-                continue
-            Storage.add(clz)
-        yield module
-
-
 def wrap(func) -> None:
     old2 = None
     try:
@@ -166,7 +142,7 @@ def main() -> None:
     global nrcommand
     global percall
     Error.output = cprint
-    for mod in scan(objm, Cfg.mod):
+    for mod in scan(mods, Cfg.mod):
         mod.DEBUG = True
     nrs = Cfg.index or 1
     nrcommand = len(Command.cmds) or 1
@@ -188,5 +164,6 @@ if __name__ == "__main__":
         profile.runctx(main.__code__, globals(), locals())
     else:
         wrap(main)
-    Error.show()
+    if "v" in Cfg.opts:
+        Error.show()
     print(f"{lap} {nrs} {nrcommand} {percall}")

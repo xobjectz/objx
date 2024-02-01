@@ -14,15 +14,14 @@ def getmain(name):
 
 
 
-from . import cmd, dbg, err, fnd, irc, log, mod, mre, pwd, rss, tdo, thr, tmr
-from . import mdl, req, rst, udp
+from . import cmd, err, fnd, irc, log, mod, mre, pwd, rss, tdo, thr, tmr
+from . import req, rst, udp
 
 
 
 def __dir__():
     return (
         'cmd',
-        'dbg',
         'err',
         'fnd',
         'getmain',
@@ -35,7 +34,6 @@ def __dir__():
         'tdo',
         'thr',
         'tmr',
-        'mdl',
         'req',
         'rst',
         'udp'
