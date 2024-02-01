@@ -3,7 +3,7 @@
 # pylint: disable=C0115,C0116,R0903,W0105,E0402,E0611
 
 
-"todo list"
+"todo"
 
 
 import time

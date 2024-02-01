@@ -3,7 +3,7 @@
 # pylint: disable=C0103,C0116,E0402,R0401
 
 
-"available modules"
+"modules"
 
 
 from . import __dir__
