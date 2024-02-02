@@ -11,17 +11,40 @@ to/from disk of objects. It provides an "clean namespace" Object class
 that only has dunder methods, so the namespace is not cluttered with
 method names. This makes storing and reading to/from json possible.
 
->>> from objx import Object, dumps, loads
->>> o = Object()
->>> o.a = "b"
->>> txt = dumps(o)
->>> oo = loads(txt)
->>> oo
-{"a": "b"}
+    >>> from objx import Object, dumps, loads
+    >>> o = Object()
+    >>> o.a = "b"
+    >>> txt = dumps(o)
+    >>> oo = loads(txt)
+    >>> oo
+    {"a": "b"}
+
+OBJX is Public Domain.
 
 """
 
+
 import json
+
+
+def __dir__():
+    return (
+        'Object',
+        'construct',
+        'dumps',
+        'edit', 
+        'fmt',
+        'fqn',
+        'hook',
+        'items', 
+        'keys',
+        'loads',
+        'update',
+        'values'
+    )
+
+
+__all__ = __dir__()
 
 
 class Object:
@@ -44,13 +67,19 @@ class Object:
 
 class ObjectDecoder(json.JSONDecoder):
 
+    def __init__(self, *args, **kwargs):
+        ""
+        return json.JSONDecoder.__init__(self, *args)
+
     def decode(self, s, _w=None):
+        ""
         val = json.JSONDecoder.decode(self, s)
         if not val:
             val = {}
         return hook(val)
 
     def raw_decode(self, s, idx=0):
+        ""
         return json.JSONDecoder.raw_decode(self, s, idx)
 
 
@@ -77,7 +106,12 @@ def loads(string, *args, **kw):
 
 class ObjectEncoder(json.JSONEncoder):
 
+    def __init__(self, *args, **kwargs):
+        ""
+        return json.JSONEncoder.__init__(self, *args, **kwargs)
+
     def default(self, o):
+        ""
         if isinstance(o, dict):
             return o.items()
         if isinstance(o, Object):
@@ -101,6 +135,7 @@ class ObjectEncoder(json.JSONEncoder):
             return object.__repr__(o)
 
     def encode(self, o) -> str:
+        ""
         return json.JSONEncoder.encode(self, o)
 
     def iterencode(
@@ -108,15 +143,18 @@ class ObjectEncoder(json.JSONEncoder):
                    o,
                    _one_shot=False
                   ):
+        ""
         return json.JSONEncoder.iterencode(self, o, _one_shot)
 
 
 def dump(*args, **kw) -> None:
+    ""
     kw["cls"] = ObjectEncoder
     return json.dump(*args, **kw)
 
 
 def dumps(*args, **kw) -> str:
+    ""
     kw["cls"] = ObjectEncoder
     return json.dumps(*args, **kw)
 
