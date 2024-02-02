@@ -1,0 +1,1 @@
+tar --exclude-vcs -zcvf objx.tar.gz objx
