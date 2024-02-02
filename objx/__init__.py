@@ -15,35 +15,13 @@ method names. This makes storing and reading to/from json possible.
 >>> o = Object()
 >>> o.a = "b"
 >>> txt = dumps(o)
->>> oo = Object()
->>> loads(oo, txt)
+>>> oo = loads(txt)
 >>> oo
 {"a": "b"}
 
 """
 
 import json
-
-
-def __dir__():
-    return (
-        'Object',
-        'construct',
-        'dump',
-        'dumps',
-        'edit',
-        'fmt',
-        'fqn',
-        'items',
-        'keys',
-        'load',
-        'loads',
-        'update',
-        'values'
-    )
-
-
-__all__ = __dir__()
 
 
 class Object:
@@ -58,7 +36,7 @@ class Object:
         return len(self.__dict__)
 
     def __repr__(self):
-        return dumps(self, indent=4)
+        return dumps(self)
 
     def __str__(self):
         return str(self.__dict__)
