@@ -183,7 +183,7 @@ sys.path.insert(0, os.getcwd())
 
 from objx import Broker, Client, Command, Default, Error, Event, Handler
 from objx import Object, Storage
-from objx import cdir, cmnd, debug, forever, launch, parse_command, scan, spl
+from objx import cdir, cmnd, debug, forever, launch, parse_cmd, scan, spl
 
 
 def __dir__():
@@ -295,7 +295,7 @@ def wrap(func):
 
 
 def main():
-    parse_command(Cfg, " ".join(sys.argv[1:]))
+    parse_cmd(Cfg, " ".join(sys.argv[1:]))
     Storage.skel()
     usemods = False
     if Cfg.mod:

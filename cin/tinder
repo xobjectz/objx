@@ -22,8 +22,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx import Broker, Client, Command, Default, Error, Event, Handler, Object
-from objx import Storage
-from objx import keys, laps, launch, parse_command, scan, spl
+from objx import Storage, keys, laps, launch, parse_cmd, scan, spl
 
 
 import mods
@@ -159,7 +158,7 @@ if __name__ == "__main__":
     if os.path.exists(Storage.wd):
         shutil.rmtree(Storage.wd)
     Storage.skel()
-    parse_command(Cfg, " ".join(sys.argv[1:]))
+    parse_cmd(Cfg, " ".join(sys.argv[1:]))
     if "p" in Cfg.opts:
         profile.runctx(main.__code__, globals(), locals())
     else:

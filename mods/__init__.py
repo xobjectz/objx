@@ -21,8 +21,6 @@ def __dir__():
         'irc',
         'log',
         'mod',
-        'mre',
-        'pwd',
         'rss',
         'tdo',
         'thr',
