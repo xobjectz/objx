@@ -35,7 +35,6 @@ def __dir__():
         "edit",
         "fmt",
         "fqn",
-        "hook",
         "items",
         "keys",
         "loads",
