@@ -29,18 +29,18 @@ import json
 
 def __dir__():
     return (
-        'Object',
-        'construct',
-        'dumps',
-        'edit', 
-        'fmt',
-        'fqn',
-        'hook',
-        'items', 
-        'keys',
-        'loads',
-        'update',
-        'values'
+        "Object",
+        "construct",
+        "dumps",
+        "edit",
+        "fmt",
+        "fqn",
+        "hook",
+        "items",
+        "keys",
+        "loads",
+        "update",
+        "values",
     )
 
 
@@ -48,7 +48,6 @@ __all__ = __dir__()
 
 
 class Object:
-
     def __contains__(self, key):
         return key in dir(self)
 
@@ -66,7 +65,6 @@ class Object:
 
 
 class ObjectDecoder(json.JSONDecoder):
-
     def __init__(self, *args, **kwargs):
         ""
         return json.JSONDecoder.__init__(self, *args)
@@ -105,7 +103,6 @@ def loads(string, *args, **kw):
 
 
 class ObjectEncoder(json.JSONEncoder):
-
     def __init__(self, *args, **kwargs):
         ""
         return json.JSONEncoder.__init__(self, *args, **kwargs)
@@ -118,16 +115,7 @@ class ObjectEncoder(json.JSONEncoder):
             return vars(o)
         if isinstance(o, list):
             return iter(o)
-        if isinstance(
-                      o,
-                      (
-                       type(str),
-                       type(True),
-                       type(False),
-                       type(int),
-                       type(float)
-                      )
-                     ):
+        if isinstance(o, (type(str), type(True), type(False), type(int), type(float))):
             return o
         try:
             return json.JSONEncoder.default(self, o)
@@ -138,11 +126,7 @@ class ObjectEncoder(json.JSONEncoder):
         ""
         return json.JSONEncoder.encode(self, o)
 
-    def iterencode(
-                   self,
-                   o,
-                   _one_shot=False
-                  ):
+    def iterencode(self, o, _one_shot=False):
         ""
         return json.JSONEncoder.iterencode(self, o, _one_shot)
 
@@ -213,7 +197,7 @@ def fmt(obj, args=None, skip=None, plain=False):
         elif isinstance(value, str) and len(value.split()) >= 2:
             txt += f'{key}="{value}" '
         else:
-            txt += f'{key}={value} '
+            txt += f"{key}={value} "
     return txt.strip()
 
 

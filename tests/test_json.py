@@ -14,11 +14,10 @@ from objx import Object, dumps, loads
 
 VALIDJSON = "{'test': 'bla'}"
 VALIDPYTHON = '{"test": "bla"}'
-#VALIDPYTHON = '{"test": "bla", "__type__": "opr.objects.Object"}'
+# VALIDPYTHON = '{"test": "bla", "__type__": "opr.objects.Object"}'
 
 
 class TestDecoder(unittest.TestCase):
-
     def test_loads(self):
         obj = Object()
         obj.test = "bla"
@@ -27,7 +26,6 @@ class TestDecoder(unittest.TestCase):
 
 
 class TestEncoder(unittest.TestCase):
-
     def test_dumps(self):
         obj = Object()
         obj.test = "bla"

@@ -16,57 +16,56 @@ VALIDJSON = '{"test": "bla"}'
 
 
 attrs1 = (
-         'Object',
-         'clear',
-         'copy',
-         'fromkeys',
-         'get',
-         'items',
-         'keys',
-         'matchkey',
-         'pop',
-         'popitem',
-         'save',
-         'setdefault',
-         'update',
-         'values',
-        )
+    "Object",
+    "clear",
+    "copy",
+    "fromkeys",
+    "get",
+    "items",
+    "keys",
+    "matchkey",
+    "pop",
+    "popitem",
+    "save",
+    "setdefault",
+    "update",
+    "values",
+)
 
 attrs2 = (
-          '__class__',
-          '__delattr__',
-          '__dict__',
-          '__dir__',
-          '__doc__',
-          '__eq__',
-          '__fnm__',
-          '__format__',
-          '__ge__',
-          '__getattribute__',
-          '__gt__',
-          '__hash__',
-          '__init__',
-          '__init_subclass__',
-          '__iter__',
-          '__le__',
-          '__len__',
-          '__lt__',
-          '__module__',
-          '__ne__',
-          '__new__',
-          '__reduce__',
-          '__reduce_ex__',
-          '__repr__',
-          '__setattr__',
-          '__sizeof__',
-          '__slots__',
-          '__str__',
-          '__subclasshook__'
-         )
+    "__class__",
+    "__delattr__",
+    "__dict__",
+    "__dir__",
+    "__doc__",
+    "__eq__",
+    "__fnm__",
+    "__format__",
+    "__ge__",
+    "__getattribute__",
+    "__gt__",
+    "__hash__",
+    "__init__",
+    "__init_subclass__",
+    "__iter__",
+    "__le__",
+    "__len__",
+    "__lt__",
+    "__module__",
+    "__ne__",
+    "__new__",
+    "__reduce__",
+    "__reduce_ex__",
+    "__repr__",
+    "__setattr__",
+    "__sizeof__",
+    "__slots__",
+    "__str__",
+    "__subclasshook__",
+)
 
 
 class TestObject(unittest.TestCase):
-
     def test_constructor(self):
         obj = Object()
         self.assertTrue(type(obj), Object)
@@ -130,13 +129,7 @@ class TestObject(unittest.TestCase):
         self.assertEqual(fqn(Object()), "objx.Object")
 
     def test_repr(self):
-        self.assertTrue(
-                        update(
-                               Object(),
-                               {"key": "value"}
-                              ).__repr__(),
-                        {"key": "value"}
-                       )
+        self.assertTrue(update(Object(), {"key": "value"}).__repr__(), {"key": "value"})
 
     def test_setattr(self):
         obj = Object()
