@@ -3,15 +3,15 @@ OBJX
 
 NAME
 
-::
+    ::
 
-    OBJX - objects library
+        OBJX - objects library
 
 INSTALL
 
-::
+    ::
 
-    $ pip install objx
+        $ pip install objx
 
 SYNOPSIS
 
