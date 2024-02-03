@@ -3,15 +3,17 @@ OBJX
 
 NAME
 
-    ::
+::
 
-        OBJX - objects library
+    OBJX - objects library
+
 
 INSTALL
 
-    ::
+::
 
-        $ pip install objx
+    $ pip install objx
+
 
 SYNOPSIS
 
@@ -24,6 +26,7 @@ SYNOPSIS
     >>> loads(txt)
     {"a": "b"}
 
+
 DESCRIPTION
 
 ::
@@ -35,11 +38,13 @@ DESCRIPTION
 
     OBJX is Public Domain.
 
+
 AUTHOR
 
 ::
 
     Bart Thate <objx@proton.me>
+
 
 COPYRIGHT
 
