@@ -15,8 +15,7 @@ method names. This makes storing and reading to/from json possible.
     >>> o = Object()
     >>> o.a = "b"
     >>> txt = dumps(o)
-    >>> oo = loads(txt)
-    >>> oo
+    >>> loads(txt)
     {"a": "b"}
 
 OBJX is Public Domain.
@@ -228,3 +227,7 @@ def update(obj, data, empty=True):
 
 def values(obj):
     return obj.__dict__.values()
+
+
+
+from .default import Default
