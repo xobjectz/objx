@@ -9,6 +9,7 @@
 from .brokers import *
 from .clients import *
 from .command import *
+from .configs import *
 from .default import *
 from .excepts import *
 from .handler import *
@@ -27,6 +28,7 @@ from .workdir import *
 def __dir__():
     return (
             'Broker',
+            'Cfg',
             'Client',
             'Command',
             'Default',
@@ -41,9 +43,11 @@ def __dir__():
             'checkpid',
             'construct',
             'daemon',
+            'debug',
             'dump',
             'dumps',
             'edit',
+            'enable',
             'fetch',
             'fmt',
             'fntime',

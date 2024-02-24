@@ -7,7 +7,7 @@
 
 
 from . import cmd, ena, irc, log, mod, mre, pwd, rss, tdo, flt, thr
-from . import mdl, req, slg
+from . import mdl, req, shl, slg
 
 
 def __geno__():
@@ -29,9 +29,10 @@ def __dir__():
         'mre',
         'pwd',
         'rss',
+        'shl',
         'tdo',
         'thr'
-    )
+    ) + __geno__()
 
 
 __all__ = __dir__()

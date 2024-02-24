@@ -78,7 +78,7 @@ rss
 
 SYSTEMD
 
-save the following it in /etc/systems/system/rssbot.service and
+save the following it in /etc/systemd/system/objx.service and
 replace "<user>" with the user running pipx
 
 ::
@@ -93,7 +93,7 @@ replace "<user>" with the user running pipx
     User=<user>
     Group=<user>
     WorkingDirectory=/home/<user>/.objx
-    ExecStart=/home/<user>/.local/pipx/venvs/rssbot/bin/objxd
+    ExecStart=/home/<user>/.local/pipx/venvs/objx/bin/objxd
     RemainAfterExit=yes
 
     [Install]
@@ -104,8 +104,11 @@ then run this
 
 ::
 
-    $ mkdir ~/.objx
-    $ sudo systemctl enable objx --now
+    mkdir ~/.objx
+    sudo systemctl --user
+    sudo loginctl enable-linger <username>
+    sudo systemctl enable objx --now
+
 
 default channel/server is #objx on localhost
 

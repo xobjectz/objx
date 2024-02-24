@@ -3,7 +3,7 @@
 # pylint: disable=C,R
 
 
-"runtime"
+"configuration"
 
 
 import getpass
@@ -11,15 +11,8 @@ import os
 import sys
 
 
-from .clients import cmnd 
 from .default import Default
-from .excepts import Error
-from .scanner import scan
-from .utility import daemon, forever, privileges
 from .workdir import Workdir
-
-
-from . import modules
 
 
 Cfg         = Default()
@@ -29,16 +22,3 @@ Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Cfg.user    = getpass.getuser()
 Workdir.wd  = Cfg.wd
-
-
-def cli():
-    Cfg.mod = ",".join(modules.__dir__())
-    scan(modules, Cfg.mod)
-    cmnd(" ".join(sys.argv[1:]), print)
-    Error.show()
-
-def main():
-    daemon(Cfg.pidfile)
-    privileges(Cfg.user)
-    scan(modules, Cfg.mod, True)
-    forever()
