@@ -5,12 +5,13 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+
 [project]
-name = "objx"
-description = "objects library"
-version = "51"
+name = "rssbot"
+description = "24/7 RSS Fetcher"
+version = "521"
 authors = [
-    {name = "Bart Thate",email = "objx@proton.me"},
+    {name = "Bart Thate",email = "bthate@dds.nl"},
 ]
 readme = "README.rst"
 license = {text="Public Domain"}
@@ -22,13 +23,34 @@ classifiers = [
     'Topic :: Utilities'
 ]
 
+
+[project.scripts]
+rssbot = "rssbot.runtime:cli"
+rssbotd = "rssbot.runtime:main"
+
+
 [project.urls]
-"home" = "https://pypi.org/project/objx"
-"bugs" = "https://github.com/xobjectz/objx/issues"
-"source" = "https://github.com/xobjectz/objx"
+"home" = "https://pypi.org/project/rssbot"
+"bugs" = "https://github.com/xobjectz/rssbot/issues"
+"source" = "https://github.com/xobjectz/rssbot"
+
 
 [tool.setuptools]
 packages = [
-    "objx",
+    "rssbot",
+    "rssbot.modules"
 ]
 zip-safe=true
+
+
+[tool.setuptools.data-files]
+"share/doc/rssbot" = [
+    "README.rst"
+]
+
+[tool.setuptools.exclude-package-data]
+"*" = [
+       "env*",
+       "html*",
+       "test*"
+      ]

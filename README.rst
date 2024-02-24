@@ -1,49 +1,130 @@
 OBJX
 ####
 
+
 NAME
 
 ::
 
-    OBJX - objects library
+    OBJX - objects
 
 
 INSTALL
 
 ::
 
-    $ pip install objx
+    $ pipx install objx
+    $ pipx ensurepath
 
 
 SYNOPSIS
 
 ::
 
-    >>> from objx import Object, dumps, loads
-    >>> o = Object()
-    >>> o.a = "b"
-    >>> txt = dumps(o)
-    >>> loads(txt)
-    {"a": "b"}
+    objx <cmd> [key=val] [key==val]
+    objxd
 
 
 DESCRIPTION
 
 ::
 
-    OBJX provides an objx namespace that allows for easy json save//load
-    of objects. It provides an "clean namespace" Object class that only
-    has dunder methods, so the namespace is not cluttered with method
-    names. This makes storing and reading to/from json possible.
+    OBJX is a python3 bot able to display rss feeds in your channel.
 
-    OBJX is Public Domain.
+    OBJX comes with a cli to configure and a daemon to run in the
+    background, hooking the daemon in systemd brings a 24/7 available
+    bot in your channel.
+
+
+COMMANDS
+
+::
+
+    cfg - irc configuration
+    cmd - commands
+    dpl - sets display items
+    mre - displays cached output
+    pwd - sasl nickserv name/pass
+    rem - removes a rss feed
+    rss - add a feed
+
+
+CONFIGURATION
+
+irc
+
+::
+
+    $ objx cfg server=<server>
+    $ objx cfg channel=<channel>
+    $ objx cfg nick=<nick>
+
+sasl
+
+::
+
+    $ objx pwd <nsvnick> <nspass>
+    $ objx cfg password=<frompwd>
+
+rss
+
+::
+
+    $ objx rss <url>
+    $ objx dpl <url> <item1,item2>
+    $ objx rem <url>
+    $ objx nme <url> <name>
+
+
+SYSTEMD
+
+save the following it in /etc/systems/system/rssbot.service and
+replace "<user>" with the user running pipx
+
+::
+
+    [Unit]
+    Description=objects
+    Requires=network-online.target
+    After=network-online.target
+
+    [Service]
+    Type=simple
+    User=<user>
+    Group=<user>
+    WorkingDirectory=/home/<user>/.objx
+    ExecStart=/home/<user>/.local/pipx/venvs/rssbot/bin/objxd
+    RemainAfterExit=yes
+
+    [Install]
+    WantedBy=multi-user.target
+
+
+then run this
+
+::
+
+    $ mkdir ~/.objx
+    $ sudo systemctl enable objx --now
+
+default channel/server is #objx on localhost
+
+
+FILES
+
+::
+
+    ~/.objx
+    ~/.local/bin/objx
+    ~/.local/bin/objxd
+    ~/.local/pipx/venvs/objxd/
 
 
 AUTHOR
 
 ::
 
-    Bart Thate <objx@proton.me>
+    Bart Thate <bthate@dds.nl>
 
 
 COPYRIGHT
