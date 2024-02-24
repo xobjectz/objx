@@ -105,8 +105,6 @@ then run this
 ::
 
     mkdir ~/.objx
-    sudo systemctl --user
-    sudo loginctl enable-linger <username>
     sudo systemctl enable objx --now
 
 
