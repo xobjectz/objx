@@ -8,7 +8,6 @@
 
 import getpass
 import os
-import sys
 
 
 from .default import Default

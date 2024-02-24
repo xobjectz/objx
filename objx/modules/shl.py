@@ -14,7 +14,7 @@ import time
 
 
 from .. import Cfg, Client, Message, enable, parse_cmd, skel, wrap
-from .. import debug, forever, scan, modules, wrap
+from .. import debug, forever, scan, modules
 
 
 Cfg.mod = "cmnd,mod,dis,ena"
