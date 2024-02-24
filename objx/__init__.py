@@ -27,3 +27,5 @@ options:
 -h     display help
 -v     use verbose
 """
+
+from objx.defines import *
