@@ -40,6 +40,7 @@ from mods.excepts import Error, enable
 from mods.handler import Client, Command, Console, cmnd, parse_cmd, scan
 from mods.handler import forever
 
+
 def daemon(pidfile, verbose=False):
     pid = os.fork()
     if pid != 0:
@@ -86,39 +87,13 @@ def cmd(event):
     event.reply(",".join(sorted(list(Command.cmds))))
 
 
-def dis(event):
-    if not event.args:
-        mods = ",".join(dir(mods))
-        event.reply(f"disable {mods}")
-        return
-    what = event.args[0]
-    mod = getattr(mods, what, None)
-    if mod:
-        func = getattr(mod, "shutdown", None)
-        if func:
-            try:
-                func()
-            except Exception as ex:
-                Error.add(ex)
-
-
-def ena(event):
-    if not event.args:
-        mods = ",".join(dir(mods))
-        event.reply(f"enable {mods}")
-        return
-    what = event.args[0]
-    try:
-        init = event.args[1]
-    except IndexError:
-        init = False
-    scan(mods, what, init)
-
+def ver(event):
+    event.reply("OBJX {Cfg.version}")
+    
 
 def main():
     Command.add(cmd)
-    Command.add(dis)
-    Command.add(ena)
+    Command.add(ver)
     enable(print)
     skel()
     parse_cmd(Cfg, " ".join(sys.argv[1:]))

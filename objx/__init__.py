@@ -20,7 +20,6 @@ method names. This makes storing and reading to/from json possible.
 
 OBX is Public Domain."""
 
-from .brokers import *
 from .default import *
 from .locates import *
 from .objects import *
@@ -30,7 +29,6 @@ from .workdir import *
 
 def __dir__():
     return (
-            'Broker',
             'Default',
             'Object',
             'Workdir',
