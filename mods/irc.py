@@ -22,10 +22,11 @@ from objx.objects import Object, edit, fmt, keys
 from objx.persist import sync
 
 
-from .brokers import Broker
-from .excepts import Error, debug
-from .handler import Client, Message, command
-from .threads import launch
+from botl.brokers import Broker
+from botl.excepts import Error, debug
+from botl.handler import Client, Message, command
+from botl.threads import launch
+
 
 NAME    = __file__.split(os.sep)[-3]
 get     = Broker.get

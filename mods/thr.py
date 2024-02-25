@@ -13,7 +13,7 @@ import time
 from objx.objects import Object, update
 
 
-from .handler import laps
+from botl.handler import laps
 
 
 STARTTIME = time.time()

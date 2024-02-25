@@ -6,8 +6,8 @@
 "fleet"
 
 
-from .brokers import Broker
-from .threads import name
+from botl.brokers import Broker
+from botl.threads import name
 
 
 def flt(event):

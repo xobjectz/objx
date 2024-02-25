@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from objx.objects import Object
+from objx import Object
 
 
 from .threads import launch

@@ -14,7 +14,8 @@ from objx.objects import Object
 from objx.persist import sync
 
 
-from .handler import laps
+from botl.handler import laps
+
 
 class Log(Object):
 

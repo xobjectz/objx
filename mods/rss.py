@@ -24,10 +24,10 @@ from objx.objects import Object, fmt, update
 from objx.persist import sync
 
 
-from .brokers import Broker
-from .handler import laps
-from .repeats import Repeater
-from .threads import launch
+from botl.brokers import Broker
+from botl.handler import laps
+from botl.repeats import Repeater
+from botl.threads import launch
 
 
 def init():

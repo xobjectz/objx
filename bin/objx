@@ -12,6 +12,7 @@ import os
 import readline
 import sys
 import termios
+import time
 
 
 sys.path.insert(0, os.getcwd())
@@ -21,9 +22,15 @@ from objx.default import Default
 from objx.workdir import Workdir, skel
 
 
+from botl.excepts import Error, debug, enable
+from botl.handler import Client, Command, Console, cmnd, parse_cmd, scan
+from botl.handler import forever
+
+
 Cfg         = Default()
 Cfg.mod     = "cmd,ena,mod"
-Cfg.name    = "opd"
+Cfg.name    = __file__.split(os.sep)[-1]
+Cfg.version = 60
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
@@ -34,11 +41,6 @@ if os.path.exists("mods"):
 else:
     print("mods not found")
     os._exit(0)
-
-
-from mods.excepts import Error, enable
-from mods.handler import Client, Command, Console, cmnd, parse_cmd, scan
-from mods.handler import forever
 
 
 def daemon(pidfile, verbose=False):
@@ -88,7 +90,7 @@ def cmd(event):
 
 
 def ver(event):
-    event.reply("OBJX {Cfg.version}")
+    event.reply(f"OBJX {Cfg.version}")
     
 
 def main():

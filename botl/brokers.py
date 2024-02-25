@@ -6,7 +6,7 @@
 "object cache"
 
 
-from objx.objects import Object, keys, values
+from objx import Object, keys, values
 
 
 def __dir__():

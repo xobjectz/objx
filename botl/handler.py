@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0212,E0402
+# pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402
 
 
 "handler"
@@ -8,15 +8,12 @@
 
 import inspect
 import queue
-import sys
 import threading
 import time
 import _thread
 
 
-from objx.default import Default
-from objx.objects import Object, spl
-from objx.persist import Persist
+from objx import Default, Object, Persist, spl
 
 
 from .brokers import Broker
@@ -43,6 +40,7 @@ class Message(Default):
         self.orig    = None
         self.result  = []
         self.txt     = ""
+        self.type    = "event"
 
     def ready(self):
         self._ready.set()
