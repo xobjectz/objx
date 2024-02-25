@@ -125,28 +125,6 @@ class Client(Handler):
         pass
 
 
-
-class Console(Client):
-
-    def announce(self, txt):
-        pass
-
-    def callback(self, evt):
-        Client.callback(self, evt)
-        evt.wait()
-
-    def poll(self):
-        evt = Message()
-        evt.orig = object.__repr__(self)
-        evt.txt = input("> ")
-        evt.type = "command"
-        return evt
-
-    def say(self, channel, txt):
-        txt = txt.encode('utf-8', 'replace').decode()
-        print(txt)
-
-
 "utility"
 
 
@@ -218,7 +196,6 @@ def laps(seconds, short=True):
         txt += f"{sec}s"
     txt = txt.strip()
     return txt
-
 
 
 def parse_cmd(obj, txt=None):
