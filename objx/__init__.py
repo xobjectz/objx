@@ -50,6 +50,7 @@ def __dir__():
         'loads',
         'read',
         'search',
+        'spl',
         'sync',
         'update',
         'values',

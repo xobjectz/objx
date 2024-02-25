@@ -36,10 +36,10 @@ Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
 
 
-if os.path.exists("mods"):
-    import mods
+if os.path.exists("zbot"):
+    import zbot as mods
 else:
-    print("mods not found")
+    print("zbot not found")
     os._exit(0)
 
 

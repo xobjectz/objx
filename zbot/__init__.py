@@ -27,7 +27,6 @@ def __dir__():
         'mre',
         'pwd',
         'rss',
-        'shl',
         'tdo',
         'thr'
     ) + __geno__()
