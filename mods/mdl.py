@@ -11,12 +11,12 @@ import time
 
 
 from objx.brokers import Broker
-from objx.handler import Message, laps
 from objx.objects import Object, construct, keys
-from objx.threads import launch
 
 
+from .handler import Message, laps
 from .repeats import Repeater
+from .threads import launch
 
 
 def __dir__():

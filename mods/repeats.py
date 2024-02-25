@@ -11,7 +11,9 @@ import time
 
 
 from objx.objects import Object
-from objx.threads import launch
+
+
+from .threads import launch
 
 
 def __dir__():

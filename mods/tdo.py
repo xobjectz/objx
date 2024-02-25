@@ -9,10 +9,12 @@
 import time
 
 
-from objx.handler import laps 
 from objx.locates import find, fntime
 from objx.objects import Object
 from objx.persist import sync
+
+
+from .handler import laps 
 
 
 class NoDate(Exception):

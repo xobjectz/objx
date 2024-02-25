@@ -14,11 +14,13 @@ import time
 import _thread
 
 
-from .brokers import Broker
-from .default import Default
+from objx.brokers import Broker
+from objx.default import Default
+from objx.objects import Object, spl
+from objx.persist import Persist
+
+
 from .excepts import Error
-from .objects import Object, spl
-from .persist import Persist
 from .threads import launch
 
 

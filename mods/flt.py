@@ -7,7 +7,9 @@
 
 
 from objx.brokers import Broker
-from objx.threads import name
+
+
+from .threads import name
 
 
 def flt(event):

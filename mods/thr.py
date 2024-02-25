@@ -11,7 +11,9 @@ import time
 
 
 from objx.objects import Object, update
-from objx.handler import laps
+
+
+from .handler import laps
 
 
 STARTTIME = time.time()
