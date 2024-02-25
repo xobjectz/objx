@@ -4,29 +4,23 @@
 # pylint: disable=C,R,W0212,E0402
 
 
-"handler"
+"objects"
 
 
 import getpass
-import inspect
 import os
-import queue
 import readline
 import sys
 import termios
-import threading
-import time
-import _thread
 
 
 sys.path.insert(0, os.getcwd())
 
 
-from objx.brokers import Broker
 from objx.default import Default
-from objx.excepts import Error, debug, enable
-from objx.objects import Object, spl
-from objx.threads import launch
+from objx.excepts import Error, enable
+from objx.handler import Client, Command, Console, cmnd, daemon, parse_cmd, scan
+from objx.handler import forever
 from objx.workdir import Workdir, skel
 
 
@@ -38,271 +32,12 @@ Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
 
 
+mods = None
+
 try:
     import mods
 except ModuleNotFoundError:
-    mods = None
-
-
-class Command(Object):
-
-    cmds = Object()
-
-    @staticmethod
-    def add(func):
-        setattr(Command.cmds, func.__name__, func)
-
-
-def command(evt):
-    parse_cmd(evt)
-    func = getattr(Command.cmds, evt.cmd, None)
-    if func:
-        try:
-            func(evt)
-            evt.show()
-        except Exception as exc:
-            Error.add(exc)
-    evt.ready()
-
-
-class Message(Default):
-
-    def __init__(self):
-        Default.__init__(self)
-        self._ready  = threading.Event()
-        self._thr    = None
-        self.done    = False
-        self.orig    = None
-        self.result  = []
-        self.txt     = ""
-
-    def ready(self):
-        self._ready.set()
-
-    def reply(self, txt):
-        self.result.append(txt)
-
-    def show(self):
-        bot = Broker.get(self.orig)
-        for txt in self.result:
-            bot.say(self.channel, txt)
-
-    def wait(self):
-        if self._thr:
-            self._thr.join()
-        self._ready.wait()
-        return self.result
-
-
-class Handler(Object):
-
-    def __init__(self):
-        Object.__init__(self)
-        self.cbs      = Object()
-        self.queue    = queue.Queue()
-        self.stopped  = threading.Event()
-        self.threaded = True
-        Broker.add(self)
-
-    def callback(self, evt):
-        func = getattr(self.cbs, evt.type, None)
-        if not func:
-            evt.ready()
-            return
-        if self.threaded:
-            evt._thr = launch(func, evt)
-        else:
-            func(evt)
-            evt.ready()
-
-    def loop(self):
-        while not self.stopped.is_set():
-            try:
-                evt = self.poll()
-                self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    def poll(self):
-        return self.queue.get()
-
-    def put(self, evt):
-        self.queue.put_nowait(evt)
-
-    def register(self, typ, cbs):
-        setattr(self.cbs, typ, cbs)
-
-    def start(self):
-        launch(self.loop)
-
-    def stop(self):
-        self.stopped.set()
-
-
-class Client(Handler):
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.register("command", command)
-
-    def announce(self, txt):
-        self.raw(txt)
-
-    def say(self, channel, txt):
-        self.raw(txt)
-
-    def show(self, evt):
-        for txt in evt.result:
-            self.say(evt.channel, txt)
-
-    def raw(self, txt):
-        pass
-
-
-
-class Console(Client):
-
-    def announce(self, txt):
-        pass
-
-    def callback(self, evt):
-        Client.callback(self, evt)
-        evt.wait()
-
-    def poll(self):
-        evt = Message()
-        evt.orig = object.__repr__(self)
-        evt.txt = input("> ")
-        evt.type = "command"
-        return evt
-
-    def say(self, channel, txt):
-        txt = txt.encode('utf-8', 'replace').decode()
-        print(txt)
-
-
-"utility"
-
-
-def cmnd(txt, out):
-    clt = Client()
-    clt.raw = out
-    evn = Message()
-    evn.orig = object.__repr__(clt)
-    evn.txt = txt
-    command(evn)
-    evn.wait()
-    return evn
-
-
-def daemon(pidfile, verbose=False):
-    pid = os.fork()
-    if pid != 0:
-        os._exit(0)
-    os.setsid()
-    pid2 = os.fork()
-    if pid2 != 0:
-        os._exit(0)
-    if not verbose:
-        with open('/dev/null', 'r', encoding="utf-8") as sis:
-            os.dup2(sis.fileno(), sys.stdin.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as sos:
-            os.dup2(sos.fileno(), sys.stdout.fileno())
-        with open('/dev/null', 'a+', encoding="utf-8") as ses:
-            os.dup2(ses.fileno(), sys.stderr.fileno())
-    os.umask(0)
-    os.chdir("/")
-    if os.path.exists(pidfile):
-        os.unlink(pidfile)
-    cdir(os.path.dirname(pidfile))
-    with open(pidfile, "w", encoding="utf-8") as fds:
-        fds.write(str(os.getpid()))
-
-
-def forever():
-    while 1:
-        try:
-            time.sleep(1.0)
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-
-
-def parse_cmd(obj, txt=None):
-    args = []
-    obj.args    = obj.args or []
-    obj.cmd     = obj.cmd or ""
-    obj.gets    = obj.gets or Default()
-    obj.hasmods = obj.hasmod or False
-    obj.index   = None
-    obj.mod     = obj.mod or ""
-    obj.opts    = obj.opts or ""
-    obj.result  = obj.reult or []
-    obj.sets    = obj.sets or Default()
-    obj.txt     = txt or obj.txt or ""
-    obj.otxt    = obj.txt
-    _nr = -1
-    for spli in obj.otxt.split():
-        if spli.startswith("-"):
-            try:
-                obj.index = int(spli[1:])
-            except ValueError:
-                obj.opts += spli[1:]
-            continue
-        if "==" in spli:
-            key, value = spli.split("==", maxsplit=1)
-            if key in obj.gets:
-                val = getattr(obj.gets, key)
-                value = val + "," + value
-            setattr(obj.gets, key, value)
-            continue
-        if "=" in spli:
-            key, value = spli.split("=", maxsplit=1)
-            if key == "mod":
-                obj.hasmods = True
-                if obj.mod:
-                    obj.mod += f",{value}"
-                else:
-                    obj.mod = value
-                continue
-            setattr(obj.sets, key, value)
-            continue
-        _nr += 1
-        if _nr == 0:
-            obj.cmd = spli
-            continue
-        args.append(spli)
-    if args:
-        obj.args = args
-        obj.txt  = obj.cmd or ""
-        obj.rest = " ".join(obj.args)
-        obj.txt  = obj.cmd + " " + obj.rest
-    else:
-        obj.txt = obj.cmd or ""
-
-
-
-def scan(pkg, modstr, initer=False, disable="", wait=True):
-    mds = []
-    for modname in spl(modstr):
-        if modname in spl(disable):
-            continue
-        module = getattr(pkg, modname, None)
-        if not module:
-            continue
-        for _key, cmd in inspect.getmembers(module, inspect.isfunction):
-            if 'event' in cmd.__code__.co_varnames:
-                Command.add(cmd)
-        for _key, clz in inspect.getmembers(module, inspect.isclass):
-            if not issubclass(clz, Object):
-                continue
-            Persist.add(clz)
-        if initer and "init" in dir(module):
-            module._thr = launch(module.init, name=f"init {modname}")
-            mds.append(module)
-    if wait and initer:
-        for mod in mds:
-            mod._thr.join()
-    return mds
+    pass
 
 
 def wrap(func):
@@ -323,7 +58,43 @@ def wrap(func):
 "runtime"
 
 
+def cmd(event):
+    event.reply(",".join(sorted(list(Command.cmds))))
+
+
+def dis(event):
+    if not event.args:
+        mods = ",".join(dir(mods))
+        event.reply(f"disable {mods}")
+        return
+    what = event.args[0]
+    mod = getattr(mods, what, None)
+    if mod:
+        func = getattr(mod, "shutdown", None)
+        if func:
+            try:
+                func()
+            except Exception as ex:
+                Error.add(ex)
+
+
+def ena(event):
+    if not event.args:
+        mods = ",".join(dir(mods))
+        event.reply(f"enable {mods}")
+        return
+    what = event.args[0]
+    try:
+        init = event.args[1]
+    except IndexError:
+        init = False
+    scan(mods, what, init)
+
+
 def main():
+    Command.add(cmd)
+    Command.add(dis)
+    Command.add(ena)
     enable(print)
     skel()
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
