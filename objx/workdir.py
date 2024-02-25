@@ -7,10 +7,10 @@
 
 
 import os
+import pathlib
 
 
 from .objects import Object
-from .utility import cdir
 
 
 def __dir__():
@@ -40,3 +40,13 @@ def store(pth=""):
 
 def types():
     return os.listdir(store())
+
+
+"utility"
+
+
+def cdir(pth) -> None:
+    if os.path.exists(pth):
+        return
+    pth = pathlib.Path(pth)
+    os.makedirs(pth, exist_ok=True)

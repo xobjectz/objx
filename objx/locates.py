@@ -11,9 +11,8 @@ import os
 
 from .default import Default
 from .objects import fqn, search, update
-from .persist import fetch, long
+from .persist import fetch, long, strip
 from .workdir import store
-from .utility import fntime, strip
 
 
 def __dir__():
@@ -67,3 +66,19 @@ def last(obj, selector=None):
         inp = result[-1]
         update(obj, inp[-1])
         return inp[0]
+
+
+"utility"
+
+
+def fntime(daystr):
+    daystr = daystr.replace('_', ':')
+    datestr = ' '.join(daystr.split(os.sep)[-2:])
+    if '.' in datestr:
+        datestr, rest = datestr.rsplit('.', 1)
+    else:
+        rest = ''
+    timed = time.mktime(time.strptime(datestr, '%Y-%m-%d %H:%M:%S'))
+    if rest:
+        timed += float('.' + rest)
+    return timed

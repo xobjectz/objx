@@ -12,7 +12,6 @@ import _thread
 
 
 from .objects import Object, dump, fqn, load, update
-from .utility import cdir, strip
 from .workdir import store, types
 
 
@@ -92,3 +91,17 @@ def write(obj, pth):
         cdir(os.path.dirname(pth))
         with open(pth, 'w', encoding='utf-8') as ofile:
             dump(obj, ofile, indent=4)
+
+
+"utilities"
+
+
+def cdir(pth) -> None:
+    if os.path.exists(pth):
+        return
+    pth = pathlib.Path(pth)
+    os.makedirs(pth, exist_ok=True)
+
+
+def strip(pth, nmr=3):
+    return os.sep.join(pth.split(os.sep)[-nmr:])

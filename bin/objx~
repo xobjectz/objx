@@ -219,14 +219,6 @@ def daemon(pidfile, verbose=False):
         fds.write(str(os.getpid()))
 
 
-def forever():
-    while 1:
-        try:
-            time.sleep(1.0)
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-
-
 def parse_cmd(obj, txt=None):
     args = []
     obj.args    = obj.args or []
