@@ -11,10 +11,11 @@ name = "objx"
 description = "objects"
 version = "60"
 authors = [
-    {name = "Bart Thate",email = "bthate@dds.nl"},
+    {name = "Bart Thate",email = "objx@proton.me"},
 ]
 readme = "README.rst"
 license = {text="Public Domain"}
+dependancies = [
 classifiers = [ 
     'Development Status :: 3 - Alpha',
     'License :: Public Domain',
@@ -25,8 +26,7 @@ classifiers = [
 
 
 [project.scripts]
-objx = "objx.runtime:cli"
-objxd = "objx.runtime:main"
+objx = "objx.__main__:wrapped"
 
 
 [project.urls]
