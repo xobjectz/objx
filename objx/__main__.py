@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0212,E0402
+# pylint: disable=C,R,W0105,W0212,E0402
 
 
 "runtime"
@@ -8,6 +8,7 @@
 
 import getpass
 import os
+import pwd
 import readline
 import sys
 import termios
@@ -17,7 +18,7 @@ import time
 from .excepts import Error, debug, enable
 from .handler import Client, Command, Message, cmnd, forever, parse_cmd, scan
 from .objects import Default
-from .persist import Workdir, skel
+from .persist import Workdir, cdir, skel
 
 
 "defines"
@@ -89,6 +90,12 @@ def daemon(pidfile, verbose=False):
     cdir(os.path.dirname(pidfile))
     with open(pidfile, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
+
+
+def privileges(username):
+    pwnam = pwd.getpwnam(username)
+    os.setgid(pwnam.pw_gid)
+    os.setuid(pwnam.pw_uid)
 
 
 def wrap(func):
