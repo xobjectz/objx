@@ -15,7 +15,6 @@ authors = [
 ]
 readme = "README.rst"
 license = {text="Public Domain"}
-dependancies = [
 classifiers = [ 
     'Development Status :: 3 - Alpha',
     'License :: Public Domain',
