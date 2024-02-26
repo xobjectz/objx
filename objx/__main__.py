@@ -17,7 +17,7 @@ import time
 from .excepts import Error, debug, enable
 from .handler import Client, Command, Message, cmnd, forever, parse_cmd, scan
 from .objects import Default
-from .workdir import Workdir, skel
+from .persist import Workdir, skel
 
 
 "defines"
@@ -109,8 +109,11 @@ def wrap(func):
 "runtime"
 
 
-from . import modules
-
+if os.path.exists("mods"):
+    import mods as modules
+else:
+    modules = None
+    
 
 def cmd(event):
     event.reply(",".join(sorted(list(Command.cmds))))

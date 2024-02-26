@@ -40,9 +40,7 @@ def __obx__():
 
 
 from .objects import *
-from .locates import *
 from .persist import *
-from .workdir import *
 
 
 def __dir__():
