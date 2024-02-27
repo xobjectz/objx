@@ -25,6 +25,7 @@ def __dir__():
         'Workdir',
         'fetch',
         'fntime',
+        'find',
         'last',
         'ident',
         'read',
@@ -77,21 +78,6 @@ class Persist(Object):
 
     classes = Object()
 
-    @staticmethod
-    def find(mtc, selector=None, index=None, deleted=False):
-        clz = Persist.long(mtc)
-        nr = -1
-        for fnm in sorted(Persist.fns(clz), key=fntime):
-            obj = Default()
-            fetch(obj, fnm)
-            if not deleted and '__deleted__' in obj:
-                continue
-            if selector and not search(obj, selector):
-                continue
-            nr += 1 
-            if index is not None and nr != int(index):
-                continue
-            yield (fnm, obj)
 
     @staticmethod
     def fns(mtc=""):
@@ -148,7 +134,7 @@ def last(obj, selector=None):
     if selector is None:
         selector = {}
     result = sorted(
-                    Persist.find(fqn(obj), selector),
+                    find(fqn(obj), selector),
                     key=lambda x: fntime(x[0])
                    )
     if result:
@@ -192,3 +178,19 @@ def fntime(daystr):
     if rest:
         timed += float('.' + rest)
     return timed
+
+
+def find(mtc, selector=None, index=None, deleted=False):
+    clz = Persist.long(mtc)
+    nr = -1
+    for fnm in sorted(Persist.fns(clz), key=fntime):
+        obj = Default()
+        fetch(obj, fnm)
+        if not deleted and '__deleted__' in obj:
+            continue
+        if selector and not search(obj, selector):
+            continue
+        nr += 1 
+        if index is not None and nr != int(index):
+            continue
+        yield (fnm, obj)

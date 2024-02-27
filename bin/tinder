@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
 #
-# pylint: disable=R,C,W0718,W0611,W0613,E0102,E0401,E0611,W0201,W0702
+# pylint: disable=R,C,W0718,W0611,W0613,E0102,E0401,E0611,W0201,W0702,W0603
 
 
 "created clients"
@@ -24,12 +24,10 @@ sys.path.insert(0, os.getcwd())
 from objx.objects import Default, Object, edit, fmt, keys, spl, update
 from objx.persist import Workdir, last, sync
 from objx.runtime import Broker, Client, Command, Errors, Event, Handler
-from objx.runtime import laps, launch, parse_cmd, scan
+from objx.runtime import debug, laps, launch, parse_cmd, scan
 
 
 STARTTIME = time.time()
-
-debug = Errors.debug
 
 
 Cfg = Default()
@@ -147,7 +145,6 @@ def main():
     cli = CLI()
     cli.raw = print
     cli.start()
-    waiters = []
     for _nr in range(nrs):
         launch(payload, cli)
     consume(events)

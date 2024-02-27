@@ -18,11 +18,11 @@ import _thread
 
 from objx.objects import Default, Object, edit, fmt, keys
 from objx.persist import last, sync
-from objx.runtime import Broker, Client, Command, Errors, Event, launch
+from objx.runtime import Broker, Client, Errors, Event
+from objx.runtime import command, debug, launch
 
 
 NAME    = __file__.split(os.sep)[-3]
-debug   = Errors.debug
 get     = Broker.get
 saylock = _thread.allocate_lock()
 
@@ -572,7 +572,7 @@ def cb_privmsg(evt):
         if evt.txt:
             evt.txt = evt.txt[0].lower() + evt.txt[1:]
         debug(f"command from {evt.origin}: {evt.txt}")
-        Command.command(evt)
+        command(evt)
 
 
 def cb_quit(evt):

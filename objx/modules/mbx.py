@@ -12,7 +12,7 @@ import time
 
 
 from objx.objects import Object, fmt, update
-from objx.persist import Persist, fntime, sync
+from objx.persist import find, fntime, sync
 from objx.runtime import laps
 
 
@@ -80,7 +80,7 @@ def cor(event):
         event.reply("cor <email>")
         return
     nr = -1
-    for _fn, email in Persist.find("email", {"From": event.args[0]}):
+    for _fn, email in find("email", {"From": event.args[0]}):
         nr += 1
         txt = ""
         if len(event.args) > 1:
@@ -96,7 +96,7 @@ def eml(event):
         event.reply("eml <searchtxtinemail>")
         return
     nr = -1
-    for fn, o in Persist.find("email"):
+    for fn, o in find("email"):
         if event.rest in o.text:
             nr += 1
             event.reply("%s %s %s" % (nr, fmt(o, "From,Subject"), laps(time.time() - fntime(fn))))

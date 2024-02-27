@@ -7,7 +7,7 @@
 
 
 from objx.objects import fmt
-from objx.persist import Persist, Workdir
+from objx.persist import Persist, Workdir, find
 
 
 def fnd(event):
@@ -25,7 +25,7 @@ def fnd(event):
             if otype == claz.lower():
                 clz = fnm
     nmr = 0
-    for fnm, obj in Persist.find(clz, event.gets):
+    for fnm, obj in find(clz, event.gets):
         event.reply(f"{nmr} {fmt(obj)}")
         nmr += 1
     if not nmr:

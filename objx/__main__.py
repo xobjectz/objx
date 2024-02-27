@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0105,W0212,E0402
+# pylint: disable=C,R,W0105,W0212,W0613,E0402
 
 
 "runtime"
@@ -18,7 +18,7 @@ import time
 from .objects import Default
 from .persist import Workdir
 from .runtime import Client, Command, Errors, Event
-from .runtime import cmnd, forever, parse_cmd, scan
+from .runtime import cmnd, debug, forever, parse_cmd, scan
 
 
 Cfg         = Default()
@@ -29,7 +29,6 @@ Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
 
 
-debug = Errors.debug
 names    = __file__.split(os.sep)
 
 

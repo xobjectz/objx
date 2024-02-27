@@ -19,7 +19,7 @@ from urllib.parse import quote_plus, urlencode
 
 
 from objx.objects import Default, Object, fmt, update
-from objx.persist import Persist, fntime, last, sync
+from objx.persist import find, fntime, last, sync
 from objx.runtime import Broker, Repeater, launch, laps
 
 
@@ -32,8 +32,6 @@ def init():
 
 DEBUG = False
 
-
-find = Persist.find
 
 fetchlock = _thread.allocate_lock()
 

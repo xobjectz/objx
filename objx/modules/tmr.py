@@ -12,12 +12,12 @@ import time as ttime
 
 
 from objx.objects import update
-from objx.persist import Persist, sync
+from objx.persist import find, sync
 from objx.runtime import Broker, Event, Timer, laps, launch
 
 
 def init():
-    for fnm, obj in Persist.find("timer"):
+    for fnm, obj in find("timer"):
         if "time" not in obj:
             continue
         diff = float(obj.time) - ttime.time()
@@ -171,7 +171,7 @@ def today():
 def tmr(event):
     if not event.rest:
         nmr = 0
-        for fnm, obj in Persist.find('timer'):
+        for fnm, obj in find('timer'):
             if "time" not in obj:
                 continue
             lap = float(obj.time) - ttime.time()

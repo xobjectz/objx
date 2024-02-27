@@ -57,17 +57,6 @@ class Command:
     def add(func):
         setattr(Command.cmds, func.__name__, func)
 
-    @staticmethod
-    def command(evt):
-        parse_cmd(evt)
-        func = getattr(Command.cmds, evt.cmd, None)
-        if func:
-            try:
-                func(evt)
-                evt.show()
-            except Exception as exc:
-                Errors.add(exc)
-        evt.ready()
 
 
 class Errors:
@@ -82,10 +71,6 @@ class Errors:
         excp = exc.with_traceback(exc.__traceback__)
         Errors.errors.append(excp)
 
-    @staticmethod
-    def debug(txt):
-        if Errors.output and not Errors.skip(txt):
-            Errors.output(txt)
 
     @staticmethod
     def enable(out):
@@ -202,7 +187,7 @@ class Client(Handler):
 
     def __init__(self):
         Handler.__init__(self)
-        self.register("command", Command.command)
+        self.register("command", command)
 
     def announce(self, txt):
         self.raw(txt)
@@ -295,10 +280,26 @@ def cmnd(txt, out):
     evn = Event()
     evn.orig = object.__repr__(clt)
     evn.txt = txt
-    Command.command(evn)
+    command(evn)
     evn.wait()
     return evn
 
+
+def command(evt):
+    parse_cmd(evt)
+    func = getattr(Command.cmds, evt.cmd, None)
+    if func:
+        try:
+            func(evt)
+            evt.show()
+        except Exception as exc:
+            Errors.add(exc)
+    evt.ready()
+
+
+def debug(txt):
+    if Errors.output and not Errors.skip(txt):
+        Errors.output(txt)
 
 
 def forever():
