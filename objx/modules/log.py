@@ -10,8 +10,7 @@ import time
 
 
 from objx.objects import Object
-from objx.persist import find, fntime, sync
-from objx.runtime import laps
+from objx.persist import find, fntime, laps, sync
 
 
 class Log(Object):

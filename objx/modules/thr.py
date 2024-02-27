@@ -11,7 +11,7 @@ import time
 
 
 from objx.objects import Object, update
-from objx.runtime import laps
+from objx.persist import laps
 
 
 STARTTIME = time.time()

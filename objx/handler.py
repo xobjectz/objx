@@ -20,7 +20,13 @@ from .objects import Default, Object, keys, spl, values
 from .persist import Persist
 
 
+"defines"
+
+
 rpr = object.__repr__
+
+
+"classes"
 
 
 class Broker:
@@ -57,6 +63,17 @@ class Command:
     def add(func):
         setattr(Command.cmds, func.__name__, func)
 
+
+def command(evt):
+    parse_cmd(evt)
+    func = getattr(Command.cmds, evt.cmd, None)
+    if func:
+        try:
+            func(evt)
+            evt.show()
+        except Exception as exc:
+            Errors.add(exc)
+    evt.ready()
 
 
 class Errors:
@@ -107,6 +124,14 @@ class Errors:
             if skp in str(txt):
                 return True
         return False
+
+
+def debug(txt):
+    if Errors.output and not Errors.skip(txt):
+        Errors.output(txt)
+
+
+"handler"
 
 
 class Event(Default):
@@ -203,43 +228,7 @@ class Client(Handler):
         pass
 
 
-class Timer:
-
-    def __init__(self, sleep, func, *args, thrname=None):
-        self.args  = args
-        self.func  = func
-        self.sleep = sleep
-        self.name  = thrname or str(self.func).split()[2]
-        self.state = {}
-        self.timer = None
-
-    def run(self):
-        self.state["latest"] = time.time()
-        launch(self.func, *self.args)
-
-    def start(self):
-        timer = threading.Timer(self.sleep, self.run)
-        timer.name   = self.name
-        timer.daemon = True
-        timer.sleep  = self.sleep
-        timer.state  = self.state
-        timer.func   = self.func
-        timer.state["starttime"] = time.time()
-        timer.state["latest"]    = time.time()
-        timer.start()
-        self.timer   = timer
-
-    def stop(self):
-        if self.timer:
-            self.timer.cancel()
-
-
-class Repeater(Timer):
-
-    def run(self):
-        thr = launch(self.start)
-        super().run()
-        return thr
+"threads"
 
 
 class Thread(threading.Thread):
@@ -274,81 +263,6 @@ class Thread(threading.Thread):
                 args[0].ready()
 
 
-def cmnd(txt, out):
-    clt = Client()
-    clt.raw = out
-    evn = Event()
-    evn.orig = object.__repr__(clt)
-    evn.txt = txt
-    command(evn)
-    evn.wait()
-    return evn
-
-
-def command(evt):
-    parse_cmd(evt)
-    func = getattr(Command.cmds, evt.cmd, None)
-    if func:
-        try:
-            func(evt)
-            evt.show()
-        except Exception as exc:
-            Errors.add(exc)
-    evt.ready()
-
-
-def debug(txt):
-    if Errors.output and not Errors.skip(txt):
-        Errors.output(txt)
-
-
-def forever():
-    while 1:
-        try:
-            time.sleep(1.0)
-        except (KeyboardInterrupt, EOFError):
-            _thread.interrupt_main()
-
-
-def laps(seconds, short=True):
-    txt = ""
-    nsec = float(seconds)
-    if nsec < 1:
-        return f"{nsec:.2f}s"
-    yea = 365*24*60*60
-    week = 7*24*60*60
-    nday = 24*60*60
-    hour = 60*60
-    minute = 60
-    yeas = int(nsec/yea)
-    nsec -= yeas*yea
-    weeks = int(nsec/week)
-    nsec -= weeks*week
-    nrdays = int(nsec/nday)
-    nsec -= nrdays*nday
-    hours = int(nsec/hour)
-    nsec -= hours*hour
-    minutes = int(nsec/minute)
-    nsec -= int(minute*minutes)
-    sec = int(nsec)
-    if yeas:
-        txt += f"{yeas}y"
-    if weeks:
-        nrdays += weeks * 7
-    if nrdays:
-        txt += f"{nrdays}d"
-    if short and txt:
-        return txt.strip()
-    if hours:
-        txt += f"{hours}h"
-    if minutes:
-        txt += f"{minutes}m"
-    if sec:
-        txt += f"{sec}s"
-    txt = txt.strip()
-    return txt
-
-
 def launch(func, *args, **kwargs):
     nme = kwargs.get("name", name(func))
     thread = Thread(func, nme, *args, **kwargs)
@@ -369,6 +283,28 @@ def name(obj):
     if '__name__' in dir(obj):
         return f'{obj.__class__.__name__}.{obj.__name__}'
     return None
+
+
+"utilities"
+
+
+def cmnd(txt, out):
+    clt = Client()
+    clt.raw = out
+    evn = Event()
+    evn.orig = object.__repr__(clt)
+    evn.txt = txt
+    command(evn)
+    evn.wait()
+    return evn
+
+
+def forever():
+    while 1:
+        try:
+            time.sleep(1.0)
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
 
 
 def parse_cmd(obj, txt=None):

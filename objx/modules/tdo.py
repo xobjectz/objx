@@ -10,8 +10,7 @@ import time
 
 
 from objx.objects import Object
-from objx.persist import fntime, find, sync
-from objx.runtime import laps
+from objx.persist import fntime, find, laps, sync
 
 
 class NoDate(Exception):

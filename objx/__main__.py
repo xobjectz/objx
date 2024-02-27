@@ -16,9 +16,9 @@ import time
 
 
 from .objects import Default
+from .handler import Client, Command, Errors, Event
+from .handler import cmnd, debug, forever, parse_cmd, scan
 from .persist import Workdir
-from .runtime import Client, Command, Errors, Event
-from .runtime import cmnd, debug, forever, parse_cmd, scan
 
 
 Cfg         = Default()
