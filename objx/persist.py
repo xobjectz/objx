@@ -23,7 +23,6 @@ def __dir__():
     return (
         'Persist',
         'Workdir',
-        'cdir',
         'fetch',
         'find',
         'fntime',
@@ -67,7 +66,7 @@ class Workdir(Object):
 
     @staticmethod
     def types():
-        return os.listdir(store())
+        return os.listdir(Workdir.store())
 
 
 "persist"
@@ -99,7 +98,7 @@ class Persist(Object):
     @staticmethod
     def fns(mtc=""):
         dname = ''
-        pth = store(mtc)
+        pth = Workdir.store(mtc)
         for rootdir, dirs, _files in os.walk(pth, topdown=False):
             if dirs:
                 for dname in sorted(dirs):
@@ -107,7 +106,7 @@ class Persist(Object):
                         ddd = os.path.join(rootdir, dname)
                         fls = sorted(os.listdir(ddd))
                         for fll in fls:
-                            yield Persist.strip(os.path.join(ddd, fll))
+                            yield Workdir.strip(os.path.join(ddd, fll))
 
     @staticmethod
     def long(name):
@@ -136,7 +135,7 @@ class Persist(Object):
 
 
 def fetch(obj, pth):
-    pth2 = store(pth)
+    pth2 = Workdir.store(pth)
     read(obj, pth2)
     return Persist.strip(pth)
 
@@ -151,7 +150,7 @@ def last(obj, selector=None):
     if selector is None:
         selector = {}
     result = sorted(
-                    find(fqn(obj), selector),
+                    Persist.find(fqn(obj), selector),
                     key=lambda x: fntime(x[0])
                    )
     if result:
@@ -169,14 +168,14 @@ def read(obj, pth):
 def sync(obj, pth=None):
     if pth is None:
         pth = ident(obj)
-    pth2 = store(pth)
+    pth2 = Workdir.store(pth)
     write(obj, pth2)
     return pth
 
 
 def write(obj, pth):
     with lock:
-        cdir(os.path.dirname(pth))
+        Workdir.cdir(os.path.dirname(pth))
         with open(pth, 'w', encoding='utf-8') as ofile:
             dump(obj, ofile, indent=4)
 

@@ -21,12 +21,15 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx import Broker, Client, Command, Default, Error, Message, Object, Workdir
-from objx import command, debug, edit, fmt, keys, last, launch, sync, store
-from objx import laps, launch, parse_cmd, scan, skel, spl, update
+from objx.objects import Default, Object, edit, fmt, keys, spl, update
+from objx.persist import Workdir, last, sync
+from objx.runtime import Broker, Client, Command, Errors, Event, Handler
+from objx.runtime import laps, launch, parse_cmd, scan
 
 
 STARTTIME = time.time()
+
+debug = Errors.debug
 
 
 Cfg = Default()
@@ -41,8 +44,8 @@ Workdir.wd = Cfg.wd
 
 paylock = _thread.allocate_lock()
 
-if os.path.exists("mods"):
-    import mods as modules
+
+import objx.modules as modules
 
 
 events = []
@@ -105,7 +108,7 @@ def payload(clt):
         nmr = 0
         for cmd in cmds:
             for ex in getattr(param, cmd, [""]):
-                evt = Message()
+                evt = Event()
                 evt.orig = object.__repr__(clt)
                 evt.txt = cmd + " " + ex
                 evt.type = "command"
@@ -135,13 +138,13 @@ def main():
     global nrs
     global nrcommand
     global percall
-    Error.output = cprint
+
+    Errors.output = cprint
     for mod in scan(modules, Cfg.mod):
         mod.DEBUG = True
     nrs = Cfg.index or 1
     nrcommand = len(Command.cmds) or 1
     cli = CLI()
-    cli.register("command", command)
     cli.raw = print
     cli.start()
     waiters = []
@@ -156,7 +159,7 @@ def main():
 if __name__ == "__main__":
     if os.path.exists(Workdir.wd):
         shutil.rmtree(Workdir.wd)
-    skel()
+    Workdir.skel()
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
     dte = time.ctime(time.time()).replace("  ", " ")
     debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
@@ -165,5 +168,5 @@ if __name__ == "__main__":
         profile.runctx(main.__code__, globals(), locals())
     else:
         wrap(main)
-    Error.show()
+    Errors.show()
     print(f"{lap} {nrs} {nrcommand} {percall}")
