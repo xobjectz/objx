@@ -41,8 +41,8 @@ Workdir.wd = Cfg.wd
 
 paylock = _thread.allocate_lock()
 
-
-import objx.modules as modules
+if os.path.exists("mods"):
+    import mods as modules
 
 
 events = []
