@@ -14,44 +14,12 @@ import _thread
 
 
 from .objects import Default, Object, spl
-from .persist import whitelist
-from .brokers import Broker
+from .persist import Persist
 from .excepts import Error
 from .threads import launch
 
 
 "classes"
-
-
-class Handler(Object):
-
-    def __init__(self):
-        Object.__init__(self)
-        self.cbs      = Object()
-        self.queue    = queue.Queue()
-        self.stopped  = threading.Event()
-        self.threaded = True
-        Broker.add(self)
-
-    def loop(self):
-        while not self.stopped.is_set():
-            try:
-                evt = self.poll()
-                self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    def poll(self):
-        return self.queue.get()
-
-    def put(self, evt):
-        self.queue.put_nowait(evt)
-
-    def start(self):
-        launch(self.loop)
-
-    def stop(self):
-        self.stopped.set()
 
 
 class Broker(Object):
@@ -97,26 +65,6 @@ class Callback(Object):
 
     def register(self, typ, cbs):
         setattr(self.cbs, typ, cbs)
-
-
-class Client(Handler):
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.register("command", command)
-
-    def announce(self, txt):
-        self.raw(txt)
-
-    def say(self, channel, txt):
-        self.raw(txt)
-
-    def show(self, evt):
-        for txt in evt.result:
-            self.say(evt.channel, txt)
-
-    def raw(self, txt):
-        pass
 
 
 class Command(Object):
@@ -169,6 +117,100 @@ class Message(Default):
         return self.result
 
 
+"threads"
+
+
+class Thread(threading.Thread):
+
+    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
+        super().__init__(None, self.run, thrname, (), {}, daemon=daemon)
+        self._result   = None
+        self.name      = thrname or name(func)
+        self.queue     = queue.Queue()
+        self.sleep     = None
+        self.starttime = time.time()
+        self.queue.put_nowait((func, args))
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        for k in dir(self):
+            yield k
+
+    def join(self, timeout=None):
+        super().join(timeout)
+        return self._result
+
+    def run(self):
+        func, args = self.queue.get()
+        try:
+            self._result = func(*args)
+        except Exception as exc:
+            Error.add(exc)
+            if args and "ready" in dir(args[0]):
+                args[0].ready()
+
+
+def launch(func, *args, **kwargs):
+    nme = kwargs.get("name", name(func))
+    thread = Thread(func, nme, *args, **kwargs)
+    thread.start()
+    return thread
+
+
+"handler"
+
+
+class Handler(Object):
+
+    def __init__(self):
+        Object.__init__(self)
+        self.cbs      = Object()
+        self.queue    = queue.Queue()
+        self.stopped  = threading.Event()
+        self.threaded = True
+        Broker.add(self)
+
+    def loop(self):
+        while not self.stopped.is_set():
+            try:
+                evt = self.poll()
+                self.callback(evt)
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+
+    def poll(self):
+        return self.queue.get()
+
+    def put(self, evt):
+        self.queue.put_nowait(evt)
+
+    def start(self):
+        launch(self.loop)
+
+    def stop(self):
+        self.stopped.set()
+
+class Client(Handler):
+
+    def __init__(self):
+        Handler.__init__(self)
+        self.register("command", command)
+
+    def announce(self, txt):
+        self.raw(txt)
+
+    def say(self, channel, txt):
+        self.raw(txt)
+
+    def show(self, evt):
+        for txt in evt.result:
+            self.say(evt.channel, txt)
+
+    def raw(self, txt):
+        pass
+
 
 "utilities"
 
@@ -190,6 +232,21 @@ def forever():
             time.sleep(1.0)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
+
+
+def name(obj):
+    typ = type(obj)
+    if isinstance(typ, types.ModuleType):
+        return obj.__name__
+    if '__self__' in dir(obj):
+        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj) and '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    return None
 
 
 def parse_cmd(obj, txt=None):
@@ -255,11 +312,11 @@ def scan(pkg, modstr, initer=False, disable="", wait=True):
             continue
         for _key, cmd in inspect.getmembers(module, inspect.isfunction):
             if 'event' in cmd.__code__.co_varnames:
-                add(cmd)
+                Command.add(cmd)
         for _key, clz in inspect.getmembers(module, inspect.isclass):
             if not issubclass(clz, Object):
                 continue
-            whitelist(clz)
+            Persist.whitelist(clz)
         if initer and "init" in dir(module):
             module._thr = launch(module.init, name=f"init {modname}")
             mds.append(module)

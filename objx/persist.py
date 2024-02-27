@@ -28,15 +28,10 @@ def __dir__():
         'find',
         'fntime',
         'last',
-        'long',
         'ident',
         'read',
-        'skel',
-        'store',
         'strip',
         'sync',
-        'types',
-        'whitelist',
         'write'
     )
 
@@ -51,17 +46,28 @@ class Workdir(Object):
 
     wd = ""
 
+    @staticmethod
+    def cdir(pth) -> None:
+        if os.path.exists(pth):
+            return
+        pth = pathlib.Path(pth)
+        os.makedirs(pth, exist_ok=True)
 
-def skel():
-    cdir(os.path.join(Workdir.wd, "store", ""))
+    @staticmethod
+    def skel():
+        cdir(os.path.join(Workdir.wd, "store", ""))
 
+    @staticmethod
+    def store(pth=""):
+        return os.path.join(Workdir.wd, "store", pth)
 
-def store(pth=""):
-    return os.path.join(Workdir.wd, "store", pth)
+    @staticmethod
+    def strip(pth, nmr=3):
+        return os.sep.join(pth.split(os.sep)[-nmr:])
 
-
-def types():
-    return os.listdir(store())
+    @staticmethod
+    def types():
+        return os.listdir(store())
 
 
 "persist"
@@ -74,27 +80,65 @@ class Persist(Object):
 
     classes = Object()
 
+    @staticmethod
+    def find(mtc, selector=None, index=None, deleted=False):
+        clz = long(mtc)
+        nr = -1
+        for fnm in sorted(fns(clz), key=fntime):
+            obj = Default()
+            fetch(obj, fnm)
+            if not deleted and '__deleted__' in obj:
+                continue
+            if selector and not search(obj, selector):
+                continue
+            nr += 1 
+            if index is not None and nr != int(index):
+                continue
+            yield (fnm, obj)
 
-def whitelist(clz):
-    if not clz:
-        return
-    name = str(clz).split()[1][1:-2]
-    setattr(Persist.classes, name, clz)
+    @staicmethod
+    def fns(mtc=""):
+        dname = ''
+        pth = store(mtc)
+        for rootdir, dirs, _files in os.walk(pth, topdown=False):
+            if dirs:
+                for dname in sorted(dirs):
+                    if dname.count('-') == 2:
+                        ddd = os.path.join(rootdir, dname)
+                        fls = sorted(os.listdir(ddd))
+                        for fll in fls:
+                            yield strip(os.path.join(ddd, fll))
+
+    @staticmethod
+    def long(name):
+        split = name.split(".")[-1].lower()
+        res = name
+        for named in Persist.classes:
+            if split in named.split(".")[-1].lower():
+                res = named
+                break
+        if "." not in res:
+            for fnm in types():
+                claz = fnm.split(".")[-1]
+                if fnm == claz.lower():
+                    res = fnm
+        return res
+
+    @staticmethod
+    def whitelist(clz):
+        if not clz:
+            return
+        name = str(clz).split()[1][1:-2]
+        setattr(Persist.classes, name, clz)
 
 
-def long(name):
-    split = name.split(".")[-1].lower()
-    res = name
-    for named in Persist.classes:
-        if split in named.split(".")[-1].lower():
-            res = named
-            break
-    if "." not in res:
-        for fnm in types():
-            claz = fnm.split(".")[-1]
-            if fnm == claz.lower():
-                res = fnm
-    return res
+"methods"
+
+
+def fetch(obj, pth):
+    pth2 = store(pth)
+    read(obj, pth2)
+    return strip(pth)
 
 
 def ident(obj):
@@ -103,11 +147,17 @@ def ident(obj):
                         os.path.join(*str(datetime.datetime.now()).split())
                        )
 
-
-def fetch(obj, pth):
-    pth2 = store(pth)
-    read(obj, pth2)
-    return strip(pth)
+def last(obj, selector=None):
+    if selector is None:
+        selector = {}
+    result = sorted(
+                    find(fqn(obj), selector),
+                    key=lambda x: fntime(x[0])
+                   )
+    if result:
+        inp = result[-1]
+        update(obj, inp[-1])
+        return inp[0]
 
 
 def read(obj, pth):
@@ -131,63 +181,7 @@ def write(obj, pth):
             dump(obj, ofile, indent=4)
 
 
-"locate"
-
-
-def find(mtc, selector=None, index=None, deleted=False):
-    clz = long(mtc)
-    nr = -1
-    for fnm in sorted(fns(clz), key=fntime):
-        obj = Default()
-        fetch(obj, fnm)
-        if not deleted and '__deleted__' in obj:
-            continue
-        if selector and not search(obj, selector):
-            continue
-        nr += 1 
-        if index is not None and nr != int(index):
-            continue
-        yield (fnm, obj)
-
-
-def fns(mtc=""):
-    dname = ''
-    pth = store(mtc)
-    for rootdir, dirs, _files in os.walk(pth, topdown=False):
-        if dirs:
-            for dname in sorted(dirs):
-                if dname.count('-') == 2:
-                    ddd = os.path.join(rootdir, dname)
-                    fls = sorted(os.listdir(ddd))
-                    for fll in fls:
-                        yield strip(os.path.join(ddd, fll))
-
-
-def last(obj, selector=None):
-    if selector is None:
-        selector = {}
-    result = sorted(
-                    find(fqn(obj), selector),
-                    key=lambda x: fntime(x[0])
-                   )
-    if result:
-        inp = result[-1]
-        update(obj, inp[-1])
-        return inp[0]
-
-
 "utilities"
-
-
-def cdir(pth) -> None:
-    if os.path.exists(pth):
-        return
-    pth = pathlib.Path(pth)
-    os.makedirs(pth, exist_ok=True)
-
-
-def strip(pth, nmr=3):
-    return os.sep.join(pth.split(os.sep)[-nmr:])
 
 
 def fntime(daystr):
