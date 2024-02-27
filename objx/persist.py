@@ -137,7 +137,7 @@ class Persist(Object):
 def fetch(obj, pth):
     pth2 = Workdir.store(pth)
     read(obj, pth2)
-    return Persist.strip(pth)
+    return Workdir.strip(pth)
 
 
 def ident(obj):
