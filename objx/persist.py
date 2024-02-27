@@ -24,12 +24,10 @@ def __dir__():
         'Persist',
         'Workdir',
         'fetch',
-        'find',
         'fntime',
         'last',
         'ident',
         'read',
-        'strip',
         'sync',
         'write'
     )
@@ -117,7 +115,7 @@ class Persist(Object):
                 res = named
                 break
         if "." not in res:
-            for fnm in types():
+            for fnm in Workdir.types():
                 claz = fnm.split(".")[-1]
                 if fnm == claz.lower():
                     res = fnm

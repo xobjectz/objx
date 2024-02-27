@@ -13,7 +13,8 @@ import threading
 import time
 
 
-from objx import Broker, Object, launch
+from objx.objects import Object
+from objx.runtime import Broker, launch
 
 
 def init():

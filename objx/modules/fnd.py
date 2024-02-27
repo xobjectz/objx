@@ -7,25 +7,25 @@
 
 
 from objx.objects import fmt
-from objx.persist import find, long, skel, types
+from objx.persist import Persist, Workdir
 
 
 def fnd(event):
-    skel()
+    Workdir.skel()
     if not event.rest:
-        res = sorted([x.split('.')[-1].lower() for x in types()])
+        res = sorted([x.split('.')[-1].lower() for x in Workdir.types()])
         if res:
             event.reply(",".join(res))
         return
     otype = event.args[0]
-    clz = long(otype)
+    clz = Persist.long(otype)
     if "." not in clz:
-        for fnm in types():
+        for fnm in Workdir.types():
             claz = fnm.split(".")[-1]
             if otype == claz.lower():
                 clz = fnm
     nmr = 0
-    for fnm, obj in find(clz, event.gets):
+    for fnm, obj in Persist.find(clz, event.gets):
         event.reply(f"{nmr} {fmt(obj)}")
         nmr += 1
     if not nmr:

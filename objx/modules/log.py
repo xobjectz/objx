@@ -11,6 +11,7 @@ import time
 
 from objx.objects import Object
 from objx.persist import Persist, fntime, sync
+from objx.runtime import laps
 
 
 class Log(Object):

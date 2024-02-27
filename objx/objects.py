@@ -274,14 +274,3 @@ def spl(txt):
     except (TypeError, ValueError):
         res = txt
     return [x for x in res if x]
-# This file is placed in the Public Domain,
-#
-# pylint: disable=C,R,W0105,W0613,E0101
-
-
-"default values"
-
-
-from .objects import Object
-
-

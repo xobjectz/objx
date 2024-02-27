@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402
+# pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402,E1102
 
 
 "runtime"
@@ -16,7 +16,7 @@ import types
 import _thread
 
 
-from .objects import Default, Object, spl, values
+from .objects import Default, Object, keys, spl, values
 from .persist import Persist
 
 
@@ -85,7 +85,7 @@ class Errors:
     @staticmethod
     def debug(txt):
         if Errors.output and not Errors.skip(txt):
-           Errors.output(txt)
+            Errors.output(txt)
 
     @staticmethod
     def enable(out):
@@ -286,7 +286,7 @@ class Thread(threading.Thread):
         except Exception as exc:
             Errors.add(exc)
             if args and "ready" in dir(args[0]):
-               args[0].ready()
+                args[0].ready()
 
 
 def cmnd(txt, out):

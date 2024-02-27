@@ -6,7 +6,7 @@
 "status of bots"
 
 
-from objx import Broker, Error
+from objx.runtime import Broker, Errors
 
 
 def err(event):
@@ -15,8 +15,8 @@ def err(event):
         if 'state' in dir(bot):
             event.reply(str(bot.state))
             nmr += 1
-    event.reply(f"status: {nmr} errors: {len(Error.errors)}")
-    for exc in Error.errors:
-        txt = Error.format(exc)
+    event.reply(f"status: {nmr} errors: {len(Errors.errors)}")
+    for exc in Errors.errors:
+        txt = Errors.format(exc)
         for line in txt.split():
             event.reply(line)
