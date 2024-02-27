@@ -3,28 +3,31 @@
 # pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402
 
 
-"handler"
+"runtime"
 
 
 import inspect
 import queue
 import threading
 import time
+import types
 import _thread
 
 
 from .objects import Default, Object, spl
 from .persist import Persist
-from .excepts import Error
-from .threads import launch
 
 
-"classes"
+rpr = object.__repr__
 
 
-class Broker(Object):
+class Broker:
 
     objs = Object()
+
+    @staticmethod
+    def add(obj):
+        setattr(Broker.objs, rpr(obj), obj)
 
     @staticmethod
     def all():
@@ -36,38 +39,15 @@ class Broker(Object):
             return getattr(Broker.objs, key)
 
     @staticmethod
-    def give(orig):
+    def get(orig):
         return getattr(Broker.objs, orig, None)
 
     @staticmethod
     def remove(obj):
         delattr(Broker.objs, rpr(obj))
 
-    @staticmethod
-    def take(obj):
-        setattr(Broker.objs, rpr(obj), obj)
 
-
-class Callback(Object):
-
-    cbs = Object()
-    
-    def callback(self, evt):
-        func = getattr(self.cbs, evt.type, None)
-        if not func:
-            evt.ready()
-            return
-        if self.threaded:
-            evt._thr = launch(func, evt)
-        else:
-            func(evt)
-            evt.ready()
-
-    def register(self, typ, cbs):
-        setattr(self.cbs, typ, cbs)
-
-
-class Command(Object):
+class Command:
 
     cmds = Object()
 
@@ -75,6 +55,7 @@ class Command(Object):
     def add(func):
         setattr(Command.cmds, func.__name__, func)
 
+    @staticmethod
     def command(evt):
         parse_cmd(evt)
         func = getattr(Command.cmds, evt.cmd, None)
@@ -83,11 +64,65 @@ class Command(Object):
                 func(evt)
                 evt.show()
             except Exception as exc:
-                Error.add(exc)
+                Errors.add(exc)
         evt.ready()
 
 
-class Message(Default):
+class Errors:
+
+    errors = []
+    filter = []
+    output = None
+    shown  = []
+
+    @staticmethod
+    def add(exc):
+        excp = exc.with_traceback(exc.__traceback__)
+        Errors.errors.append(excp)
+
+    @staticmethod
+    def debug(txt):
+        if Errors.output and not Errors.skip(txt):
+           Errors.output(txt)
+
+    @staticmethod
+    def enable(out):
+        Errors.output = out
+
+    @staticmethod
+    def format(exc):
+        res = ""
+        stream = io.StringIO(
+                             traceback.print_exception(
+                                                       type(exc),
+                                                       exc,
+                                                       exc.__traceback__
+                                                      )
+                            )
+        for line in stream.readlines():
+            res += line + "\n"
+        return res
+
+    @staticmethod
+    def out(exc):
+        if Errors.output:
+            txt = str(Errors.format(exc))
+            Errors.output(txt)
+
+    @staticmethod
+    def show():
+        for exc in Errors.errors:
+            Errors.out(exc)
+
+    @staticmethod
+    def skip(txt):
+        for skp in Errors.filter:
+            if skp in str(txt):
+                return True
+        return False
+
+
+class Event(Default):
 
     def __init__(self):
         Default.__init__(self)
@@ -117,7 +152,107 @@ class Message(Default):
         return self.result
 
 
-"threads"
+class Handler:
+
+    def __init__(self):
+        self.cbs = Object()
+        self.queue    = queue.Queue()
+        self.stopped  = threading.Event()
+        self.threaded = True
+        Broker.add(self)
+
+    def callback(self, evt):
+        func = getattr(self.cbs, evt.type, None)
+        if not func:
+            evt.ready()
+            return
+        if self.threaded:
+            evt._thr = launch(func, evt)
+        else:
+            func(evt)
+            evt.ready()
+
+    def loop(self):
+        while not self.stopped.is_set():
+            try:
+                evt = self.poll()
+                self.callback(evt)
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+
+    def poll(self):
+        return self.queue.get()
+
+    def put(self, evt):
+        self.queue.put_nowait(evt)
+
+    def register(self, typ, cbs):
+        setattr(self.cbs, typ, cbs)
+
+    def start(self):
+        launch(self.loop)
+
+    def stop(self):
+        self.stopped.set()
+
+
+class Client(Handler):
+
+    def __init__(self):
+        Handler.__init__(self)
+        self.register("command", Command.command)
+
+    def announce(self, txt):
+        self.raw(txt)
+
+    def say(self, channel, txt):
+        self.raw(txt)
+
+    def show(self, evt):
+        for txt in evt.result:
+            self.say(evt.channel, txt)
+
+    def raw(self, txt):
+        pass
+
+
+class Timer:
+
+    def __init__(self, sleep, func, *args, thrname=None):
+        self.args  = args
+        self.func  = func
+        self.sleep = sleep
+        self.name  = thrname or str(self.func).split()[2]
+        self.state = {}
+        self.timer = None
+
+    def run(self):
+        self.state["latest"] = time.time()
+        launch(self.func, *self.args)
+
+    def start(self):
+        timer = threading.Timer(self.sleep, self.run)
+        timer.name   = self.name
+        timer.daemon = True
+        timer.sleep  = self.sleep
+        timer.state  = self.state
+        timer.func   = self.func
+        timer.state["starttime"] = time.time()
+        timer.state["latest"]    = time.time()
+        timer.start()
+        self.timer   = timer
+
+    def stop(self):
+        if self.timer:
+            self.timer.cancel()
+
+
+class Repeater(Timer):
+
+    def run(self):
+        thr = launch(self.start)
+        super().run()
+        return thr
 
 
 class Thread(threading.Thread):
@@ -147,83 +282,21 @@ class Thread(threading.Thread):
         try:
             self._result = func(*args)
         except Exception as exc:
-            Error.add(exc)
+            Errors.add(exc)
             if args and "ready" in dir(args[0]):
-                args[0].ready()
-
-
-def launch(func, *args, **kwargs):
-    nme = kwargs.get("name", name(func))
-    thread = Thread(func, nme, *args, **kwargs)
-    thread.start()
-    return thread
-
-
-"handler"
-
-
-class Handler(Object):
-
-    def __init__(self):
-        Object.__init__(self)
-        self.cbs      = Object()
-        self.queue    = queue.Queue()
-        self.stopped  = threading.Event()
-        self.threaded = True
-        Broker.add(self)
-
-    def loop(self):
-        while not self.stopped.is_set():
-            try:
-                evt = self.poll()
-                self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    def poll(self):
-        return self.queue.get()
-
-    def put(self, evt):
-        self.queue.put_nowait(evt)
-
-    def start(self):
-        launch(self.loop)
-
-    def stop(self):
-        self.stopped.set()
-
-class Client(Handler):
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.register("command", command)
-
-    def announce(self, txt):
-        self.raw(txt)
-
-    def say(self, channel, txt):
-        self.raw(txt)
-
-    def show(self, evt):
-        for txt in evt.result:
-            self.say(evt.channel, txt)
-
-    def raw(self, txt):
-        pass
-
-
-"utilities"
+               args[0].ready()
 
 
 def cmnd(txt, out):
     clt = Client()
     clt.raw = out
-    evn = Message()
+    evn = Event()
     evn.orig = object.__repr__(clt)
     evn.txt = txt
-    command(evn)
+    Command.command(evn)
     evn.wait()
     return evn
+
 
 
 def forever():
@@ -232,6 +305,52 @@ def forever():
             time.sleep(1.0)
         except (KeyboardInterrupt, EOFError):
             _thread.interrupt_main()
+
+
+def laps(seconds, short=True):
+    txt = ""
+    nsec = float(seconds)
+    if nsec < 1:
+        return f"{nsec:.2f}s"
+    yea = 365*24*60*60
+    week = 7*24*60*60
+    nday = 24*60*60
+    hour = 60*60
+    minute = 60
+    yeas = int(nsec/yea)
+    nsec -= yeas*yea
+    weeks = int(nsec/week)
+    nsec -= weeks*week
+    nrdays = int(nsec/nday)
+    nsec -= nrdays*nday
+    hours = int(nsec/hour)
+    nsec -= hours*hour
+    minutes = int(nsec/minute)
+    nsec -= int(minute*minutes)
+    sec = int(nsec)
+    if yeas:
+        txt += f"{yeas}y"
+    if weeks:
+        nrdays += weeks * 7
+    if nrdays:
+        txt += f"{nrdays}d"
+    if short and txt:
+        return txt.strip()
+    if hours:
+        txt += f"{hours}h"
+    if minutes:
+        txt += f"{minutes}m"
+    if sec:
+        txt += f"{sec}s"
+    txt = txt.strip()
+    return txt
+
+
+def launch(func, *args, **kwargs):
+    nme = kwargs.get("name", name(func))
+    thread = Thread(func, nme, *args, **kwargs)
+    thread.start()
+    return thread
 
 
 def name(obj):
@@ -324,3 +443,4 @@ def scan(pkg, modstr, initer=False, disable="", wait=True):
         for mod in mds:
             mod._thr.join()
     return mds
+    

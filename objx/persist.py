@@ -55,7 +55,7 @@ class Workdir(Object):
 
     @staticmethod
     def skel():
-        cdir(os.path.join(Workdir.wd, "store", ""))
+        Workdir.cdir(os.path.join(Workdir.wd, "store", ""))
 
     @staticmethod
     def store(pth=""):
@@ -82,9 +82,9 @@ class Persist(Object):
 
     @staticmethod
     def find(mtc, selector=None, index=None, deleted=False):
-        clz = long(mtc)
+        clz = Persist.long(mtc)
         nr = -1
-        for fnm in sorted(fns(clz), key=fntime):
+        for fnm in sorted(Persist.fns(clz), key=fntime):
             obj = Default()
             fetch(obj, fnm)
             if not deleted and '__deleted__' in obj:
@@ -96,7 +96,7 @@ class Persist(Object):
                 continue
             yield (fnm, obj)
 
-    @staicmethod
+    @staticmethod
     def fns(mtc=""):
         dname = ''
         pth = store(mtc)
@@ -107,7 +107,7 @@ class Persist(Object):
                         ddd = os.path.join(rootdir, dname)
                         fls = sorted(os.listdir(ddd))
                         for fll in fls:
-                            yield strip(os.path.join(ddd, fll))
+                            yield Persist.strip(os.path.join(ddd, fll))
 
     @staticmethod
     def long(name):
@@ -138,7 +138,7 @@ class Persist(Object):
 def fetch(obj, pth):
     pth2 = store(pth)
     read(obj, pth2)
-    return strip(pth)
+    return Persist.strip(pth)
 
 
 def ident(obj):

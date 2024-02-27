@@ -10,9 +10,8 @@ import datetime
 import time
 
 
-from objx import Broker, Message, Object, Repeater
-from objx import construct, keys, launch, laps
-
+from objx.objects import Object, construct, keys
+from objx.runtime import Broker, Event, Repeater, launch, laps
 
 
 def __dir__():
@@ -26,7 +25,7 @@ def init():
     for key in keys(oorzaken):
         val = getattr(oorzaken, key, None)
         if val and int(val) > 10000:
-            evt = Message()
+            evt = Event()
             evt.txt = ""
             evt.rest = key
             sec = seconds(val)
@@ -314,14 +313,14 @@ def iswanted(k, line):
 def daily():
     while 1:
         time.sleep(24*60*60)
-        evt = Message()
+        evt = Event()
         cbnow(evt)
 
 
 def hourly():
     while 1:
         time.sleep(60*60)
-        evt = Message()
+        evt = Event()
         cbnow(evt)
 
 

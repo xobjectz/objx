@@ -16,16 +16,18 @@ import time
 import _thread
 
 
-from objx import Broker, Client, Command, Default, Error, Message, Object
-from objx import debug, edit, fmt, keys, last, launch, sync
+from objx.objects import Default, Object, edit, fmt, keys
+from objx.persist import last, sync
+from objx.runtime import Broker, Client, Command, Errors, Event, launch
 
 
 NAME    = __file__.split(os.sep)[-3]
-get     = Broker.give
+debug   = Errors.debug
+get     = Broker.get
 saylock = _thread.allocate_lock()
 
 
-Error.filter = ["PING", "PONG", "PRIVMSG"]
+Errors.filter = ["PING", "PONG", "PRIVMSG"]
 
 
 myirc = None
@@ -249,7 +251,7 @@ class IRC(Client, Output):
                ) as ex:
             pass
         except Exception as ex:
-            Error.add(ex)
+            Errors.add(ex)
 
     def doconnect(self, server, nck, port=6667):
         while 1:

@@ -56,18 +56,6 @@ class Object:
         return str(self.__dict__)
 
 
-class Default(Object):
-
-    __slots__ = ("__default__",)
-
-    def __init__(self):
-        Object.__init__(self)
-        self.__default__ = ""
-
-    def __getattr__(self, key):
-        return self.__dict__.get(key, self.__default__)
-
-
 "methods"
 
 
@@ -177,6 +165,21 @@ def values(obj):
     return obj.__dict__.values()
 
 
+"default"
+
+
+class Default(Object):
+
+    __slots__ = ("__default__",)
+
+    def __init__(self):
+        Object.__init__(self)
+        self.__default__ = ""
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, self.__default__)
+
+
 "decoder"
 
 
@@ -271,3 +274,14 @@ def spl(txt):
     except (TypeError, ValueError):
         res = txt
     return [x for x in res if x]
+# This file is placed in the Public Domain,
+#
+# pylint: disable=C,R,W0105,W0613,E0101
+
+
+"default values"
+
+
+from .objects import Object
+
+

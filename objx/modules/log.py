@@ -9,7 +9,8 @@
 import time
 
 
-from objx import Object, find, fntime, laps, sync
+from objx.objects import Object
+from objx.persist import Persist, fntime, sync
 
 
 class Log(Object):
@@ -22,7 +23,7 @@ class Log(Object):
 def log(event):
     if not event.rest:
         nmr = 0
-        for fnm, obj in find('log'):
+        for fnm, obj in Persist.find('log'):
             lap = laps(time.time() - fntime(fnm))
             event.reply(f'{nmr} {obj.txt} {lap}')
             nmr += 1

@@ -15,14 +15,10 @@ import termios
 import time
 
 
-from .excepts import Error, debug, enable
-from .handler import Client, Command, Message, cmnd, forever
-from .handler import parse_cmd, scan
 from .objects import Default
-from .persist import Workdir, cdir, skel
-
-
-"defines"
+from .persist import Workdir
+from .runtime import Client, Command, Errors, Event
+from .runtime import cmnd, forever, parse_cmd, scan
 
 
 Cfg         = Default()
@@ -33,6 +29,7 @@ Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
 
 
+debug = Errors.debug
 names    = __file__.split(os.sep)
 
 
@@ -40,9 +37,6 @@ if names[-2] == "bin":
     Cfg.name = names[-1]
 else:
     Cfg.name = names[-2]
-
-
-"classes"
 
 
 class Console(Client):
@@ -55,7 +49,7 @@ class Console(Client):
         evt.wait()
 
     def poll(self):
-        evt = Message()
+        evt = Event()
         evt.orig = object.__repr__(self)
         evt.txt = input("> ")
         evt.type = "command"
@@ -64,9 +58,6 @@ class Console(Client):
     def say(self, channel, txt):
         txt = txt.encode('utf-8', 'replace').decode()
         print(txt)
-
-
-"utility"
 
 
 def daemon(pidfile, verbose=False):
@@ -88,7 +79,7 @@ def daemon(pidfile, verbose=False):
     os.chdir("/")
     if os.path.exists(pidfile):
         os.unlink(pidfile)
-    cdir(os.path.dirname(pidfile))
+    Workdir.cdir(os.path.dirname(pidfile))
     with open(pidfile, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
 
@@ -114,14 +105,8 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
 
 
-"runtime"
+from . import modules
 
-
-if os.path.exists("mods"):
-    import mods as modules
-else:
-    modules = None
-    
 
 def cmd(event):
     event.reply(",".join(sorted(list(Command.cmds))))
@@ -134,8 +119,8 @@ def ver(event):
 def main():
     Command.add(cmd)
     Command.add(ver)
-    enable(print)
-    skel()
+    Errors.enable(print)
+    Workdir.skel()
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
     readline.redisplay()
     if 'a' in Cfg.opts:
@@ -171,7 +156,7 @@ def main():
 
 def wrapped():
     wrap(main)
-    Error.show()
+    Errors.show()
 
 
 if __name__ == "__main__":

@@ -9,7 +9,9 @@
 import time
 
 
-from objx import Object, fntime, find, laps, sync
+from objx.objects import Object
+from objx.persist import Persist, fntime, sync
+from objx.runtime import laps
 
 
 class NoDate(Exception):
@@ -30,7 +32,7 @@ def dne(event):
         return
     selector = {'txt': event.args[0]}
     nmr = 0
-    for fnm, obj in find('todo', selector):
+    for fnm, obj in Persist.find('todo', selector):
         nmr += 1
         obj.__deleted__ = True
         sync(obj, fnm)
@@ -43,7 +45,7 @@ def dne(event):
 def tdo(event):
     if not event.rest:
         nmr = 0
-        for fnm, obj in find('todo'):
+        for fnm, obj in Persist.find('todo'):
             lap = laps(time.time()-fntime(fnm))
             event.reply(f'{nmr} {obj.txt} {lap}')
             nmr += 1
