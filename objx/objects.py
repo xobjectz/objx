@@ -9,6 +9,9 @@
 import json
 
 
+"defines"
+
+
 def __dir__():
     return (
         'Default',
@@ -31,6 +34,9 @@ def __dir__():
 
 
 __all__ = __dir__()
+
+
+"classes"
 
 
 class Object:
@@ -61,6 +67,9 @@ class Default(Object):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, self.__default__)
+
+
+"methods"
 
 
 def construct(obj, *args, **kwargs):
@@ -169,6 +178,9 @@ def values(obj):
     return obj.__dict__.values()
 
 
+"decoder"
+
+
 class ObjectDecoder(json.JSONDecoder):
     def __init__(self, *args, **kwargs):
         ""
@@ -205,6 +217,9 @@ def loads(string, *args, **kw):
     kw["cls"] = ObjectDecoder
     kw["object_hook"] = hook
     return json.loads(string, *args, **kw)
+
+
+"encoder"
 
 
 class ObjectEncoder(json.JSONEncoder):
@@ -257,4 +272,3 @@ def spl(txt):
     except (TypeError, ValueError):
         res = txt
     return [x for x in res if x]
-

@@ -20,6 +20,9 @@ from .excepts import Error
 from .threads import launch
 
 
+"classes"
+
+
 class Command(Object):
 
     cmds = Object()
@@ -124,7 +127,7 @@ class Client(Handler):
         pass
 
 
-"utility"
+"utilities"
 
 
 def cmnd(txt, out):
@@ -248,7 +251,6 @@ def parse_cmd(obj, txt=None):
         obj.txt  = obj.cmd + " " + obj.rest
     else:
         obj.txt = obj.cmd or ""
-
 
 
 def scan(pkg, modstr, initer=False, disable="", wait=True):

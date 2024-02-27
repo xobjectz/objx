@@ -15,6 +15,9 @@ import types
 from .excepts import Error
 
 
+"defines"
+
+
 def __dir__():
     return (
        'Thread',
@@ -24,6 +27,9 @@ def __dir__():
 
 
 __all__ = __dir__()
+
+
+"threads"
 
 
 class Thread(threading.Thread):
@@ -65,7 +71,7 @@ def launch(func, *args, **kwargs):
     return thread
 
 
-"utility"
+"utilities"
 
 
 def name(obj):

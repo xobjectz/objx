@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from obx import Object, laps, update
+from objx import Object, laps, update
 
 
 STARTTIME = time.time()

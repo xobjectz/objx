@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0125,W0622,E0402,E1102
+# pylint: disable=C,R,W0105,W0125,W0622,E0402,E1102
 
 
 "deferred exception handling"
@@ -13,6 +13,9 @@ import traceback
 from .objects import Object
 
 
+"defines"
+
+
 def __dir__():
     return (
         'Error',
@@ -22,6 +25,9 @@ def __dir__():
 
 
 __all__ = __dir__()
+
+
+"classes"
 
 
 class Error(Object):
@@ -67,6 +73,9 @@ class Error(Object):
             if skp in str(txt):
                 return True
         return False
+
+
+"utilities"
 
 
 def debug(txt):

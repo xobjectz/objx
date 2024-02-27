@@ -16,6 +16,9 @@ import _thread
 from .objects import Default, Object, dump, fqn, load, search, update
 
 
+"workdir"
+
+
 class Workdir(Object):
 
     wd = ""
