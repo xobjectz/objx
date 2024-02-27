@@ -23,13 +23,120 @@ from .threads import launch
 "classes"
 
 
+class Handler(Object):
+
+    def __init__(self):
+        Object.__init__(self)
+        self.cbs      = Object()
+        self.queue    = queue.Queue()
+        self.stopped  = threading.Event()
+        self.threaded = True
+        Broker.add(self)
+
+    def loop(self):
+        while not self.stopped.is_set():
+            try:
+                evt = self.poll()
+                self.callback(evt)
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+
+    def poll(self):
+        return self.queue.get()
+
+    def put(self, evt):
+        self.queue.put_nowait(evt)
+
+    def start(self):
+        launch(self.loop)
+
+    def stop(self):
+        self.stopped.set()
+
+
+class Broker(Object):
+
+    objs = Object()
+
+    @staticmethod
+    def all():
+        return values(Broker.objs)
+
+    @staticmethod
+    def first():
+        for key in keys(Broker.objs):
+            return getattr(Broker.objs, key)
+
+    @staticmethod
+    def give(orig):
+        return getattr(Broker.objs, orig, None)
+
+    @staticmethod
+    def remove(obj):
+        delattr(Broker.objs, rpr(obj))
+
+    @staticmethod
+    def take(obj):
+        setattr(Broker.objs, rpr(obj), obj)
+
+
+class Callback(Object):
+
+    cbs = Object()
+    
+    def callback(self, evt):
+        func = getattr(self.cbs, evt.type, None)
+        if not func:
+            evt.ready()
+            return
+        if self.threaded:
+            evt._thr = launch(func, evt)
+        else:
+            func(evt)
+            evt.ready()
+
+    def register(self, typ, cbs):
+        setattr(self.cbs, typ, cbs)
+
+
+class Client(Handler):
+
+    def __init__(self):
+        Handler.__init__(self)
+        self.register("command", command)
+
+    def announce(self, txt):
+        self.raw(txt)
+
+    def say(self, channel, txt):
+        self.raw(txt)
+
+    def show(self, evt):
+        for txt in evt.result:
+            self.say(evt.channel, txt)
+
+    def raw(self, txt):
+        pass
+
+
 class Command(Object):
 
     cmds = Object()
 
+    @staticmethod
+    def add(func):
+        setattr(Command.cmds, func.__name__, func)
 
-def add(func):
-    setattr(Command.cmds, func.__name__, func)
+    def command(evt):
+        parse_cmd(evt)
+        func = getattr(Command.cmds, evt.cmd, None)
+        if func:
+            try:
+                func(evt)
+                evt.show()
+            except Exception as exc:
+                Error.add(exc)
+        evt.ready()
 
 
 class Message(Default):
@@ -62,70 +169,6 @@ class Message(Default):
         return self.result
 
 
-class Handler(Object):
-
-    def __init__(self):
-        Object.__init__(self)
-        self.cbs      = Object()
-        self.queue    = queue.Queue()
-        self.stopped  = threading.Event()
-        self.threaded = True
-        Broker.add(self)
-
-    def callback(self, evt):
-        func = getattr(self.cbs, evt.type, None)
-        if not func:
-            evt.ready()
-            return
-        if self.threaded:
-            evt._thr = launch(func, evt)
-        else:
-            func(evt)
-            evt.ready()
-
-    def loop(self):
-        while not self.stopped.is_set():
-            try:
-                evt = self.poll()
-                self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    def poll(self):
-        return self.queue.get()
-
-    def put(self, evt):
-        self.queue.put_nowait(evt)
-
-    def register(self, typ, cbs):
-        setattr(self.cbs, typ, cbs)
-
-    def start(self):
-        launch(self.loop)
-
-    def stop(self):
-        self.stopped.set()
-
-
-class Client(Handler):
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.register("command", command)
-
-    def announce(self, txt):
-        self.raw(txt)
-
-    def say(self, channel, txt):
-        self.raw(txt)
-
-    def show(self, evt):
-        for txt in evt.result:
-            self.say(evt.channel, txt)
-
-    def raw(self, txt):
-        pass
-
 
 "utilities"
 
@@ -139,18 +182,6 @@ def cmnd(txt, out):
     command(evn)
     evn.wait()
     return evn
-
-
-def command(evt):
-    parse_cmd(evt)
-    func = getattr(Command.cmds, evt.cmd, None)
-    if func:
-        try:
-            func(evt)
-            evt.show()
-        except Exception as exc:
-            Error.add(exc)
-    evt.ready()
 
 
 def forever():
