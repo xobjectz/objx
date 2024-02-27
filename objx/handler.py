@@ -14,7 +14,7 @@ import _thread
 
 
 from .objects import Default, Object, spl
-from .persist import Persist
+from .persist import whitelist
 from .brokers import Broker
 from .excepts import Error
 from .threads import launch
@@ -27,9 +27,9 @@ class Command(Object):
 
     cmds = Object()
 
-    @staticmethod
-    def add(func):
-        setattr(Command.cmds, func.__name__, func)
+
+def add(func):
+    setattr(Command.cmds, func.__name__, func)
 
 
 class Message(Default):
@@ -161,45 +161,6 @@ def forever():
             _thread.interrupt_main()
 
 
-def laps(seconds, short=True):
-    txt = ""
-    nsec = float(seconds)
-    if nsec < 1:
-        return f"{nsec:.2f}s"
-    yea = 365*24*60*60
-    week = 7*24*60*60
-    nday = 24*60*60
-    hour = 60*60
-    minute = 60
-    yeas = int(nsec/yea)
-    nsec -= yeas*yea
-    weeks = int(nsec/week)
-    nsec -= weeks*week
-    nrdays = int(nsec/nday)
-    nsec -= nrdays*nday
-    hours = int(nsec/hour)
-    nsec -= hours*hour
-    minutes = int(nsec/minute)
-    nsec -= int(minute*minutes)
-    sec = int(nsec)
-    if yeas:
-        txt += f"{yeas}y"
-    if weeks:
-        nrdays += weeks * 7
-    if nrdays:
-        txt += f"{nrdays}d"
-    if short and txt:
-        return txt.strip()
-    if hours:
-        txt += f"{hours}h"
-    if minutes:
-        txt += f"{minutes}m"
-    if sec:
-        txt += f"{sec}s"
-    txt = txt.strip()
-    return txt
-
-
 def parse_cmd(obj, txt=None):
     args = []
     obj.args    = obj.args or []
@@ -263,11 +224,11 @@ def scan(pkg, modstr, initer=False, disable="", wait=True):
             continue
         for _key, cmd in inspect.getmembers(module, inspect.isfunction):
             if 'event' in cmd.__code__.co_varnames:
-                Command.add(cmd)
+                add(cmd)
         for _key, clz in inspect.getmembers(module, inspect.isclass):
             if not issubclass(clz, Object):
                 continue
-            Persist.add(clz)
+            whitelist(clz)
         if initer and "init" in dir(module):
             module._thr = launch(module.init, name=f"init {modname}")
             mds.append(module)

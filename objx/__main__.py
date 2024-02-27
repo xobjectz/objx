@@ -16,7 +16,8 @@ import time
 
 
 from .excepts import Error, debug, enable
-from .handler import Client, Command, Message, cmnd, forever, parse_cmd, scan
+from .handler import Client, Command, Message, add, cmnd, forever
+from .handler import parse_cmd, scan
 from .objects import Default
 from .persist import Workdir, cdir, skel
 
@@ -131,8 +132,8 @@ def ver(event):
     
 
 def main():
-    Command.add(cmd)
-    Command.add(ver)
+    add(cmd)
+    add(ver)
     enable(print)
     skel()
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
