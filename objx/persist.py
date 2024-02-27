@@ -16,6 +16,34 @@ import _thread
 from .objects import Default, Object, dump, fqn, load, search, update
 
 
+"defines"
+
+
+def __dir__():
+    return (
+        'Persist',
+        'Workdir',
+        'cdir',
+        'fetch',
+        'find',
+        'fntime',
+        'last',
+        'long',
+        'ident',
+        'read',
+        'skel',
+        'store',
+        'strip',
+        'sync',
+        'types',
+        'whitelist',
+        'write'
+    )
+
+
+__all__ = __dir__()
+
+
 "workdir"
 
 
@@ -46,12 +74,12 @@ class Persist(Object):
 
     classes = Object()
 
-    @staticmethod
-    def add(clz):
-        if not clz:
-            return
-        name = str(clz).split()[1][1:-2]
-        setattr(Persist.classes, name, clz)
+
+def whitelist(clz):
+    if not clz:
+        return
+    name = str(clz).split()[1][1:-2]
+    setattr(Persist.classes, name, clz)
 
 
 def long(name):

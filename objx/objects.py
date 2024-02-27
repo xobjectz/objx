@@ -27,7 +27,6 @@ def __dir__():
         'load',
         'loads',
         'search',
-        'spl',
         'update',
         'values'
     )
@@ -251,19 +250,19 @@ class ObjectEncoder(json.JSONEncoder):
         return json.JSONEncoder.iterencode(self, o, _one_shot)
 
 
-def dump(*args, **kw) -> None:
+def dump(*args, **kw):
     ""
     kw["cls"] = ObjectEncoder
     return json.dump(*args, **kw)
 
 
-def dumps(*args, **kw) -> str:
+def dumps(*args, **kw):
     ""
     kw["cls"] = ObjectEncoder
     return json.dumps(*args, **kw)
 
 
-"utility"
+"utilities"
 
 
 def spl(txt):
