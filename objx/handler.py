@@ -7,15 +7,14 @@
 
 
 import inspect
-import io
 import queue
 import threading
-import traceback
+import time
 import _thread
 
 
 from .excepts import Errors
-from .objects import Default, Object, keys, spl, values
+from .objects import Default, Object, spl
 from .persist import Persist
 
 
@@ -113,13 +112,6 @@ class Client(Handler):
         self.show(evt)
         evt.ready()
 
-    def forever():
-        while 1:
-            try:
-                time.sleep(1.0)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
     def raw(self, txt):
         pass
 
@@ -137,9 +129,6 @@ class Client(Handler):
             self.say(evt.channel, txt)
 
 
-"utilities"
-
-
 def cmnd(txt, out):
     clt = Client()
     clt.raw = out
@@ -149,6 +138,14 @@ def cmnd(txt, out):
     clt.command(evn)
     evn.wait()
     return evn
+
+
+def forever():
+    while 1:
+        try:
+            time.sleep(1.0)
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
 
 
 def init(pkg, modstr, disable="", wait=False):
@@ -227,3 +224,5 @@ def scan(pkg, modstr, disable=""):
             continue
         Client.scan(module)
         Persist.scan(module)
+        mds.append(module)
+    return mds

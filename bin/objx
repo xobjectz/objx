@@ -23,7 +23,7 @@ sys.path.insert(0, os.getcwd())
 from objx.excepts import Errors, debug
 from objx.objects import Default
 from objx.handler import Client, Event
-from objx.handler import cmnd, init, parse_cmd, scan
+from objx.handler import cmnd, forever, init, parse_cmd, scan
 from objx.persist import Workdir
 
 
@@ -156,7 +156,7 @@ def main():
         if 'z' in Cfg.opts:
             csl.threaded = False
         csl.start()
-        csl.forever()
+        forever()
         return
     if Cfg.otxt:
         Cfg.mod = ",".join(modules.__dir__())

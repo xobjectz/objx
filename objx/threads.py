@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,V
+# pylint: disable=C,V,W0718,E0402
 
 
 "threads"

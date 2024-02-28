@@ -10,6 +10,13 @@ import io
 import traceback
 
 
+def __dir__():
+    return (
+        'Errors',
+        'debug'
+    )
+
+
 class Errors:
 
     errors = []
@@ -21,7 +28,6 @@ class Errors:
     def add(exc):
         excp = exc.with_traceback(exc.__traceback__)
         Errors.errors.append(excp)
-
 
     @staticmethod
     def enable(out):
