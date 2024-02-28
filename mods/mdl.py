@@ -11,7 +11,7 @@ import time
 
 
 from objx.broker  import Broker
-from objx.run     import Event, Repeater, launch
+from objx.reactor import Event, Repeater, launch
 from objx.object  import Object, construct, keys
 from objx.persist import laps
 

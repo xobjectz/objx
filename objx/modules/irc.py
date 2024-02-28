@@ -19,7 +19,7 @@ import _thread
 
 from objx.broker  import Broker
 from objx.object  import Default, Object, edit, fmt, keys
-from objx.run     import Client, Errors, Event, debug, launch
+from objx.reactor import Client, Errors, Event, debug, launch
 from objx.persist import last, sync
 
 
