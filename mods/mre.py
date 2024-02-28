@@ -6,7 +6,7 @@
 "show cached output"
 
 
-from objx.handler import Broker
+from objx.brokers import Broker
 
 
 def mre(event):

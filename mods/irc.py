@@ -16,10 +16,11 @@ import time
 import _thread
 
 
+from objx.brokers import Broker
 from objx.objects import Default, Object, edit, fmt, keys
-from objx.handler import Broker, Client, Errors, Event
-from objx.handler import command, debug, launch
+from objx.handler import Errors, Event, Handler, debug
 from objx.persist import last, sync
+from objx.threads import launch
 
 
 NAME    = __file__.split(os.sep)[-3]
@@ -157,10 +158,10 @@ class Output():
         return 0
 
 
-class IRC(Client, Output):
+class IRC(Handler, Output):
 
     def __init__(self):
-        Client.__init__(self)
+        Handler.__init__(self)
         Output.__init__(self)
         self.buffer = []
         self.cfg = Config()
@@ -194,7 +195,7 @@ class IRC(Client, Output):
         for channel in self.channels:
             self.oput(channel, txt)
 
-    def command(self, cmd, *args):
+    def docommand(self, cmd, *args):
         with saylock:
             if not args:
                 self.raw(cmd)
@@ -274,13 +275,13 @@ class IRC(Client, Output):
         cmd = evt.command
         if cmd == 'PING':
             self.state.pongcheck = True
-            self.command('PONG', evt.txt or '')
+            self.docommand('PONG', evt.txt or '')
         elif cmd == 'PONG':
             self.state.pongcheck = False
         if cmd == '001':
             self.state.needconnect = False
             if self.cfg.servermodes:
-                self.command(f'MODE {self.cfg.nick} {self.cfg.servermodes}')
+                self.docommand(f'MODE {self.cfg.nick} {self.cfg.servermodes}')
             self.zelf = evt.args[-1]
         elif cmd == "376":
             self.joinall()
@@ -292,12 +293,12 @@ class IRC(Client, Output):
         elif cmd == '433':
             self.state.errors = txt
             nck = self.cfg.nick + '_'
-            self.command('NICK', nck)
+            self.docommand('NICK', nck)
         return evt
 
     def joinall(self):
         for channel in self.channels:
-            self.command('JOIN', channel)
+            self.docommand('JOIN', channel)
 
     def keep(self):
         while not self.stopped.is_set():
@@ -309,7 +310,7 @@ class IRC(Client, Output):
             self.state.keeprunning = True
             time.sleep(self.cfg.sleep)
             self.state.pongcheck = True
-            self.command('PING', self.cfg.server)
+            self.docommand('PING', self.cfg.server)
             if self.state.pongcheck:
                 debug("failed pongcheck, restarting")
                 self.state.pongcheck = False
@@ -450,7 +451,7 @@ class IRC(Client, Output):
         self.events.joined.wait()
         txt = str(txt).replace('\n', '')
         txt = txt.replace('  ', ' ')
-        self.command('PRIVMSG', channel, txt)
+        self.docommand('PRIVMSG', channel, txt)
 
     def say(self, channel, txt):
         self.oput(channel, txt)
@@ -476,7 +477,7 @@ class IRC(Client, Output):
         self.events.connected.clear()
         self.events.joined.clear()
         launch(Output.out, self)
-        Client.start(self)
+        launch(Handler.start, self)
         launch(
                self.doconnect,
                self.cfg.server or "localhost",
@@ -487,12 +488,11 @@ class IRC(Client, Output):
             launch(self.keep)
 
     def stop(self):
-        #self.command("QUIT", "byebye")
         self.state.stopkeep = True
         self.disconnect()
         self.dostop.set()
         self.oput(None, None)
-        Client.stop(self)
+        Handler.stop(self)
 
     def wait(self):
         self.events.ready.wait()
@@ -500,7 +500,7 @@ class IRC(Client, Output):
 
 def cb_auth(evt):
     bot = get(evt.orig)
-    bot.command(f'AUTHENTICATE {bot.cfg.password}')
+    bot.docommand(f'AUTHENTICATE {bot.cfg.password}')
 
 
 def cb_cap(evt):
@@ -555,7 +555,7 @@ def cb_notice(evt):
     bot = get(evt.orig)
     if evt.txt.startswith('VERSION'):
         txt = f'\001VERSION {NAME.upper()} 140 - {bot.cfg.username}\001'
-        bot.command('NOTICE', evt.channel, txt)
+        bot.docommand('NOTICE', evt.channel, txt)
 
 
 def cb_privmsg(evt):
@@ -572,7 +572,7 @@ def cb_privmsg(evt):
         if evt.txt:
             evt.txt = evt.txt[0].lower() + evt.txt[1:]
         debug(f"command from {evt.origin}: {evt.txt}")
-        command(evt)
+        bot.command(evt)
 
 
 def cb_quit(evt):

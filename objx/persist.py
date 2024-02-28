@@ -7,6 +7,7 @@
 
 
 import datetime
+import inspect
 import os
 import pathlib
 import time
@@ -78,6 +79,10 @@ class Persist(Object):
 
     classes = Object()
 
+    @staticmethod
+    def add(clz):
+        name = str(clz).split()[1][1:-2]
+        setattr(Persist.classes, name, clz)
 
     @staticmethod
     def fns(mtc=""):
@@ -108,11 +113,11 @@ class Persist(Object):
         return res
 
     @staticmethod
-    def whitelist(clz):
-        if not clz:
-            return
-        name = str(clz).split()[1][1:-2]
-        setattr(Persist.classes, name, clz)
+    def scan(mod):
+        for _key, clz in inspect.getmembers(mod, inspect.isclass):
+            if not issubclass(clz, Object):
+                continue
+            Persist.add(clz)
 
 
 "methods"

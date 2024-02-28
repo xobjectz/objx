@@ -6,7 +6,8 @@
 "fleet"
 
 
-from objx.handler import Broker, name
+from objx.brokers import Broker
+from objx.threads import name
 
 
 def flt(event):
