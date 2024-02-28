@@ -16,8 +16,37 @@ import types
 import _thread
 
 
-from .objects import Default, Object, spl
+from .objects import Default, Object, keys, spl, values
 from .persist import Persist
+
+
+rpr = object.__repr__
+
+
+class Broker:
+
+    objs = Object()
+
+    @staticmethod
+    def add(obj):
+        setattr(Broker.objs, rpr(obj), obj)
+
+    @staticmethod
+    def all():
+        return values(Broker.objs)
+
+    @staticmethod
+    def first():
+        for key in keys(Broker.objs):
+            return getattr(Broker.objs, key)
+
+    @staticmethod
+    def get(orig):
+        return getattr(Broker.objs, orig, None)
+
+    @staticmethod
+    def remove(obj):
+        delattr(Broker.objs, rpr(obj))
 
 
 class Event(Default):
@@ -177,11 +206,6 @@ class Errors:
         return False
 
 
-def debug(txt):
-    if Errors.output and not Errors.skip(txt):
-        Errors.output(txt)
-
-
 class Thread(threading.Thread):
 
     def __init__(self, func, thrname, *args, daemon=True, **kwargs):
@@ -212,28 +236,6 @@ class Thread(threading.Thread):
             Errors.add(exc)
             if args and "ready" in dir(args[0]):
                 args[0].ready()
-
-
-def launch(func, *args, **kwargs):
-    nme = kwargs.get("name", name(func))
-    thread = Thread(func, nme, *args, **kwargs)
-    thread.start()
-    return thread
-
-
-def name(obj):
-    typ = type(obj)
-    if isinstance(typ, types.ModuleType):
-        return obj.__name__
-    if '__self__' in dir(obj):
-        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj) and '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
-    return None
 
 
 class Timer:
@@ -286,6 +288,11 @@ def cmnd(txt, out):
     return evn
 
 
+def debug(txt):
+    if Errors.output and not Errors.skip(txt):
+        Errors.output(txt)
+
+
 def forever():
     while 1:
         try:
@@ -305,6 +312,28 @@ def init(pkg, modstr, disable="", wait=False):
         if "init" in dir(module):
             module.init()
     return mds
+
+
+def launch(func, *args, **kwargs):
+    nme = kwargs.get("name", name(func))
+    thread = Thread(func, nme, *args, **kwargs)
+    thread.start()
+    return thread
+
+
+def name(obj):
+    typ = type(obj)
+    if isinstance(typ, types.ModuleType):
+        return obj.__name__
+    if '__self__' in dir(obj):
+        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj) and '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    return None
 
 
 def parse_cmd(obj, txt=None):
@@ -372,50 +401,4 @@ def scan(pkg, modstr, disable=""):
         Persist.scan(module)
         mds.append(module)
     return mds
-    # This file is placed in the Public Domain.
-#
-# pylint: disable=C,R,E0402
 
-
-"object cache"
-
-
-from .objects import Object, keys, values
-
-
-def __dir__():
-    return (
-        'Broker',
-    )
-
-
-__all__ = __dir__()
-
-
-rpr = object.__repr__
-
-
-class Broker(Object):
-
-    objs = Object()
-
-    @staticmethod
-    def add(obj):
-        setattr(Broker.objs, rpr(obj), obj)
-
-    @staticmethod
-    def all():
-        return values(Broker.objs)
-
-    @staticmethod
-    def first():
-        for key in keys(Broker.objs):
-            return getattr(Broker.objs, key)
-
-    @staticmethod
-    def get(orig):
-        return getattr(Broker.objs, orig, None)
-
-    @staticmethod
-    def remove(obj):
-        delattr(Broker.objs, rpr(obj))
