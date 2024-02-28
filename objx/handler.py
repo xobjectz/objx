@@ -46,21 +46,11 @@ class Event(Default):
 
 class Handler:
 
-    cmds = Object()
-
     def __init__(self):
         self.cbs = Object()
         self.queue    = queue.Queue()
         self.stopped  = threading.Event()
         self.threaded = True
-        self.register("command", self.command)
-
-    @staticmethod
-    def add(func):
-        setattr(Handler.cmds, func.__name__, func)
-
-    def announce(self, txt):
-        self.raw(txt)
 
     def callback(self, evt):
         func = getattr(self.cbs, evt.type, None)
@@ -72,25 +62,6 @@ class Handler:
         except Exception as ex:
             Errors.add(ex)
         evt.ready()
-
-    def command(self, evt):
-        parse_cmd(evt)
-        func = getattr(Handler.cmds, evt.cmd, None)
-        if func:
-            try:
-                func(evt)
-            except Exception as exc:
-                Errors.add(exc)
-        self.show(evt)
-        evt.ready()
-
-    def forever():
-        while 1:
-            try:
-                time.sleep(1.0)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
 
     def loop(self):
         while not self.stopped.is_set():
@@ -106,24 +77,8 @@ class Handler:
     def put(self, evt):
         self.queue.put_nowait(evt)
 
-    def raw(self, txt):
-        pass
-
     def register(self, typ, cbs):
         setattr(self.cbs, typ, cbs)
-
-    def say(self, channel, txt):
-        self.raw(txt)
-
-    @staticmethod
-    def scan(mod):
-        for _key, cmd in inspect.getmembers(mod, inspect.isfunction):
-            if 'event' in cmd.__code__.co_varnames:
-                Handler.add(cmd)
-
-    def show(self, evt):
-        for txt in evt.result:
-            self.say(evt.channel, txt)
 
     def start(self):
         self.loop()
@@ -132,11 +87,61 @@ class Handler:
         self.stopped.set()
 
 
+class Client(Handler):
+
+    cmds = Object()
+
+    def __init__(self):
+        Handler.__init__(self)
+        self.register("command", self.command)
+
+    @staticmethod
+    def add(func):
+        setattr(Client.cmds, func.__name__, func)
+
+    def announce(self, txt):
+        self.raw(txt)
+
+    def command(self, evt):
+        parse_cmd(evt)
+        func = getattr(Client.cmds, evt.cmd, None)
+        if func:
+            try:
+                func(evt)
+            except Exception as exc:
+                Errors.add(exc)
+        self.show(evt)
+        evt.ready()
+
+    def forever():
+        while 1:
+            try:
+                time.sleep(1.0)
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+
+    def raw(self, txt):
+        pass
+
+    def say(self, channel, txt):
+        self.raw(txt)
+
+    @staticmethod
+    def scan(mod):
+        for _key, cmd in inspect.getmembers(mod, inspect.isfunction):
+            if 'event' in cmd.__code__.co_varnames:
+                Client.add(cmd)
+
+    def show(self, evt):
+        for txt in evt.result:
+            self.say(evt.channel, txt)
+
+
 "utilities"
 
 
 def cmnd(txt, out):
-    clt = Handler()
+    clt = Client()
     clt.raw = out
     evn = Event()
     evn.orig = object.__repr__(clt)
@@ -220,5 +225,5 @@ def scan(pkg, modstr, disable=""):
         module = getattr(pkg, modname, None)
         if not module:
             continue
-        Handler.scan(module)
+        Client.scan(module)
         Persist.scan(module)
