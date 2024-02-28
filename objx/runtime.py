@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402,E1102
 
 
-"handler"
+"reactor"
 
 
 import inspect
@@ -16,7 +16,7 @@ import types
 import _thread
 
 
-from .object  import Default, Object, spl
+from .objects import Default, Object, spl
 from .persist import Persist
 
 
@@ -78,7 +78,7 @@ class Handler:
         setattr(self.cbs, typ, cbs)
 
     def start(self):
-        self.loop()
+        launch(self.loop)
 
     def stop(self):
         self.stopped.set()
@@ -91,6 +91,7 @@ class Client(Handler):
     def __init__(self):
         Handler.__init__(self)
         self.register("command", self.command)
+        Broker.add(self)
 
     @staticmethod
     def add(func):
@@ -371,4 +372,50 @@ def scan(pkg, modstr, disable=""):
         Persist.scan(module)
         mds.append(module)
     return mds
-    
+    # This file is placed in the Public Domain.
+#
+# pylint: disable=C,R,E0402
+
+
+"object cache"
+
+
+from .objects import Object, keys, values
+
+
+def __dir__():
+    return (
+        'Broker',
+    )
+
+
+__all__ = __dir__()
+
+
+rpr = object.__repr__
+
+
+class Broker(Object):
+
+    objs = Object()
+
+    @staticmethod
+    def add(obj):
+        setattr(Broker.objs, rpr(obj), obj)
+
+    @staticmethod
+    def all():
+        return values(Broker.objs)
+
+    @staticmethod
+    def first():
+        for key in keys(Broker.objs):
+            return getattr(Broker.objs, key)
+
+    @staticmethod
+    def get(orig):
+        return getattr(Broker.objs, orig, None)
+
+    @staticmethod
+    def remove(obj):
+        delattr(Broker.objs, rpr(obj))

@@ -21,9 +21,8 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx.broker  import Broker
-from objx.object  import Default, Object, edit, fmt, keys, spl, update
-from objx.run     import Client, Errors, Event, debug, launch, parse_cmd, scan
+from objx.objects import Default, Object, edit, fmt, keys, spl, update
+from objx.runtime import Broker, Client, Errors, Event, debug, launch, parse_cmd, scan
 from objx.persist import Workdir, laps, last, sync
 
 
@@ -50,6 +49,7 @@ if os.path.exists("mods"):
     import mods
 else:
     mods = None
+
 
 events = []
 lap = 1
@@ -87,10 +87,7 @@ def consume(evts):
     fixed = []
     res = []
     for evt in evts:
-        debug(f"waiting for {evt}")
         res.append(evt.wait())
-        if "v" in Cfg.opts and not evt.result:
-            print(f"no result for {evt.cmd}")
         fixed.append(evt)
     for fff in fixed:
         try:

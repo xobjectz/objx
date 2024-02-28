@@ -17,9 +17,8 @@ import time
 import _thread
 
 
-from objx.broker  import Broker
-from objx.object  import Default, Object, edit, fmt, keys
-from objx.reactor import Client, Errors, Event, debug, launch
+from objx.objects import Default, Object, edit, fmt, keys
+from objx.runtime import Broker, Client, Errors, Event, debug, launch
 from objx.persist import last, sync
 
 

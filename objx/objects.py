@@ -9,28 +9,6 @@
 import json
 
 
-def __dir__():
-    return (
-        'Object',
-        'construct',
-        'dump',
-        'dumps',
-        'edit',
-        'fmt',
-        'fqn',
-        'items',
-        'keys',
-        'load',
-        'loads',
-        'search',
-        'update',
-        'values'
-    )
-
-
-__all__ = __dir__()
-
-
 class Object:
 
     def __contains__(self, key):
@@ -256,3 +234,25 @@ def spl(txt):
     except (TypeError, ValueError):
         res = txt
     return [x for x in res if x]
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'Object',
+        'construct',
+        'dump',
+        'dumps',
+        'edit',
+        'fmt',
+        'fqn',
+        'items',
+        'keys',
+        'load',
+        'loads',
+        'search',
+        'update',
+        'values'
+    )

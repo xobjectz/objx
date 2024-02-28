@@ -11,10 +11,9 @@ import re
 import time as ttime
 
 
-from objx.broker  import Broker
-from objx.object  import update
+from objx.objects import update
 from objx.persist import find, laps, sync
-from objx.reactor import Event, Timer, launch
+from objx.runtime import Broker, Event, Timer, launch
 
 
 def init():

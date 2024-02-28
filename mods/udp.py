@@ -15,7 +15,7 @@ import time
 
 from objx.brokers import Broker
 from objx.objects import Object
-from objx.threads import launch
+from objx.reactor import launch
 
 
 def init():

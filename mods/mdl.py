@@ -10,9 +10,8 @@ import datetime
 import time
 
 
-from objx.broker  import Broker
-from objx.reactor import Event, Repeater, launch
-from objx.object  import Object, construct, keys
+from objx.runtime import Broker, Event, Repeater, launch
+from objx.objects import Object, construct, keys
 from objx.persist import laps
 
 

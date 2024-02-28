@@ -9,7 +9,7 @@
 import time
 
 
-from objx.object  import Object
+from objx.objects  import Object
 from objx.persist import find, fntime, laps, sync
 
 
