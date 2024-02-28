@@ -19,7 +19,7 @@ import _thread
 
 from objx.broker  import Broker
 from objx.object  import Default, Object, edit, fmt, keys
-from objx.run     import Errors, Event, Handler, debug, launch
+from objx.run     import Client, Errors, Event, debug, launch
 from objx.persist import last, sync
 
 
@@ -158,10 +158,10 @@ class Output():
         return 0
 
 
-class IRC(Handler, Output):
+class IRC(Client, Output):
 
     def __init__(self):
-        Handler.__init__(self)
+        Client.__init__(self)
         Output.__init__(self)
         self.buffer = []
         self.cfg = Config()
@@ -477,7 +477,7 @@ class IRC(Handler, Output):
         self.events.connected.clear()
         self.events.joined.clear()
         launch(Output.out, self)
-        launch(Handler.start, self)
+        launch(Client.start, self)
         launch(
                self.doconnect,
                self.cfg.server or "localhost",
@@ -492,7 +492,7 @@ class IRC(Handler, Output):
         self.disconnect()
         self.dostop.set()
         self.oput(None, None)
-        Handler.stop(self)
+        Client.stop(self)
 
     def wait(self):
         self.events.ready.wait()

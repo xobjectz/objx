@@ -58,11 +58,7 @@ class Handler:
         if not func:
             evt.ready()
             return
-        try:
-            func(evt)
-        except Exception as ex:
-            Errors.add(ex)
-        evt.ready()
+        evt._thr = launch(func, evt)
 
     def loop(self):
         while not self.stopped.is_set():

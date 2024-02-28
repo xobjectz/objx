@@ -21,9 +21,9 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx.objects import Default, Object, edit, fmt, keys, spl, update
-from objx.handler import Broker, Client, Command, Errors, Event, Handler
-from objx.handler import debug, launch, parse_cmd, scan
+from objx.broker  import Broker
+from objx.object  import Default, Object, edit, fmt, keys, spl, update
+from objx.run     import Client, Errors, Event, debug, launch, parse_cmd, scan
 from objx.persist import Workdir, laps, last, sync
 
 
@@ -45,6 +45,11 @@ paylock = _thread.allocate_lock()
 
 import objx.modules as modules
 
+
+if os.path.exists("mods"):
+    import mods
+else:
+    mods = None
 
 events = []
 lap = 1
@@ -82,6 +87,7 @@ def consume(evts):
     fixed = []
     res = []
     for evt in evts:
+        debug(f"waiting for {evt}")
         res.append(evt.wait())
         if "v" in Cfg.opts and not evt.result:
             print(f"no result for {evt.cmd}")
@@ -100,7 +106,7 @@ def cprint(txt):
 
 
 def payload(clt):
-    cmds = list(keys(Command.cmds))
+    cmds = list(keys(Client.cmds))
     random.shuffle(cmds)
     with paylock:
         nmr = 0
@@ -136,12 +142,16 @@ def main():
     global nrs
     global nrcommand
     global percall
-
     Errors.output = cprint
-    for mod in scan(modules, Cfg.mod):
+    mds = ",".join(modules.__dir__())
+    for mod in scan(modules, mds):
         mod.DEBUG = True
+    if mods:
+        mds = ",".join(mods.__dir__())
+        for mod in scan(mods, mds):
+            mod.DEBUG = True
     nrs = Cfg.index or 1
-    nrcommand = len(Command.cmds) or 1
+    nrcommand = len(Client.cmds) or 1
     cli = CLI()
     cli.raw = print
     cli.start()
