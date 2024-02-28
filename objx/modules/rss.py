@@ -18,10 +18,10 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from objx.brokers import Broker
-from objx.objects import Default, Object, fmt, update
+from objx.broker  import Broker
+from objx.object  import Default, Object, fmt, update
 from objx.persist import find, fntime, laps, last, sync
-from objx.threads import Repeater, launch
+from objx.run     import Repeater, launch
 
 
 def init():

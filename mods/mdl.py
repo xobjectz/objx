@@ -10,11 +10,10 @@ import datetime
 import time
 
 
-from objx.brokers import Broker
-from objx.handler import Event
-from objx.objects import Object, construct, keys
+from objx.broker  import Broker
+from objx.run     import Event, Repeater, launch
+from objx.object  import Object, construct, keys
 from objx.persist import laps
-from objx.threads import Repeater, launch
 
 
 def __dir__():

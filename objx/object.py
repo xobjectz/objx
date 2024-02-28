@@ -11,7 +11,6 @@ import json
 
 def __dir__():
     return (
-        'Default',
         'Object',
         'construct',
         'dump',

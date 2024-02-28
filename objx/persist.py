@@ -14,7 +14,7 @@ import time
 import _thread
 
 
-from .objects import Default, Object, dump, fqn, load, search, update
+from .object import Default, Object, dump, fqn, load, search, update
 
 
 def __dir__():
