@@ -17,8 +17,9 @@ import _thread
 
 
 from objx.brokers import Broker
+from objx.excepts import Errors, debug
 from objx.objects import Default, Object, edit, fmt, keys
-from objx.handler import Errors, Event, Handler, debug
+from objx.handler import Event, Handler
 from objx.persist import last, sync
 from objx.threads import launch
 

@@ -20,9 +20,10 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
+from objx.excepts import Errors, debug
 from objx.objects import Default
-from objx.handler import Errors, Event, Handler
-from objx.handler import cmnd, debug, init, parse_cmd, scan
+from objx.handler import Event, Handler
+from objx.handler import cmnd, init, parse_cmd, scan
 from objx.persist import Workdir
 
 

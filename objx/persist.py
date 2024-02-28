@@ -17,9 +17,6 @@ import _thread
 from .objects import Default, Object, dump, fqn, load, search, update
 
 
-"defines"
-
-
 def __dir__():
     return (
         'Persist',
@@ -36,9 +33,6 @@ def __dir__():
 
 
 __all__ = __dir__()
-
-
-"workdir"
 
 
 class Workdir(Object):
@@ -68,8 +62,6 @@ class Workdir(Object):
     def types():
         return os.listdir(Workdir.store())
 
-
-"persist"
 
 
 lock = _thread.allocate_lock()
@@ -118,9 +110,6 @@ class Persist(Object):
             if not issubclass(clz, Object):
                 continue
             Persist.add(clz)
-
-
-"methods"
 
 
 def fetch(obj, pth):
