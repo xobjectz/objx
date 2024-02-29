@@ -2,7 +2,7 @@ NAME
 
 ::
 
-    OBJX - objects
+    OBJX - objects library
 
 
 SYNOPSIS
@@ -136,7 +136,7 @@ SYSTEMD
     replace "<user>" with the user running pipx
 
     [Unit]
-    Description=objects 
+    Description=objects daemon
     Requires=network-online.target
     After=network-online.target
 
@@ -164,13 +164,14 @@ FILES
 
     ~/.objx
     ~/.local/bin/objx
+    ~/.local/bin/objxd
     ~/.local/pipx/venvs/objx/
 
 AUTHOR
 
 ::
 
-    Bart Thate <objx@proton.me>
+    Bart Thate <bthate@dds.nl>
 
 COPYRIGHT
 

@@ -8,10 +8,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "objx"
-description = "objects"
+description = "objects library"
 version = "60"
 authors = [
-    {name = "Bart Thate",email = "objx@proton.me"},
+    {name = "Bart Thate",email = "bthate@dds.nl"},
 ]
 readme = "README.rst"
 license = {text="Public Domain"}
