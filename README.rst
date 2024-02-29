@@ -138,7 +138,7 @@ SYSTEMD
     replace "<user>" with the user running pipx
 
     [Unit]
-    Description=objects
+    Description=objects 
     Requires=network-online.target
     After=network-online.target
 
@@ -147,11 +147,11 @@ SYSTEMD
     User=<user>
     Group=<user>
     WorkingDirectory=/home/<user>/.objx
-    ExecStart=/home/<user>/.local/pipx/venvs/objx/bin/objx -d
+    ExecStart=/home/<user>/.local/pipx/venvs/objx/bin/objxd
     RemainAfterExit=yes
 
     [Install]
-    WantedBy=multi-user.target
+    WantedBy=default.target
 
     then run this
 
