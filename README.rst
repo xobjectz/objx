@@ -31,25 +31,23 @@ DESCRIPTION
     argument. It is called Object Programming (OP), OOP without the
     oriented.
 
-    The Object class  allows for easy json save//load to/from disk of objects.
-    It provides an "clean namespace" Object class that only has dunder
-    methods, so the namespace is not cluttered with method names. This makes
-    storing and reading to/from json possible.
+    OBJX  allows for easy json save//load to/from disk of objects. It
+    provides an "clean namespace" Object class that only has dunder
+    methods, so the namespace is not cluttered with method names. This
+    makes storing and reading to/from json possible.
 
 
-
- to program a unix cli program, such as
-    disk perisistence for configuration files, event handler to handle the
-    client/server connection, code to introspect modules for commands, deferred
-    exception handling to not crash on an error, a parser to parse commandline
-    options and values, etc.
+    OBJX has all you need to program a unix cli program, such as disk
+    perisistence for configuration files, event handler to handle the
+    client/server connection, code to introspect modules for
+    commands, deferred exception handling to not crash on an error, a
+    parser to parse commandline options and values, etc.
 
 
     OBJX has a demo bot, it can connect to IRC, fetch and display RSS
-    feeds, take todo notes, keep a shopping list and log text. You can also
-    copy/paste the service file and run it under systemd for 24/7 presence
-    in a IRC channel.
-
+    feeds, take todo notes, keep a shopping list and log text. You can
+    also copy/paste the service file and run it under systemd for 24/7
+    presence in a IRC channel.
 
     OBJX is Public Domain.
 

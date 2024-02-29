@@ -5,8 +5,26 @@
 # ruff: noqa: E402
 
 
-"runtime"
+"""OBJX objects
 
+SYNOPSIS
+
+    objx <cmd> [key=val] [key==val]
+    objx [-a] [-c] [-d] [-h] [-v]
+
+COMMANDS
+
+    cmd    list available commands
+    mod    list available modules
+
+OPTIONS
+
+    -a     load all modules
+    -c     start console
+    -d     start daemon
+    -h     display help
+    -v     use verbose
+"""
 
 import getpass
 import os
@@ -33,6 +51,9 @@ Cfg.version = "60"
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
+
+
+dte = time.ctime(time.time()).replace("  ", " ")
 
 
 class Console(Client):
@@ -118,11 +139,9 @@ def main():
     if 'a' in Cfg.opts:
         Cfg.mod = ",".join(modules.__dir__())
     if "v" in Cfg.opts:
-        dte = time.ctime(time.time()).replace("  ", " ")
         debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
     if "h" in Cfg.opts:
-        from . import __doc__ as txt
-        print(txt)
+        print(__doc__)
         return
     if "d" in Cfg.opts:
         Cfg.mod = ",".join(modules.__dir__())
