@@ -6,11 +6,12 @@
 "modules"
 
 
-from . import irc, mod, rss, tmr
+from . import cmd, irc, mod, rss, tmr
 
 
 def __dir__():
     return (
+        'cmd',
         'irc',
         'mod',
         'rss',

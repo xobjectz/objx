@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+ #!/usr/bin/env python3
 # This file is placed in the Public Domain.
 #
 # pylint: disable=C,R,W0105,W0201,W0212,W0613,E0402,E0611
@@ -13,6 +13,7 @@ import os
 import pwd
 import sys
 import time
+import _thread
 
 
 from objx.objects import Default
@@ -68,6 +69,7 @@ def writepid(pidfile):
     Workdir.cdir(os.path.dirname(pidfile))
     with open(pidfile, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
+
 
 from objx import modules
 
