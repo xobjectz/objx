@@ -27,7 +27,7 @@ from objx.runtime import cmnd, debug, forever, init, parse_cmd, scan
 
 
 Cfg         = Default()
-Cfg.mod     = "cmd,err,fnd,mod,thr"
+Cfg.mod     = "cmd,mod"
 Cfg.name    = "objx"
 Cfg.version = "60"
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
@@ -110,17 +110,7 @@ else:
 from objx import modules
 
 
-def cmd(event):
-    event.reply(",".join(sorted(list(Client.cmds))))
-
-
-def ver(event):
-    event.reply(f"{Cfg.name.upper()} {Cfg.version}")
-    
-
 def main():
-    Client.add(cmd)
-    Client.add(ver)
     Errors.enable(print)
     Workdir.skel()
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
@@ -149,8 +139,6 @@ def main():
         scan(mods, Cfg.mod, Cfg.sets.dis)
         init(mods, Cfg.mod, Cfg.sets.dis, True)
         csl = Console()
-        if 'z' in Cfg.opts:
-            csl.threaded = False
         csl.start()
         forever()
         return
