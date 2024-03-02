@@ -51,7 +51,7 @@ from objx.runtime import cmnd, debug, forever, init, parse_cmd, scan
 Cfg         = Default()
 Cfg.mod     = "cmd,mod"
 Cfg.name    = "objx"
-Cfg.version = "60"
+Cfg.version = "62"
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
