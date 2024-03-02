@@ -5,9 +5,7 @@
 # ruff: noqa: E402
 
 
-"""OBJX objects
-
-SYNOPSIS
+"""OBJX - objects library
 
     objx <cmd> [key=val] [key==val]
     objx [-a] [-c] [-d] [-h] [-v]
@@ -16,6 +14,11 @@ COMMANDS
 
     cmd    list available commands
     mod    list available modules
+
+USAGE
+
+    $ objx [cmnd] mod=module1,module2,module3
+    $ objx -c mod=module1,module2,module3
 
 OPTIONS
 
