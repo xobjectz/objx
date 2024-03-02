@@ -145,7 +145,7 @@ SYSTEMD
     User=<user>
     Group=<user>
     WorkingDirectory=/home/<user>/.objx
-    ExecStart=/home/<user>/.local/pipx/venvs/objx/bin/objxd
+    ExecStart=/home/<user>/.local/pipx/venvs/objx/bin/objx -d
     RemainAfterExit=yes
 
     [Install]

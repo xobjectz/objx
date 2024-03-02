@@ -9,9 +9,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "objx"
 description = "objects library"
-version = "60"
+version = "61"
 authors = [
-    {name = "Bart Thate",email = "bthate@dds.nl"},
+    {name = "xobjectz",email = "objx@proton.me"},
 ]
 readme = "README.rst"
 license = {text="Public Domain"}
@@ -33,7 +33,6 @@ classifiers = [
 [tool.setuptools]
 script-files = [
     'bin/objx',
-    'bin/objxd'
 ]
 packages = [
     "objx",
