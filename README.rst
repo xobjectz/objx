@@ -36,13 +36,11 @@ DESCRIPTION
     methods, so the namespace is not cluttered with method names. This
     makes storing and reading to/from json possible.
 
-
     OBJX has all you need to program a unix cli program, such as disk
     perisistence for configuration files, event handler to handle the
     client/server connection, code to introspect modules for
     commands, deferred exception handling to not crash on an error, a
     parser to parse commandline options and values, etc.
-
 
     OBJX has a demo bot, it can connect to IRC, fetch and display RSS
     feeds, take todo notes, keep a shopping list and log text. You can
