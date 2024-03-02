@@ -26,6 +26,7 @@ OPTIONS
     -v     use verbose
 """
 
+
 import getpass
 import os
 import pwd
@@ -51,6 +52,15 @@ Cfg.version = "60"
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
+
+
+from objx import modules
+
+
+if os.path.exists("mods"):
+    import mods
+else:
+    mods = None
 
 
 dte = time.ctime(time.time()).replace("  ", " ")
@@ -122,15 +132,6 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
 
 
-if os.path.exists("mods"):
-    import mods
-else:
-    mods = None
-
-
-from objx import modules
-
-
 def main():
     Errors.enable(print)
     Workdir.skel()
@@ -163,7 +164,9 @@ def main():
         return
     if Cfg.otxt:
         Cfg.mod = ",".join(modules.__dir__())
-        scan(mods, Cfg.mod, Cfg.sets.dis)
+        if mods:
+            Cfg.mod += "," + ",".join(mods.__dir__())
+            scan(mods, Cfg.mod, Cfg.sets.dis)
         scan(modules, Cfg.mod, Cfg.sets.dis)
         return cmnd(Cfg.otxt, print)
 
