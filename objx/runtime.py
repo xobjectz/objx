@@ -57,8 +57,8 @@ class Event(Default):
 
     def __init__(self):
         Default.__init__(self)
-        self._ready  = threading.Event()
         self._thr    = None
+        self._ready  = threading.Event()
         self.done    = False
         self.orig    = None
         self.result  = []
@@ -72,8 +72,6 @@ class Event(Default):
         self.result.append(txt)
 
     def wait(self):
-        if self._thr:
-            self._thr.join()
         self._ready.wait()
         return self.result
 
@@ -91,7 +89,7 @@ class Handler:
         if not func:
             evt.ready()
             return
-        evt._thr = launch(func, evt)
+        launch(func, evt)
 
     def loop(self):
         while not self.stopped.is_set():
@@ -244,17 +242,14 @@ class Thread(threading.Thread):
 
 class Reactor:
 
-
-     @staticmethod
-     def run():
+    @staticmethod
+    def run(func, *args, **kwargs):
         with Manager() as manager:
-            A = manager.list(["leo", "kiki", "eden"])
-            B = ["eden", "kiki"]
+            manager.list(["Broker", "Errors", "Handler", "Client"])
             pool = Pool(processes=6)
-        pool.starmap(test, [(A, K) for K in B])
+        pool.map(func, (args, kwargs))
         pool.close()
         pool.join()
-        print("Final : ", A)
 
 
 class Timer:
@@ -291,9 +286,8 @@ class Timer:
 class Repeater(Timer):
 
     def run(self):
-        thr = launch(self.start)
+        launch(self.start)
         super().run()
-        return thr
 
 
 def cmnd(txt, out):
@@ -334,6 +328,10 @@ def init(pkg, modstr, disable="", wait=False):
 
 
 def launch(func, *args, **kwargs):
+    Reactor.run(func, *args, **kwargs)
+
+
+def threaded(func, *args, **kwargs):
     nme = kwargs.get("name", name(func))
     thread = Thread(func, nme, *args, **kwargs)
     thread.start()

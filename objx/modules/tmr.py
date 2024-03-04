@@ -83,8 +83,8 @@ def get_day(daystr):
             (day, month, yea) = ymdre.groups()
     except ValueError:
         try:
-            ymdre = re.search(r'(\d+)-(\d+)', daystr)
-            if ymdre:
+            ymre = re.search(r'(\d+)-(\d+)', daystr)
+            if ymre:
                 (day, month) = ymre.groups()
                 yea = ttime.strftime("%Y", ttime.localtime())
         except Exception as ex:
