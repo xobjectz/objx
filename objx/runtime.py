@@ -16,10 +16,6 @@ import types
 import _thread
 
 
-from multiprocessing import Pool
-from multiprocessing import Manager
-
-
 from .objects import Default, Object, keys, spl, values
 from .persist import Persist
 
@@ -240,18 +236,6 @@ class Thread(threading.Thread):
                 args[0].ready()
 
 
-class Reactor:
-
-    @staticmethod
-    def run(func, *args, **kwargs):
-        with Manager() as manager:
-            manager.list(["Broker", "Errors", "Handler", "Client"])
-            pool = Pool(processes=6)
-        pool.map(func, (args, kwargs))
-        pool.close()
-        pool.join()
-
-
 class Timer:
 
     def __init__(self, sleep, func, *args, thrname=None):
@@ -328,10 +312,6 @@ def init(pkg, modstr, disable="", wait=False):
 
 
 def launch(func, *args, **kwargs):
-    Reactor.run(func, *args, **kwargs)
-
-
-def threaded(func, *args, **kwargs):
     nme = kwargs.get("name", name(func))
     thread = Thread(func, nme, *args, **kwargs)
     thread.start()
@@ -418,4 +398,3 @@ def scan(pkg, modstr, disable=""):
         Persist.scan(module)
         mds.append(module)
     return mds
-
