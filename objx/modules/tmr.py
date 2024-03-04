@@ -74,21 +74,28 @@ def extract_date(daystr):
 
 
 def get_day(daystr):
+    day = None
+    month = None
+    yea = None
     try:
         ymdre = re.search(r'(\d+)-(\d+)-(\d+)', daystr)
-        (day, month, yea) = ymdre.groups()
+        if ymdre:
+            (day, month, yea) = ymdre.groups()
     except ValueError:
         try:
-            ymre = re.search(r'(\d+)-(\d+)', daystr)
-            (day, month) = ymre.groups()
-            yea = ttime.strftime("%Y", ttime.localtime())
+            ymdre = re.search(r'(\d+)-(\d+)', daystr)
+            if ymdre:
+                (day, month) = ymre.groups()
+                yea = ttime.strftime("%Y", ttime.localtime())
         except Exception as ex:
             raise NoDate(daystr) from ex
-    day = int(day)
-    month = int(month)
-    yea = int(yea)
-    date = "%s %s %s" % (day, MONTHS[month], yea)
-    return ttime.mktime(ttime.strptime(date, r"%d %b %Y"))
+    if day:
+        day = int(day)
+        month = int(month)
+        yea = int(yea)
+        date = "%s %s %s" % (day, MONTHS[month], yea)
+        return ttime.mktime(ttime.strptime(date, r"%d %b %Y"))
+    raise NoDate(daystr)
 
 
 def get_hour(daystr):
@@ -210,7 +217,7 @@ def tmr(event):
     event.reply("ok " +  laps(diff))
     event.result = []
     event.result.append(event.rest)
-    timer = Timer(diff, event.show)
+    timer = Timer(diff, event.show, thrname=event.cmd)
     update(timer, event)
     sync(timer)
     launch(timer.start)

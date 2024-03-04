@@ -16,6 +16,10 @@ import types
 import _thread
 
 
+from multiprocessing import Pool
+from multiprocessing import Manager
+
+
 from .objects import Default, Object, keys, spl, values
 from .persist import Persist
 
@@ -236,6 +240,21 @@ class Thread(threading.Thread):
             Errors.add(exc)
             if args and "ready" in dir(args[0]):
                 args[0].ready()
+
+
+class Reactor:
+
+
+     @staticmethod
+     def run():
+        with Manager() as manager:
+            A = manager.list(["leo", "kiki", "eden"])
+            B = ["eden", "kiki"]
+            pool = Pool(processes=6)
+        pool.starmap(test, [(A, K) for K in B])
+        pool.close()
+        pool.join()
+        print("Final : ", A)
 
 
 class Timer:
