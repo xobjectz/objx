@@ -19,35 +19,10 @@ import _thread
 from .default import Default
 from .objects import Object, keys, values
 from .persist import Persist
+from .threads import launch
 
 
 rpr = object.__repr__
-
-
-class Broker:
-
-    objs = Object()
-
-    @staticmethod
-    def add(obj):
-        setattr(Broker.objs, rpr(obj), obj)
-
-    @staticmethod
-    def all():
-        return values(Broker.objs)
-
-    @staticmethod
-    def first():
-        for key in keys(Broker.objs):
-            return getattr(Broker.objs, key)
-
-    @staticmethod
-    def get(orig):
-        return getattr(Broker.objs, orig, None)
-
-    @staticmethod
-    def remove(obj):
-        delattr(Broker.objs, rpr(obj))
 
 
 class Event(Default):
@@ -158,6 +133,32 @@ class Client(Handler):
             self.say(evt.channel, txt)
 
 
+class Broker:
+
+    objs = Object()
+
+    @staticmethod
+    def add(obj):
+        setattr(Broker.objs, rpr(obj), obj)
+
+    @staticmethod
+    def all():
+        return values(Broker.objs)
+
+    @staticmethod
+    def first():
+        for key in keys(Broker.objs):
+            return getattr(Broker.objs, key)
+
+    @staticmethod
+    def get(orig):
+        return getattr(Broker.objs, orig, None)
+
+    @staticmethod
+    def remove(obj):
+        delattr(Broker.objs, rpr(obj))
+
+
 class Errors:
 
     errors = []
@@ -207,76 +208,6 @@ class Errors:
         return False
 
 
-class Thread(threading.Thread):
-
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, thrname, (), {}, daemon=daemon)
-        self._result   = None
-        self.name      = thrname or name(func)
-        self.queue     = queue.Queue()
-        self.sleep     = None
-        self.starttime = time.time()
-        self.queue.put_nowait((func, args))
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        for k in dir(self):
-            yield k
-
-    def join(self, timeout=1.0):
-        super().join(timeout)
-        return self._result
-
-    def run(self):
-        func, args = self.queue.get()
-        try:
-            self._result = func(*args)
-        except Exception as exc:
-            Errors.add(exc)
-            if args and "ready" in dir(args[0]):
-                args[0].ready()
-
-
-class Timer:
-
-    def __init__(self, sleep, func, *args, thrname=None):
-        self.args  = args
-        self.func  = func
-        self.sleep = sleep
-        self.name  = thrname or str(self.func).split()[2]
-        self.state = {}
-        self.timer = None
-
-    def run(self):
-        self.state["latest"] = time.time()
-        launch(self.func, *self.args)
-
-    def start(self):
-        timer = threading.Timer(self.sleep, self.run)
-        timer.name   = self.name
-        timer.daemon = True
-        timer.sleep  = self.sleep
-        timer.state  = self.state
-        timer.func   = self.func
-        timer.state["starttime"] = time.time()
-        timer.state["latest"]    = time.time()
-        timer.start()
-        self.timer   = timer
-
-    def stop(self):
-        if self.timer:
-            self.timer.cancel()
-
-
-class Repeater(Timer):
-
-    def run(self):
-        launch(self.start)
-        super().run()
-
-
 def cmnd(txt, out):
     clt = Client()
     clt.raw = out
@@ -313,28 +244,6 @@ def init(pkg, modstr, disable="", wait=False):
             module.init()
             mds.append(module)
     return mds
-
-
-def launch(func, *args, **kwargs):
-    nme = kwargs.get("name", name(func))
-    thread = Thread(func, nme, *args, **kwargs)
-    thread.start()
-    return thread
-
-
-def name(obj):
-    typ = type(obj)
-    if isinstance(typ, types.ModuleType):
-        return obj.__name__
-    if '__self__' in dir(obj):
-        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj) and '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
-    return None
 
 
 def parse_cmd(obj, txt=None):

@@ -21,7 +21,8 @@ from urllib.parse import quote_plus, urlencode
 from objx.default import Default
 from objx.objects import Object, fmt, update
 from objx.persist import find, fntime, laps, last, sync
-from objx.runtime import Broker, Repeater, launch
+from objx.runtime import Broker
+from objx.threads import Repeater, launch
 
 
 def init():
