@@ -17,6 +17,7 @@ import _thread
 from .decoder import load
 from .default import Default
 from .encoder import dump
+from .locking import disklock, pathlock
 from .objects import Object, fqn, search, update
 
 
@@ -140,7 +141,7 @@ def last(obj, selector=None):
 
 
 def read(obj, pth):
-    with lock:
+    with disklock:
         with open(pth, 'r', encoding='utf-8') as ofile:
             update(obj, load(ofile))
 
@@ -154,7 +155,7 @@ def sync(obj, pth=None):
 
 
 def write(obj, pth):
-    with lock:
+    with disklock:
         Workdir.cdir(os.path.dirname(pth))
         with open(pth, 'w', encoding='utf-8') as ofile:
             dump(obj, ofile, indent=4)

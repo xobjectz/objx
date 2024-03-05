@@ -107,7 +107,7 @@ def search(obj, selector):
         return True
     for key, value in items(selector):
         val = getattr(obj, key, None)
-        if str(vval).lower() in str(val).lower():
+        if str(value).lower() in str(val).lower():
             res = True
         else:
             res = False

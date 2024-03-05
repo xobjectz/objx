@@ -69,6 +69,8 @@ class Event(Default):
         self.result.append(txt)
 
     def wait(self):
+        if self._thr:
+            self._thr.join()
         self._ready.wait()
         return self.result
 
@@ -86,7 +88,7 @@ class Handler:
         if not func:
             evt.ready()
             return
-        launch(func, evt)
+        evt._thr = launch(func, evt)
 
     def loop(self):
         while not self.stopped.is_set():
@@ -223,7 +225,7 @@ class Thread(threading.Thread):
         for k in dir(self):
             yield k
 
-    def join(self, timeout=None):
+    def join(self, timeout=1.0):
         super().join(timeout)
         return self._result
 
@@ -309,6 +311,7 @@ def init(pkg, modstr, disable="", wait=False):
             continue
         if "init" in dir(module):
             module.init()
+            mds.append(module)
     return mds
 
 
