@@ -29,6 +29,5 @@ def import_pkg(dname, pname=""):
             name = f"{pname}.{nam}"
         importlib.import_module(name)
         modules.append(nam)
-    print(modules)
 
 import_pkg(os.path.dirname(__file__), "mods")

@@ -16,7 +16,8 @@ import types
 import _thread
 
 
-from .objects import Default, Object, keys, spl, values
+from .default import Default
+from .objects import Object, keys, values
 from .persist import Persist
 
 
@@ -398,3 +399,11 @@ def scan(pkg, modstr, disable=""):
         Persist.scan(module)
         mds.append(module)
     return mds
+
+
+def spl(txt):
+    try:
+        res = txt.split(',')
+    except (TypeError, ValueError):
+        res = txt
+    return [x for x in res if x]

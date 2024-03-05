@@ -14,7 +14,10 @@ import time
 import _thread
 
 
-from .objects import Default, Object, dump, fqn, load, search, update
+from .decoder import load
+from .default import Default
+from .encoder import dump
+from .objects import Object, fqn, search, update
 
 
 def __dir__():

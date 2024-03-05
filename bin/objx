@@ -42,7 +42,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx.objects import Default
+from objx.default import Default
 from objx.persist import Workdir
 from objx.runtime import Client, Errors, Event
 from objx.runtime import cmnd, debug, forever, init, parse_cmd, scan

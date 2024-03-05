@@ -18,7 +18,8 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from objx.objects import Default, Object, fmt, update
+from objx.default import Default
+from objx.objects import Object, fmt, update
 from objx.persist import find, fntime, laps, last, sync
 from objx.runtime import Broker, Repeater, launch
 
@@ -181,7 +182,6 @@ class OPML(Parser):
             line = line.strip()
             if not line.endswith("/>"):
                 continue
-            print(line)
             obj = Object()
             for itm in item.split(","):
                 lne = OPML.getitem(line, itm)
