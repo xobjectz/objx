@@ -47,6 +47,7 @@ import objx.modules as modules
 
 if os.path.exists("mods"):
     import mods
+    print(mods)
 else:
     mods = None
 
@@ -173,4 +174,5 @@ if __name__ == "__main__":
     else:
         wrap(main)
     Errors.show()
+    print(f"{','.join(Client.cmds)}")
     print(f"{lap} {nrs} {nrcommand} {percall}")

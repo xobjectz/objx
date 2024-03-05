@@ -63,7 +63,6 @@ class Workdir(Object):
         return os.listdir(Workdir.store())
 
 
-
 lock = _thread.allocate_lock()
 
 
