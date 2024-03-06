@@ -107,13 +107,6 @@ class Persist(Object):
                     res = fnm
         return res
 
-    @staticmethod
-    def scan(mod):
-        for _key, clz in inspect.getmembers(mod, inspect.isclass):
-            if not issubclass(clz, Object):
-                continue
-            Persist.add(clz)
-
 
 def fetch(obj, pth):
     pth2 = Workdir.store(pth)

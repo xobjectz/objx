@@ -20,7 +20,7 @@ import _thread
 from objx.default import Default
 from objx.objects import Object, edit, fmt, keys
 from objx.runtime import Broker, Client, Errors, Event, debug, launch
-from objx.persist import last, sync
+from objx.persist import Persist, last, sync
 
 
 NAME    = __file__.split(os.sep)[-3]
@@ -79,6 +79,9 @@ class Config(Default):
         self.realname = self.realname or Config.realname
         self.server = self.server or Config.server
         self.username = self.username or Config.username
+
+
+Persist.add(Config)
 
 
 class TextWrap(textwrap.TextWrapper):
@@ -600,6 +603,9 @@ def cfg(event):
         event.reply('ok')
 
 
+Client.add(cfg)
+
+
 def mre(event):
     if not event.channel:
         event.reply('channel is not set.')
@@ -619,6 +625,9 @@ def mre(event):
     event.reply(f'{size} more in cache')
 
 
+Client.add(mre)
+
+
 def pwd(event):
     if len(event.args) != 2:
         event.reply('pwd <nick> <password>')
@@ -630,3 +639,6 @@ def pwd(event):
     base = base64.b64encode(enc)
     dcd = base.decode('ascii')
     event.reply(dcd)
+
+
+Client.add(pwd)

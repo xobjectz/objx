@@ -14,7 +14,7 @@ import time
 
 
 from objx.objects import Object
-from objx.runtime import Broker, launch
+from objx.runtime import Broker, Client, launch
 
 
 def init():
@@ -114,3 +114,6 @@ def udp(event):
             toudp(Cfg.host, Cfg.port, txt)
         if stop:
             break
+
+
+Client.add(udp)

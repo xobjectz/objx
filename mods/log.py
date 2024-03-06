@@ -9,8 +9,9 @@
 import time
 
 
-from objx.objects  import Object
-from objx.persist import find, fntime, laps, sync
+from objx.objects import Object
+from objx.persist import Persist, find, fntime, laps, sync
+from objx.runtime import Client
 
 
 class Log(Object):
@@ -18,6 +19,9 @@ class Log(Object):
     def __init__(self):
         super().__init__()
         self.txt = ''
+
+
+Persist.add(Log)
 
 
 def log(event):
@@ -34,3 +38,6 @@ def log(event):
     obj.txt = event.rest
     sync(obj)
     event.reply('ok')
+
+
+Client.add(log)

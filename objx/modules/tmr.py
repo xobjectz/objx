@@ -12,8 +12,8 @@ import time as ttime
 
 
 from objx.objects import update
-from objx.persist import find, laps, sync
-from objx.runtime import Broker, Event
+from objx.persist import Persist, find, laps, sync
+from objx.runtime import Broker, Client, Event
 from objx.threads import Timer, launch
 
 
@@ -59,6 +59,9 @@ FORMATS = [
 class NoDate(Exception):
 
     pass
+
+
+Persist.add(Timer)
 
 
 "utilities"
@@ -222,3 +225,6 @@ def tmr(event):
     update(timer, event)
     sync(timer)
     launch(timer.start)
+
+
+Client.add(tmr)

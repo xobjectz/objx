@@ -12,6 +12,7 @@ import time
 
 from objx.objects import Object, update
 from objx.persist import laps
+from objx.runtime import Client
 
 
 STARTTIME = time.time()
@@ -39,3 +40,6 @@ def thr(event):
         event.reply(' '.join(res))
     else:
         event.reply('no threads')
+
+
+Client.add(thr)

@@ -6,7 +6,7 @@
 "status of bots"
 
 
-from objx.runtime import Broker, Errors
+from objx.runtime import Broker, Client, Errors
 
 
 def err(event):
@@ -20,3 +20,6 @@ def err(event):
         txt = Errors.format(exc)
         for line in txt.split():
             event.reply(line)
+
+
+Client.add(err)

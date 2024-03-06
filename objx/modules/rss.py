@@ -20,8 +20,8 @@ from urllib.parse import quote_plus, urlencode
 
 from objx.default import Default
 from objx.objects import Object, fmt, update
-from objx.persist import find, fntime, laps, last, sync
-from objx.runtime import Broker
+from objx.persist import Persist, find, fntime, laps, last, sync
+from objx.runtime import Broker, Client
 from objx.threads import Repeater, launch
 
 
@@ -49,11 +49,17 @@ class Rss(Default):
         self.display_list = 'title,link,author'
 
 
+Persist.add(Rss)
+
+
 class Seen(Default):
 
     def __init__(self):
         Default.__init__(self)
         self.urls = []
+
+
+Persist.add(Seen)
 
 
 class Fetcher(Object):
@@ -258,6 +264,9 @@ def dpl(event):
     event.reply('ok')
 
 
+Client.add(dpl)
+
+
 def nme(event):
     if len(event.args) != 2:
         event.reply('nme <stringinurl> <name>')
@@ -268,6 +277,9 @@ def nme(event):
             feed.name = event.args[1]
             sync(feed)
     event.reply('ok')
+
+
+Client.add(nme)
 
 
 def rem(event):
@@ -282,6 +294,9 @@ def rem(event):
     event.reply('ok')
 
 
+Client.add(rem)
+
+
 def res(event):
     if len(event.args) != 1:
         event.reply('res <stringinurl>')
@@ -292,6 +307,10 @@ def res(event):
             feed.__deleted__ = False
             sync(feed, fnm)
     event.reply('ok')
+
+
+
+Client.add(res)
 
 
 def rss(event):
@@ -317,3 +336,6 @@ def rss(event):
     feed.rss = event.args[0]
     sync(feed)
     event.reply('ok')
+
+
+Client.add(rss)

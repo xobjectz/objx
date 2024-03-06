@@ -122,12 +122,6 @@ class Client(Handler):
     def say(self, channel, txt):
         self.raw(txt)
 
-    @staticmethod
-    def scan(mod):
-        for _key, cmd in inspect.getmembers(mod, inspect.isfunction):
-            if 'event' in cmd.__code__.co_varnames:
-                Client.add(cmd)
-
     def show(self, evt):
         for txt in evt.result:
             self.say(evt.channel, txt)
@@ -297,20 +291,6 @@ def parse_cmd(obj, txt=None):
         obj.txt  = obj.cmd + " " + obj.rest
     else:
         obj.txt = obj.cmd or ""
-
-
-def scan(pkg, modstr, disable=""):
-    mds = []
-    for modname in spl(modstr):
-        if modname in spl(disable):
-            continue
-        module = getattr(pkg, modname, None)
-        if not module:
-            continue
-        Client.scan(module)
-        Persist.scan(module)
-        mds.append(module)
-    return mds
 
 
 def spl(txt):

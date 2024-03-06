@@ -79,5 +79,11 @@ p.s.
 """
 
 
+from objx.runtime import Client
+
+
 def req(event):
     event.reply(__doc__)
+
+
+Client.add(req)

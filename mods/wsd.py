@@ -189,8 +189,14 @@
 from random import SystemRandom
 
 
+from objx.runtime import Client
+
+
 rand = SystemRandom()
 
 
 def wsd(event):
     event.reply(rand.choice(__doc__.split("\n")).strip()[2:])
+
+
+Client.add(wsd)

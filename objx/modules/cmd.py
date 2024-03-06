@@ -11,3 +11,6 @@ from objx.runtime import Client
 
 def cmd(event):
     event.reply(",".join(sorted(list(Client.cmds))))
+
+
+Client.add(cmd)

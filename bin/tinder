@@ -24,8 +24,8 @@ sys.path.insert(0, os.getcwd())
 from objx.default import Default
 from objx.objects import Object, edit, fmt, keys, update
 from objx.runtime import Broker, Client, Errors, Event, debug, launch
-from objx.runtime import parse_cmd, scan, spl
-from objx.persist import Workdir, laps, last, sync
+from objx.runtime import parse_cmd, spl
+from objx.persist import Workdir, laps, last
 
 
 STARTTIME = time.time()
@@ -141,13 +141,8 @@ def main():
     global nrcommand
     global percall
     Errors.output = cprint
+    modules.rss.DEBUG = True
     mds = ",".join(modules.__dir__())
-    for mod in scan(modules, mds):
-        mod.DEBUG = True
-    if mods:
-        mds = ",".join(mods.__dir__())
-        for mod in scan(mods, mds):
-            mod.DEBUG = True
     nrs = Cfg.index or 1
     nrcommand = len(Client.cmds) or 1
     cli = CLI()
@@ -179,9 +174,5 @@ if __name__ == "__main__":
         profile.runctx(main.__code__, globals(), locals())
     else:
         wrap(main)
-    if Errors.errors:
-        Errors.show()
-    else:
-        print("no errors")
-    print(f"{','.join(Client.cmds)}")
+    Errors.show()
     print(f"{lap} {nrs} {nrcommand} {percall}")
