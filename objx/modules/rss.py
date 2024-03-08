@@ -102,7 +102,7 @@ class Fetcher(Object):
                 if url.path and not url.path == '/':
                     uurl = f'{url.scheme}://{url.netloc}/{url.path}'
                 else:
-                    uurl = target
+                    uurl = fed.link
                 if uurl in self.seen.urls:
                     continue
                 self.seen.urls.append(uurl)
@@ -146,6 +146,8 @@ class Parser(Object):
             index2 = line.index(f'</{item}>')
             if not index2:
                 index2 = line.index("/>", index1)
+            if not (index1 and index2):
+                return ""
             lne = line[index1:index2]
             if item == "link" and "href" in lne:
                 lne = lne.split("href")[-1][2:-4]
@@ -155,7 +157,6 @@ class Parser(Object):
                 lne = lne[1:-1]
         except ValueError:
             lne = None
-        print(lne)
         return lne
 
 
