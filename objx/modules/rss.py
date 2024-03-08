@@ -98,15 +98,19 @@ class Fetcher(Object):
                 fed = Feed()
                 update(fed, obj)
                 update(fed, feed)
+                print(dir(fed))
                 if 'link' in fed:
-                    url = urllib.parse.urlparse(fed.link)
-                    if url.path and not url.path == '/':
-                        uurl = f'{url.scheme}://{url.netloc}/{url.path}'
-                    else:
-                        uurl = fed.link
-                    if uurl in self.seen.urls:
-                        continue
-                    self.seen.urls.append(uurl)
+                    target = fed.link
+                else:
+                    target = fed.href
+                url = urllib.parse.urlparse(target)
+                if url.path and not url.path == '/':
+                    uurl = f'{url.scheme}://{url.netloc}/{url.path}'
+                else:
+                    uurl = target
+                if uurl in self.seen.urls:
+                    continue
+                self.seen.urls.append(uurl)
                 counter += 1
                 if self.dosave:
                     sync(fed)
@@ -158,41 +162,13 @@ class Parser(Object):
 
 
     @staticmethod
-    def parse(txt, item='title,link'):
+    def parse(txt, splitter='<item>', item='title,link'):
         result = []
-        for line in txt.split('<item>'):
+        for line in txt.split(splitter):
             line = line.strip()
             obj = Object()
             for itm in item.split(","):
                 setattr(obj, itm, Parser.getitem(line, itm))
-            result.append(obj)
-        return result
-
-
-class OPML(Parser):
-
-    @staticmethod
-    def getitem(line, item):
-        lne = ''
-        try:
-            index1 = line.index(f"{item}") + len(item) + 2
-            sub1 = line[index1:]
-            lne = sub1.split('" ')[0]
-        except ValueError:
-            pass
-        return lne
-
-    @staticmethod
-    def parse(txt, item='title,text,xmlUrl'):
-        result = []
-        for line in txt.split("<outline "):
-            line = line.strip()
-            if not line.endswith("/>"):
-                continue
-            obj = Object()
-            for itm in item.split(","):
-                lne = OPML.getitem(line, itm)
-                setattr(obj, itm, lne)
             result.append(obj)
         return result
 
@@ -206,7 +182,10 @@ def getfeed(url, item):
         return [Object(), Object()]
     if not result:
         return [Object(), Object()]
-    return Parser.parse(str(result.data, 'utf-8'), item)
+    if url.endswith('atom'):
+        return Parser.parse(str(result.data, 'utf-8'), '<entry>', item)
+    else:
+        return Parser.parse(str(result.data, 'utf-8'), '<item>', item)
 
 
 def gettinyurl(url):
