@@ -9,7 +9,6 @@
 import json
 
 
-from .locking import decodelock, disklock, hooklock
 from .objects import Object, construct
 
 

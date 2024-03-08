@@ -17,7 +17,7 @@ import _thread
 from .decoder import load
 from .default import Default
 from .encoder import dump
-from .locking import disklock, pathlock
+from .locking import disklock
 from .objects import Object, fqn, search, update
 
 

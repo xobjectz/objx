@@ -12,8 +12,8 @@ import time
 
 from objx.objects import Object, construct, keys
 from objx.persist import laps
-from objx.runtime import Broker, Client, Event
-from objx.threads import Repeater, launch
+from objx.repeats import Repeater
+from objx.runtime import Broker, Event, launch
 
 
 def __dir__():

@@ -13,8 +13,8 @@ import time as ttime
 
 from objx.objects import update
 from objx.persist import Persist, find, laps, sync
-from objx.runtime import Broker, Client, Event
-from objx.threads import Timer, launch
+from objx.repeats import Timer
+from objx.runtime import Broker, Client, Event, launch
 
 
 def init():

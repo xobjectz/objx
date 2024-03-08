@@ -6,8 +6,6 @@
 "objects"
 
 
-import json
-
 
 from .objects import Object
 
