@@ -7,4 +7,3 @@
 
 
 from .objects import *
-from .objects import __dir__

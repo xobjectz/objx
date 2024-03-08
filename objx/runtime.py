@@ -6,7 +6,6 @@
 "reactor"
 
 
-import inspect
 import io
 import queue
 import threading
@@ -18,7 +17,6 @@ import _thread
 
 from .default import Default
 from .objects import Object, keys, values
-from .persist import Persist
 
 
 rpr = object.__repr__
