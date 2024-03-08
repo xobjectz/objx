@@ -98,12 +98,7 @@ class Fetcher(Object):
                 fed = Feed()
                 update(fed, obj)
                 update(fed, feed)
-                print(dir(fed))
-                if 'link' in fed:
-                    target = fed.link
-                else:
-                    target = fed.href
-                url = urllib.parse.urlparse(target)
+                url = urllib.parse.urlparse(fed.link)
                 if url.path and not url.path == '/':
                     uurl = f'{url.scheme}://{url.netloc}/{url.path}'
                 else:
@@ -152,12 +147,15 @@ class Parser(Object):
             if not index2:
                 index2 = line.index("/>", index1)
             lne = line[index1:index2]
-            if 'CDATA' in lne:
+            if item == "link" and "href" in lne:
+                lne = lne.split("href")[-1][2:-4]
+            elif 'CDATA' in lne:
                 lne = lne.replace('![CDATA[', '')
                 lne = lne.replace(']]', '')
                 lne = lne[1:-1]
         except ValueError:
             lne = None
+        print(lne)
         return lne
 
 
