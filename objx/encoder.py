@@ -1,9 +1,9 @@
-# This file is placed in the Public Domain,
+# This file is placed in the Public Domain.
 #
 # pylint: disable=C,R,W0105,W0613,E0101
 
 
-"objects"
+"encoding"
 
 
 import json
@@ -51,3 +51,17 @@ def dumps(*args, **kw):
     ""
     kw["cls"] = ObjectEncoder
     return json.dumps(*args, **kw)
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'ObjectEncoder',
+        'dump',
+        'dumps'
+    )
+
+
+__all__ = __dir__()

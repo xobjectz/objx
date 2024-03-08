@@ -1,4 +1,4 @@
-# This file is placed in the Public Domain,
+# This file is placed in the Public Domain.
 #
 # pylint: disable=C,R,W0105,W0613,E0101
 
@@ -48,3 +48,18 @@ def loads(string, *args, **kw):
     kw["cls"] = ObjectDecoder
     kw["object_hook"] = hook
     return json.loads(string, *args, **kw)
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'ObjectDecoder',
+        'hook',
+        'load',
+        'loads'
+    )
+
+
+__all__ = __dir__()

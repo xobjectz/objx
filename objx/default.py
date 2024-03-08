@@ -1,10 +1,9 @@
-# This file is placed in the Public Domain,
+# This file is placed in the Public Domain.
 #
 # pylint: disable=C,R,W0105,W0613,E0101
 
 
-"objects"
-
+"default values"
 
 
 from .objects import Object
@@ -20,3 +19,15 @@ class Default(Object):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, self.__default__)
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'Default',
+    )
+
+
+__all__ = __dir__()

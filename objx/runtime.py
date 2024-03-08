@@ -350,3 +350,28 @@ def spl(txt):
     except (TypeError, ValueError):
         res = txt
     return [x for x in res if x]
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'Broker',
+        'Client',
+        'Errors',
+        'Event',
+        'Handler',
+        'Thread',
+        'cmnd',
+        'debug',
+        'forever',
+        'init',
+        'launch',
+        'name',
+        'parse_cmd',
+        'spl'
+    )
+
+
+__all__ = __dir__()

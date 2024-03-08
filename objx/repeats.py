@@ -49,3 +49,16 @@ class Repeater(Timer):
     def run(self):
         launch(self.start)
         super().run()
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'Repeater',
+        'Timer'
+    )
+
+
+__all__ = __dir__()

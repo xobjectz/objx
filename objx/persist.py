@@ -10,7 +10,6 @@ import datetime
 import os
 import pathlib
 import time
-import _thread
 
 
 from .decoder import load
@@ -18,24 +17,6 @@ from .default import Default
 from .encoder import dump
 from .locking import disklock
 from .objects import Object, fqn, search, update
-
-
-def __dir__():
-    return (
-        'Persist',
-        'Workdir',
-        'fetch',
-        'fntime',
-        'find',
-        'last',
-        'ident',
-        'read',
-        'sync',
-        'write'
-    )
-
-
-__all__ = __dir__()
 
 
 class Workdir(Object):
@@ -64,9 +45,6 @@ class Workdir(Object):
     @staticmethod
     def types():
         return os.listdir(Workdir.store())
-
-
-lock = _thread.allocate_lock()
 
 
 class Persist(Object):
@@ -105,6 +83,9 @@ class Persist(Object):
                 if fnm == claz.lower():
                     res = fnm
         return res
+
+
+"methods"
 
 
 def fetch(obj, pth):
@@ -222,3 +203,24 @@ def find(mtc, selector=None, index=None, deleted=False):
         if index is not None and nr != int(index):
             continue
         yield (fnm, obj)
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'Persist',
+        'Workdir',
+        'fetch',
+        'fntime',
+        'find',
+        'last',
+        'ident',
+        'read',
+        'sync',
+        'write'
+    )
+
+
+__all__ = __dir__()
