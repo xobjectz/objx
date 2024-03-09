@@ -136,7 +136,7 @@ class Fetcher(Object):
             repeater.start()
 
 
-class Parser(Object):
+class RSSParser(Object):
 
     @staticmethod
     def getitem(line, item):
@@ -144,21 +144,25 @@ class Parser(Object):
         try:
             index1 = line.index(f'<{item}>') + len(item) + 2
             index2 = line.index(f'</{item}>')
-            if not index2:
-                index2 = line.index("/>", index1)
-            if not (index1 and index2):
-                return ""
             lne = line[index1:index2]
-            if item == "link" and "href" in lne:
-                lne = lne.split("href")[-1][2:-4]
-            elif 'CDATA' in lne:
-                lne = lne.replace('![CDATA[', '')
-                lne = lne.replace(']]', '')
-                lne = lne[1:-1]
         except ValueError:
-            lne = None
+            try:
+                index1 = line.index(f'<{item} ') + len(item) + 2
+                index2 = line.index("/>", index1)
+                lne = line[index1:index2]
+            except ValueError:
+                lne = ""
+        try:
+            index1 = line.index(f' {item}=') + len(item) + 3
+            index2 = line.index('" ', index1)
+        except ValueError:
+            return lne
+        lne = line[index1:index2]
+        if 'CDATA' in lne:
+            lne = lne.replace('![CDATA[', '')
+            lne = lne.replace(']]', '')
+            lne = lne[1:-1]
         return lne
-
 
     @staticmethod
     def parse(txt, splitter='<item>', item='title,link'):
@@ -167,7 +171,21 @@ class Parser(Object):
             line = line.strip()
             obj = Object()
             for itm in item.split(","):
-                setattr(obj, itm, Parser.getitem(line, itm))
+                setattr(obj, itm, RSSParser.getitem(line, itm))
+            result.append(obj)
+        return result
+
+
+class AtomParser(RSSParser):
+
+    @staticmethod
+    def parse(txt, splitter='<entry>', item='title,author,href'):
+        result = []
+        for line in txt.split(splitter):
+            line = line.strip()
+            obj = Object()
+            for itm in item.split(","):
+                setattr(obj, itm, AtomParser.getitem(line, itm))
             result.append(obj)
         return result
 
@@ -182,9 +200,9 @@ def getfeed(url, item):
     if not result:
         return [Object(), Object()]
     if url.endswith('atom'):
-        return Parser.parse(str(result.data, 'utf-8'), '<entry>', item)
+        return AtomParser.parse(str(result.data, 'utf-8'), '<entry>', item)
     else:
-        return Parser.parse(str(result.data, 'utf-8'), '<item>', item)
+        return RSSParser.parse(str(result.data, 'utf-8'), '<item>', item)
 
 
 def gettinyurl(url):
