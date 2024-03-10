@@ -155,15 +155,19 @@ class RSSParser(Object):
         index = 0
         res = []
         stop = False
+        print(text)
         while not stop:
             index1 = text.find(f'<{token}>', index)
+            print(index1)
             if index1 == -1:
                 break
-            index += len(token) + 2
+            index1 += len(token) + 2
             index2 = text.find(f'</{token}>', index1)
+            print(index2)
             if index2 == -1:
                 continue
             lne = text[index1:index2].strip()
+            print(lne)
             if 'CDATA' in lne:
                 lne = lne.replace('![CDATA[', '')
                 lne = lne.replace(']]', '')
@@ -191,19 +195,14 @@ class RSSParser(Object):
         return res
 
     @staticmethod
-    def parse(txt, splitter='<item>', item='title,link'):
+    def parse(txt, splitter='item', item='title,link'):
         result = []
         for line in RSSParser.gettokens(txt, splitter):
             line = line.strip()
+            print(line)
             obj = Object()
             for itm in item.split(","):
                 setattr(obj, itm, RSSParser.gettokens(line, itm))
-            result.append(obj)
-        for line in RSSParser.getattrs(txt, splitter):
-            line = line.strip()
-            obj = Object()
-            for itm in item.split(","):
-                setattr(obj, itm, RSSParser.getattr(line, itm))
             result.append(obj)
         return result
 
@@ -218,6 +217,12 @@ class AtomParser(RSSParser):
             obj = Object()
             for itm in item.split(","):
                 setattr(obj, itm, AtomParser.getokens(line, itm))
+            result.append(obj)
+        for line in RSSParser.getattrs(txt, splitter):
+            line = line.strip()
+            obj = Object()
+            for itm in item.split(","):
+                setattr(obj, itm, RSSParser.getattr(line, itm))
             result.append(obj)
         return result
 
