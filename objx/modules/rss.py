@@ -139,39 +139,71 @@ class Fetcher(Object):
 class RSSParser(Object):
 
     @staticmethod
-    def getitem(line, item):
-        lne = ''
-        try:
-            index1 = line.index(f'<{item}>') + len(item) + 2
-            index2 = line.index(f'</{item}>')
-            lne = line[index1:index2]
-        except ValueError:
-            try:
-                index1 = line.index(f'<{item} ') + len(item) + 2
-                index2 = line.index("/>", index1)
-                lne = line[index1:index2]
-            except ValueError:
-                lne = ""
-        try:
-            index1 = line.index(f' {item}=') + len(item) + 3
-            index2 = line.index('" ', index1)
-        except ValueError:
+    def getattr(line, item):
+        lne = ""
+        index1 = line.find(f' {item}=') + len(item) + 3
+        if index1 == -1:
             return lne
-        lne = line[index1:index2]
-        if 'CDATA' in lne:
-            lne = lne.replace('![CDATA[', '')
-            lne = lne.replace(']]', '')
-            lne = lne[1:-1]
+        index2 = line.find('"', index1)
+        if index2 == -1:
+            lne = line[index1:index2]
         return lne
+
+
+    @staticmethod
+    def gettokens(text, token):
+        index = 0
+        res = []
+        stop = False
+        while not stop:
+            index1 = text.find(f'<{token}>', index)
+            if index1 == -1:
+                break
+            index += len(token) + 2
+            index2 = text.find(f'</{token}>', index1)
+            if index2 == -1:
+                continue
+            lne = text[index1:index2].strip()
+            if 'CDATA' in lne:
+                lne = lne.replace('![CDATA[', '')
+                lne = lne.replace(']]', '')
+                lne = lne[1:-1]
+            res.append(lne)
+            index = index2
+        return res
+
+    @staticmethod
+    def getattrs(text, token):
+        index = 0
+        res = []
+        stop = False
+        while not stop:
+            index1 = text.find(f'<{token} ', index) 
+            if index1 == -1:
+                break
+            index1 += len(token) + 2
+            index2 = text.find("/>", index1) 
+            if index2 == -1:
+                continue
+            line = text[index1:index2]
+            res.append(line)
+            index = index2
+        return res
 
     @staticmethod
     def parse(txt, splitter='<item>', item='title,link'):
         result = []
-        for line in txt.split(splitter):
+        for line in RSSParser.gettokens(txt, splitter):
             line = line.strip()
             obj = Object()
             for itm in item.split(","):
-                setattr(obj, itm, RSSParser.getitem(line, itm))
+                setattr(obj, itm, RSSParser.gettokens(line, itm))
+            result.append(obj)
+        for line in RSSParser.getattrs(txt, splitter):
+            line = line.strip()
+            obj = Object()
+            for itm in item.split(","):
+                setattr(obj, itm, RSSParser.getattr(line, itm))
             result.append(obj)
         return result
 
@@ -181,11 +213,11 @@ class AtomParser(RSSParser):
     @staticmethod
     def parse(txt, splitter='<entry>', item='title,author,href'):
         result = []
-        for line in txt.split(splitter):
+        for line in AtomParser.gettokens(txt, splitter):
             line = line.strip()
             obj = Object()
             for itm in item.split(","):
-                setattr(obj, itm, AtomParser.getitem(line, itm))
+                setattr(obj, itm, AtomParser.getokens(line, itm))
             result.append(obj)
         return result
 
