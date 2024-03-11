@@ -158,16 +158,13 @@ class RSSParser(Object):
         print(text)
         while not stop:
             index1 = text.find(f'<{token}>', index)
-            print(index1)
             if index1 == -1:
                 break
             index1 += len(token) + 2
             index2 = text.find(f'</{token}>', index1)
-            print(index2)
             if index2 == -1:
                 continue
             lne = text[index1:index2].strip()
-            print(lne)
             if 'CDATA' in lne:
                 lne = lne.replace('![CDATA[', '')
                 lne = lne.replace(']]', '')
@@ -199,7 +196,6 @@ class RSSParser(Object):
         result = []
         for line in RSSParser.gettokens(txt, splitter):
             line = line.strip()
-            print(line)
             obj = Object()
             for itm in item.split(","):
                 setattr(obj, itm, RSSParser.gettokens(line, itm))
@@ -210,13 +206,13 @@ class RSSParser(Object):
 class AtomParser(RSSParser):
 
     @staticmethod
-    def parse(txt, splitter='<entry>', item='title,author,href'):
+    def parse(txt, splitter='entry', item='title,author,href'):
         result = []
         for line in AtomParser.gettokens(txt, splitter):
             line = line.strip()
             obj = Object()
             for itm in item.split(","):
-                setattr(obj, itm, AtomParser.getokens(line, itm))
+                setattr(obj, itm, AtomParser.gettokens(line, itm))
             result.append(obj)
         for line in RSSParser.getattrs(txt, splitter):
             line = line.strip()
@@ -237,9 +233,9 @@ def getfeed(url, item):
     if not result:
         return [Object(), Object()]
     if url.endswith('atom'):
-        return AtomParser.parse(str(result.data, 'utf-8'), '<entry>', item)
+        return AtomParser.parse(str(result.data, 'utf-8'), 'entry', item)
     else:
-        return RSSParser.parse(str(result.data, 'utf-8'), '<item>', item)
+        return RSSParser.parse(str(result.data, 'utf-8'), 'item', item)
 
 
 def gettinyurl(url):
