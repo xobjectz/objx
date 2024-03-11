@@ -14,15 +14,16 @@ import urllib.request
 import _thread
 
 
-from urllib.error import HTTPError, URLError
-from urllib.parse import quote_plus, urlencode
+from urllib.error    import HTTPError, URLError
+from urllib.parse    import quote_plus, urlencode
+from xml.dom.minidom import parseString
 
 
 from objx.default import Default
 from objx.objects import Object, fmt, update
 from objx.persist import Persist, find, fntime, laps, last, sync
 from objx.repeats import Repeater
-from objx.runtime import Broker, Client, launch
+from objx.runtime import Broker, Client, launch, spl
 
 
 def init():
@@ -136,89 +137,92 @@ class Fetcher(Object):
             repeater.start()
 
 
-class RSSParser(Object):
+
+class Parser:
 
     @staticmethod
-    def getattr(line, item):
-        lne = ""
-        index1 = line.find(f' {item}=') + len(item) + 3
+    def getattr(line, attr):
+        lne = ''
+        index1 = line.find(f' {attr}="')
         if index1 == -1:
             return lne
-        index2 = line.find('"', index1)
+        index1 += len(attr) + 3
+        index2 = line.find(f'" ', index1)
         if index2 == -1:
-            lne = line[index1:index2]
+            index2 = line.find('"/>', index1)
+        if index2 == -1:
+            return lne
+        lne = line[index1:index2]
+        if 'CDATA' in lne:
+            lne = lne.replace('![CDATA[', '')
+            lne = lne.replace(']]', '')
+            #lne = lne[1:-1]
         return lne
 
-
     @staticmethod
-    def gettokens(text, token):
+    def getitem(line, item):
+        lne = ''
+        index1 = line.find(f'<{item}>')
+        if index1 == -1:
+            return lne
+        index1 += len(item) + 2
+        index2 = line.find(f'</{item}>', index1)
+        if index2 == -1:
+            index2 = line.find('/>', index1)
+        if index2 == -1:
+            return lne
+        lne = line[index1:index2]
+        if item == "link":
+            vvv = Parser.getattr(lne, "href")
+            if vvv:
+                lne = vvv
+        if 'CDATA' in lne:
+            lne = lne.replace('![CDATA[', '')
+            lne = lne.replace(']]', '')
+            #lne = lne[1:-1]
+        return lne.strip()
+
+    def getitems(text, item):
         index = 0
+        index1 = -1
+        index2 = -1
         res = []
         stop = False
-        print(text)
         while not stop:
-            index1 = text.find(f'<{token}>', index)
+            index1 = text.find(f'<{item}>', index)
+            if index1 == -1:
+                index1 = text.find('<item ', index)
             if index1 == -1:
                 break
-            index1 += len(token) + 2
-            index2 = text.find(f'</{token}>', index1)
+            index1 += len(item) + 2
+            index2 = text.find(f'</{item}>', index1)
             if index2 == -1:
-                continue
-            lne = text[index1:index2].strip()
+                index2 = text.find("/>", index1)
+                if index2 == -1:
+                    break
+                index2 += len(item) + 2
+            lne = text[index1:index2]
             if 'CDATA' in lne:
                 lne = lne.replace('![CDATA[', '')
                 lne = lne.replace(']]', '')
-                lne = lne[1:-1]
+                #lne = lne[1:-1]
             res.append(lne)
-            index = index2
+            index = index2             
         return res
 
     @staticmethod
-    def getattrs(text, token):
-        index = 0
-        res = []
-        stop = False
-        while not stop:
-            index1 = text.find(f'<{token} ', index) 
-            if index1 == -1:
-                break
-            index1 += len(token) + 2
-            index2 = text.find("/>", index1) 
-            if index2 == -1:
-                continue
-            line = text[index1:index2]
-            res.append(line)
-            index = index2
-        return res
-
-    @staticmethod
-    def parse(txt, splitter='item', item='title,link'):
+    def parse(txt, token="item", item='title,link'):
         result = []
-        for line in RSSParser.gettokens(txt, splitter):
+        for line in Parser.getitems(txt, token):
             line = line.strip()
-            obj = Object()
-            for itm in item.split(","):
-                setattr(obj, itm, RSSParser.gettokens(line, itm))
-            result.append(obj)
-        return result
-
-
-class AtomParser(RSSParser):
-
-    @staticmethod
-    def parse(txt, splitter='entry', item='title,author,href'):
-        result = []
-        for line in AtomParser.gettokens(txt, splitter):
-            line = line.strip()
-            obj = Object()
-            for itm in item.split(","):
-                setattr(obj, itm, AtomParser.gettokens(line, itm))
-            result.append(obj)
-        for line in RSSParser.getattrs(txt, splitter):
-            line = line.strip()
-            obj = Object()
-            for itm in item.split(","):
-                setattr(obj, itm, RSSParser.getattr(line, itm))
+            obj = Default()
+            for itm in spl(item):
+                val = Parser.getitem(line, itm)
+                if itm == "link":
+                    href = Parser.getattr(val, "href")
+                    if href:
+                        val = href
+                setattr(obj, itm, val.strip())
             result.append(obj)
         return result
 
@@ -232,10 +236,7 @@ def getfeed(url, item):
         return [Object(), Object()]
     if not result:
         return [Object(), Object()]
-    if url.endswith('atom'):
-        return AtomParser.parse(str(result.data, 'utf-8'), 'entry', item)
-    else:
-        return RSSParser.parse(str(result.data, 'utf-8'), 'item', item)
+    return Parser.parse(str(result.data, 'utf-8'), item) or []
 
 
 def gettinyurl(url):
