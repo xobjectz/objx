@@ -137,7 +137,6 @@ class Fetcher(Object):
             repeater.start()
 
 
-
 class Parser:
 
     @staticmethod
@@ -147,7 +146,7 @@ class Parser:
         if index1 == -1:
             return lne
         index1 += len(attr) + 3
-        index2 = line.find(f'" ', index1)
+        index2 = line.find(f'"', index1)
         if index2 == -1:
             index2 = line.find('"/>', index1)
         if index2 == -1:
@@ -162,12 +161,14 @@ class Parser:
     @staticmethod
     def getitem(line, item):
         lne = ''
-        index1 = line.find(f'<{item}>')
+        index1 = line.find(f'<{item} ')
         if index1 == -1:
-            return lne
-        index1 += len(item) + 2
-        index2 = line.find(f'</{item}>', index1)
-        if index2 == -1:
+            index1 = line.find(f'<{item}>')
+            if index1 != -1:
+                index1 += len(item) + 2
+                index2 = line.find(f'</{item}>', index1)
+        else:
+            index1 += len(item) + 2
             index2 = line.find('/>', index1)
         if index2 == -1:
             return lne
@@ -182,52 +183,38 @@ class Parser:
             #lne = lne[1:-1]
         return lne.strip()
 
-    def getitems(text, item):
+    def getitems(text, token):
         index = 0
-        index1 = -1
-        index2 = -1
         res = []
         stop = False
+        print(token, text)
         while not stop:
-            index1 = text.find(f'<{item}>', index)
-            if index1 == -1:
-                index1 = text.find('<item ', index)
+            index1 = text.find(f'<{token}>', index)
+            print(index1)
             if index1 == -1:
                 break
-            index1 += len(item) + 2
-            index2 = text.find(f'</{item}>', index1)
+            index1 += len(token) + 2
+            index2 = text.find(f'</{token}>', index1)
             if index2 == -1:
-                index2 = text.find("/>", index1)
-                if index2 == -1:
-                    break
-                index2 += len(item) + 2
+                break
             lne = text[index1:index2]
-            if 'CDATA' in lne:
-                lne = lne.replace('![CDATA[', '')
-                lne = lne.replace(']]', '')
-                #lne = lne[1:-1]
             res.append(lne)
             index = index2             
         return res
 
     @staticmethod
-    def parse(txt, token="item", item='title,link'):
-        result = []
+    def parse(txt, token="item", items='title,link'):
         for line in Parser.getitems(txt, token):
             line = line.strip()
             obj = Default()
-            for itm in spl(item):
+            for itm in spl(items):
                 val = Parser.getitem(line, itm)
-                if itm == "link":
-                    href = Parser.getattr(val, "href")
-                    if href:
-                        val = href
-                setattr(obj, itm, val.strip())
-            result.append(obj)
-        return result
+                if val:
+                    setattr(obj, itm, val.strip())
+            yield obj
 
 
-def getfeed(url, item):
+def getfeed(url, items):
     if DEBUG:
         return [Object(), Object()]
     try:
@@ -236,8 +223,11 @@ def getfeed(url, item):
         return [Object(), Object()]
     if not result:
         return [Object(), Object()]
-    return Parser.parse(str(result.data, 'utf-8'), item) or []
-
+    if url.endswith('atom'):
+        return Parser.parse(str(result.data, 'utf-8'), 'entry', items) or []
+    else:
+        return Parser.parse(str(result.data, 'utf-8'), 'item', items) or []
+    
 
 def gettinyurl(url):
     postarray = [

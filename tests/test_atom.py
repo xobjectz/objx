@@ -17,11 +17,11 @@ from objx.modules.rss import Parser, fmt
 class TestAtom(unittest.TestCase):
 
     def test_github(self):
-        res = Parser.parse(TXT, "entry", "title,link")
+        res = list(Parser.parse(TXT, "entry", "title,link"))
         if "-v" in sys.argv:
             for i in res:
                 print(fmt(i))
-        self.assertEqual(len(res), 21)
+        self.assertEqual(len(res), 20)
 
 
 TXT = """<?xml version="1.0" encoding="UTF-8"?>

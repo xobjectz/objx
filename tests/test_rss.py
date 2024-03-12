@@ -17,11 +17,11 @@ from objx.modules.rss import Parser, fmt
 class TestParse(unittest.TestCase):
 
     def test_hnrss(self):
-        res = Parser.parse(TXT)
+        res = list(Parser.parse(TXT))
         if "-v" in sys.argv:
             for i in res:
                 print(fmt(i))
-        self.assertEqual(len(res), 21)
+        self.assertEqual(len(res), 20)
         
 
 TXT = """
