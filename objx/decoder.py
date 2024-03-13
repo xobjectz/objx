@@ -12,13 +12,7 @@ import json
 from .objects import Object, construct
 
 
-def __dir__():
-    return (
-        'ObjectDecoder',
-        'hook',
-        'load',
-        'loads'
-    )
+"classes"
 
 
 class ObjectDecoder(json.JSONDecoder):
@@ -36,6 +30,9 @@ class ObjectDecoder(json.JSONDecoder):
     def raw_decode(self, s, idx=0):
         ""
         return json.JSONDecoder.raw_decode(self, s, idx)
+
+
+"utilities"
 
 
 def hook(objdict, typ=None):
@@ -57,3 +54,18 @@ def loads(string, *args, **kw):
     kw["cls"] = ObjectDecoder
     kw["object_hook"] = hook
     return json.loads(string, *args, **kw)
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'ObjectDecoder',
+        'hook',
+        'load',
+        'loads'
+    )
+
+
+__all__ = __dir__()

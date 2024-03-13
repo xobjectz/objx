@@ -22,10 +22,12 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx.default import Default
+from objx.handler import Client, Event
 from objx.objects import Object, edit, fmt, keys, update
-from objx.runtime import Broker, Client, Errors, Event, debug, launch
+from objx.runtime import Broker, Errors, debug
 from objx.runtime import parse_cmd, spl
 from objx.persist import Workdir, laps, last
+from objx.threads import launch
 
 
 STARTTIME = time.time()
@@ -141,7 +143,7 @@ def main():
     global nrcommand
     global percall
     Errors.output = cprint
-    modules.rss.DEBUG = True
+    mods.rss.DEBUG = True
     mds = ",".join(modules.__dir__())
     nrs = Cfg.index or 1
     nrcommand = len(Client.cmds) or 1

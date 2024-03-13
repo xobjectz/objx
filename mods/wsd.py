@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,I,R,E0401
+# pylint: disable=C,I,R,E0401,W0105
 
 
 """| wijsheid, wijs !
@@ -189,10 +189,16 @@
 from random import SystemRandom
 
 
-from objx.runtime import Client
+from objx.handler import Client
+
+
+"defines"
 
 
 rand = SystemRandom()
+
+
+"commands"
 
 
 def wsd(event):

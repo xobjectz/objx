@@ -7,11 +7,8 @@
 
 
 import io
-import queue
-import threading
 import time
 import traceback
-import types
 import _thread
 
 
@@ -19,128 +16,13 @@ from .default import Default
 from .objects import Object, keys, values
 
 
-def __dir__():
-    return (
-        'Broker',
-        'Client',
-        'Errors',
-        'Event',
-        'Handler',
-        'Thread',
-        'cmnd',
-        'debug',
-        'forever',
-        'init',
-        'launch',
-        'name',
-        'parse_cmd',
-        'spl'
-    )
+"defines"
 
 
 rpr = object.__repr__
 
 
-class Event(Default):
-
-    def __init__(self):
-        Default.__init__(self)
-        self._thr    = None
-        self._ready  = threading.Event()
-        self.done    = False
-        self.orig    = None
-        self.result  = []
-        self.txt     = ""
-        self.type    = "event"
-
-    def ready(self):
-        self._ready.set()
-
-    def reply(self, txt):
-        self.result.append(txt)
-
-    def wait(self):
-        if self._thr:
-            self._thr.join()
-        self._ready.wait()
-        return self.result
-
-
-class Handler:
-
-    def __init__(self):
-        self.cbs = Object()
-        self.queue    = queue.Queue()
-        self.stopped  = threading.Event()
-        self.threaded = True
-
-    def callback(self, evt):
-        func = getattr(self.cbs, evt.type, None)
-        if not func:
-            evt.ready()
-            return
-        evt._thr = launch(func, evt)
-
-    def loop(self):
-        while not self.stopped.is_set():
-            try:
-                evt = self.poll()
-                self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    def poll(self):
-        return self.queue.get()
-
-    def put(self, evt):
-        self.queue.put_nowait(evt)
-
-    def register(self, typ, cbs):
-        setattr(self.cbs, typ, cbs)
-
-    def start(self):
-        launch(self.loop)
-
-    def stop(self):
-        self.stopped.set()
-
-
-class Client(Handler):
-
-    cmds = Object()
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.register("command", self.command)
-        Broker.add(self)
-
-    @staticmethod
-    def add(func):
-        setattr(Client.cmds, func.__name__, func)
-
-    def announce(self, txt):
-        self.raw(txt)
-
-    def command(self, evt):
-        parse_cmd(evt)
-        func = getattr(Client.cmds, evt.cmd, None)
-        if func:
-            try:
-                func(evt)
-            except Exception as exc:
-                Errors.add(exc)
-        self.show(evt)
-        evt.ready()
-
-    def raw(self, txt):
-        pass
-
-    def say(self, channel, txt):
-        self.raw(txt)
-
-    def show(self, evt):
-        for txt in evt.result:
-            self.say(evt.channel, txt)
+"classes"
 
 
 class Broker:
@@ -218,47 +100,7 @@ class Errors:
         return False
 
 
-class Thread(threading.Thread):
-
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, thrname, (), {}, daemon=daemon)
-        self._result   = None
-        self.name      = thrname or name(func)
-        self.queue     = queue.Queue()
-        self.sleep     = None
-        self.starttime = time.time()
-        self.queue.put_nowait((func, args))
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        for k in dir(self):
-            yield k
-
-    def join(self, timeout=1.0):
-        super().join(timeout)
-        return self._result
-
-    def run(self):
-        func, args = self.queue.get()
-        try:
-            self._result = func(*args)
-        except Exception as exc:
-            Errors.add(exc)
-            if args and "ready" in dir(args[0]):
-                args[0].ready()
-
-
-def cmnd(txt, out):
-    clt = Client()
-    clt.raw = out
-    evn = Event()
-    evn.orig = object.__repr__(clt)
-    evn.txt = txt
-    clt.command(evn)
-    evn.wait()
-    return evn
+"utilitites"
 
 
 def debug(txt):
@@ -286,28 +128,6 @@ def init(pkg, modstr, disable="", wait=False):
             module.init()
             mds.append(module)
     return mds
-
-
-def launch(func, *args, **kwargs):
-    nme = kwargs.get("name", name(func))
-    thread = Thread(func, nme, *args, **kwargs)
-    thread.start()
-    return thread
-
-
-def name(obj):
-    typ = type(obj)
-    if isinstance(typ, types.ModuleType):
-        return obj.__name__
-    if '__self__' in dir(obj):
-        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj) and '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
-    if '__class__' in dir(obj):
-        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
-    if '__name__' in dir(obj):
-        return f'{obj.__class__.__name__}.{obj.__name__}'
-    return None
 
 
 def parse_cmd(obj, txt=None):
@@ -369,3 +189,21 @@ def spl(txt):
     except (TypeError, ValueError):
         res = txt
     return [x for x in res if x]
+
+
+"interfacce"
+
+
+def __dir__():
+    return (
+        'Broker',
+        'Errors',
+        'debug',
+        'forever',
+        'init',
+        'parse_cmd',
+        'spl'
+    )
+
+
+__all__ = __dir__()

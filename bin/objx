@@ -44,8 +44,8 @@ sys.path.insert(0, os.getcwd())
 
 from objx.default import Default
 from objx.persist import Workdir
-from objx.runtime import Client, Errors, Event
-from objx.runtime import cmnd, debug, forever, init, parse_cmd
+from objx.handler import Client, Event, cmnd
+from objx.runtime import Errors, debug, forever, init, parse_cmd
 
 
 Cfg         = Default()
@@ -148,7 +148,7 @@ def main():
         print(__doc__)
         return
     if "d" in Cfg.opts:
-        Cfg.mod = ",".join(modules.__dir__())
+        Cfg.mod = ",".join(mods.__dir__())
         Cfg.user = getpass.getuser()
         daemon(Cfg.pidfile, "v" in Cfg.opts)
         privileges(Cfg.user)
@@ -156,7 +156,6 @@ def main():
         forever()
         return
     if "c" in Cfg.opts:
-        init(modules, Cfg.mod, Cfg.sets.dis, True)
         init(mods, Cfg.mod, Cfg.sets.dis, True)
         csl = Console()
         csl.start()

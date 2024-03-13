@@ -3,21 +3,17 @@
 # pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402,E1102
 
 
-"repeaters"
+"repeater"
 
 
 import time
 import threading
 
 
-from .runtime import launch
+from .threads import launch
 
 
-def __dir__():
-    return (
-        'Repeater',
-        'Timer'
-    )
+"classes"
 
 
 class Timer:
@@ -56,3 +52,16 @@ class Repeater(Timer):
     def run(self):
         launch(self.start)
         super().run()
+
+
+"utilities"
+
+
+def __dir__():
+    return (
+        'Repeater',
+        'Timer'
+    )
+
+
+__all__ = __dir__()

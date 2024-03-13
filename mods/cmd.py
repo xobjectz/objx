@@ -6,7 +6,7 @@
 "list of commands"
 
 
-from objx.runtime import Client
+from objx.handler import Client
 
 
 def cmd(event):

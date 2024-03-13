@@ -31,12 +31,9 @@ classifiers = [
 
 
 [tool.setuptools]
-script-files = [
-    'bin/objx',
-]
 packages = [
-    "objx",
-    "objx.modules"
+    'objx',
+    'objx.modules'
 ]
 zip-safe=true
 

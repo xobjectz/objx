@@ -1,12 +1,21 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R
+# pylint: disable=C,R,W0105
 
 
-"locks module"
+"locks"
 
 
 import _thread
+
+
+"defines"
+
+
+disklock   = _thread.allocate_lock()
+
+
+"interface"
 
 
 def __dir__():
@@ -15,4 +24,4 @@ def __dir__():
     )
 
 
-disklock   = _thread.allocate_lock()
+__all__ = __dir__()

@@ -6,21 +6,6 @@
 "objects"
 
 
-def __dir__():
-    return (
-        'Object',
-        'construct',
-        'edit',
-        'fmt',
-        'fqn',
-        'items',
-        'keys',
-        'search',
-        'update',
-        'values'
-    )
-
-
 class Object:
 
     def __contains__(self, key):
@@ -34,6 +19,9 @@ class Object:
 
     def __str__(self):
         return str(self.__dict__)
+
+
+"methods"
 
 
 def construct(obj, *args, **kwargs):
@@ -136,3 +124,24 @@ def update(obj, data, empty=True):
 
 def values(obj):
     return obj.__dict__.values()
+
+
+"interface"
+
+
+def __dir__():
+    return (
+        'Object',
+        'construct',
+        'edit',
+        'fmt',
+        'fqn',
+        'items',
+        'keys',
+        'search',
+        'update',
+        'values'
+    )
+
+
+__all__ = __dir__()

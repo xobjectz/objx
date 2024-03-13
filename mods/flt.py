@@ -6,7 +6,9 @@
 "fleet"
 
 
-from objx.runtime import Broker, Client, name
+from objx.handler import Client
+from objx.runtime import Broker
+from objx.threads import name
 
 
 def flt(event):
