@@ -162,7 +162,6 @@ FILES
 
     ~/.objx
     ~/.local/bin/objx
-    ~/.local/bin/objxd
     ~/.local/pipx/venvs/objx/
 
 AUTHOR
