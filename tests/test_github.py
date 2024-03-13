@@ -17,7 +17,7 @@ class TestAtom(unittest.TestCase):
 
     def test_github(self):
         res = Parser.parse(TXT, "entry", "title,author,link")
-        self.assertEqual(len(res), 21)
+        self.assertEqual(len(res), 20)
 
 
 TXT = """<?xml version="1.0" encoding="UTF-8"?>

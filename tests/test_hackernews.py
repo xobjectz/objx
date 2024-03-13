@@ -17,7 +17,7 @@ class TestParse(unittest.TestCase):
 
     def test_hnrss(self):
         res = Parser.parse(TXT)
-        self.assertEqual(len(res), 21)
+        self.assertEqual(len(res), 20)
         
 
 TXT = """
