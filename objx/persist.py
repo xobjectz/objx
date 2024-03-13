@@ -19,6 +19,21 @@ from .locking import disklock
 from .objects import Object, fqn, search, update
 
 
+def __dir__():
+    return (
+        'Persist',
+        'Workdir',
+        'fetch',
+        'fntime',
+        'find',
+        'last',
+        'ident',
+        'read',
+        'sync',
+        'write'
+    )
+
+
 class Workdir(Object):
 
     wd = ""
@@ -85,9 +100,6 @@ class Persist(Object):
         return res
 
 
-"methods"
-
-
 def fetch(obj, pth):
     pth2 = Workdir.store(pth)
     read(obj, pth2)
@@ -132,9 +144,6 @@ def write(obj, pth):
         Workdir.cdir(os.path.dirname(pth))
         with open(pth, 'w', encoding='utf-8') as ofile:
             dump(obj, ofile, indent=4)
-
-
-"utilities"
 
 
 def laps(seconds, short=True):
@@ -203,24 +212,3 @@ def find(mtc, selector=None, index=None, deleted=False):
         if index is not None and nr != int(index):
             continue
         yield (fnm, obj)
-
-
-"interface"
-
-
-def __dir__():
-    return (
-        'Persist',
-        'Workdir',
-        'fetch',
-        'fntime',
-        'find',
-        'last',
-        'ident',
-        'read',
-        'sync',
-        'write'
-    )
-
-
-__all__ = __dir__()

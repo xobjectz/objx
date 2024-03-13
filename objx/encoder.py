@@ -12,6 +12,14 @@ import json
 from .objects import Object
 
 
+def __dir__():
+    return (
+        'ObjectEncoder',
+        'dump',
+        'dumps'
+    )
+
+
 class ObjectEncoder(json.JSONEncoder):
     def __init__(self, *args, **kwargs):
         ""
@@ -51,17 +59,3 @@ def dumps(*args, **kw):
     ""
     kw["cls"] = ObjectEncoder
     return json.dumps(*args, **kw)
-
-
-"interface"
-
-
-def __dir__():
-    return (
-        'ObjectEncoder',
-        'dump',
-        'dumps'
-    )
-
-
-__all__ = __dir__()

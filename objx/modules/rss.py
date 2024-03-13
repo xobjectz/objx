@@ -16,7 +16,6 @@ import _thread
 
 from urllib.error    import HTTPError, URLError
 from urllib.parse    import quote_plus, urlencode
-from xml.dom.minidom import parseString
 
 
 from objx.default import Default
@@ -146,7 +145,7 @@ class Parser:
         if index1 == -1:
             return lne
         index1 += len(attr) + 3
-        index2 = line.find(f'"', index1)
+        index2 = line.find('"', index1)
         if index2 == -1:
             index2 = line.find('"/>', index1)
         if index2 == -1:
@@ -160,16 +159,16 @@ class Parser:
 
     @staticmethod
     def getattrs(line, token):
-        res = ""
+        result = ""
         index1 = line.find(f'<{token} ')
         if index1 == -1:
-            return res
+            return result
         index1 += len(token) + 2
         index2 = line.find('/>', index1)
         if index2 == -1:
-            return res
-        lne = line[index1:index2]
-        return lne.strip()
+            return result
+        result = line[index1:index2]
+        return result.strip()
     
     @staticmethod
     def getitem(line, item):
@@ -191,7 +190,7 @@ class Parser:
     @staticmethod
     def getitems(text, token):
         index = 0
-        res = []
+        result = []
         stop = False
         while not stop:
             index1 = text.find(f'<{token}>', index)
@@ -202,13 +201,13 @@ class Parser:
             if index2 == -1:
                 break
             lne = text[index1:index2]
-            res.append(lne)
+            result.append(lne)
             index = index2             
-        return res
+        return result
 
     @staticmethod
     def parse(txt, token="item", items='title,link'):
-        res = []
+        result = []
         for line in Parser.getitems(txt, token):
             line = line.strip()
             obj = Default()
@@ -229,8 +228,8 @@ class Parser:
                             if itm == "href":
                                 itm = "link"
                             setattr(obj, itm, val.strip())
-            res.append(obj)
-        return res
+            result.append(obj)
+        return result
 
 
 def getfeed(url, items):
@@ -346,7 +345,6 @@ def res(event):
             feed.__deleted__ = False
             sync(feed, fnm)
     event.reply('ok')
-
 
 
 Client.add(res)

@@ -9,6 +9,12 @@
 from .objects import Object
 
 
+def __dir__():
+    return (
+        'Default',
+    )
+
+
 class Default(Object):
 
     __slots__ = ("__default__",)
@@ -19,15 +25,3 @@ class Default(Object):
 
     def __getattr__(self, key):
         return self.__dict__.get(key, self.__default__)
-
-
-"interface"
-
-
-def __dir__():
-    return (
-        'Default',
-    )
-
-
-__all__ = __dir__()

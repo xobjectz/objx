@@ -13,6 +13,13 @@ import threading
 from .runtime import launch
 
 
+def __dir__():
+    return (
+        'Repeater',
+        'Timer'
+    )
+
+
 class Timer:
 
     def __init__(self, sleep, func, *args, thrname=None):
@@ -49,16 +56,3 @@ class Repeater(Timer):
     def run(self):
         launch(self.start)
         super().run()
-
-
-"interface"
-
-
-def __dir__():
-    return (
-        'Repeater',
-        'Timer'
-    )
-
-
-__all__ = __dir__()
