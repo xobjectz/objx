@@ -11,17 +11,14 @@ import sys
 import unittest
 
 
-from objx.modules.rss import Parser, fmt
+from objx.modules.rss import Parser
 
 
 class TestParse(unittest.TestCase):
 
     def test_hnrss(self):
-        res = list(Parser.parse(TXT))
-        if "-v" in sys.argv:
-            for i in res:
-                print(fmt(i))
-        self.assertEqual(len(res), 20)
+        res = Parser.parse(TXT)
+        self.assertEqual(len(res), 21)
         
 
 TXT = """

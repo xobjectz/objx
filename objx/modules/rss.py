@@ -95,7 +95,7 @@ class Fetcher(Object):
         with fetchlock:
             counter = 0
             result = []
-            for obj in reversed(list(getfeed(feed.rss, feed.display_list))):
+            for obj in reversed(getfeed(feed.rss, feed.display_list)):
                 fed = Feed()
                 update(fed, obj)
                 update(fed, feed)
@@ -140,7 +140,7 @@ class Fetcher(Object):
 class Parser:
 
     @staticmethod
-    def getattr(line, attr):
+    def getvalue(line, attr):
         lne = ''
         index1 = line.find(f' {attr}="')
         if index1 == -1:
@@ -159,38 +159,42 @@ class Parser:
         return lne
 
     @staticmethod
+    def getattrs(line, token):
+        res = ""
+        index1 = line.find(f'<{token} ')
+        if index1 == -1:
+            return res
+        index1 += len(token) + 2
+        index2 = line.find('/>', index1)
+        if index2 == -1:
+            return res
+        lne = line[index1:index2]
+        return lne.strip()
+    
+    @staticmethod
     def getitem(line, item):
         lne = ''
-        index1 = line.find(f'<{item} ')
+        index1 = line.find(f'<{item}>')
         if index1 == -1:
-            index1 = line.find(f'<{item}>')
-            if index1 != -1:
-                index1 += len(item) + 2
-                index2 = line.find(f'</{item}>', index1)
-        else:
-            index1 += len(item) + 2
-            index2 = line.find('/>', index1)
+            return lne
+        index1 += len(item) + 2
+        index2 = line.find(f'</{item}>', index1)
         if index2 == -1:
             return lne
         lne = line[index1:index2]
-        if item == "link":
-            vvv = Parser.getattr(lne, "href")
-            if vvv:
-                lne = vvv
         if 'CDATA' in lne:
             lne = lne.replace('![CDATA[', '')
             lne = lne.replace(']]', '')
-            #lne = lne[1:-1]
+            lne = lne[1:-1]
         return lne.strip()
 
+    @staticmethod
     def getitems(text, token):
         index = 0
         res = []
         stop = False
-        print(token, text)
         while not stop:
             index1 = text.find(f'<{token}>', index)
-            print(index1)
             if index1 == -1:
                 break
             index1 += len(token) + 2
@@ -204,14 +208,29 @@ class Parser:
 
     @staticmethod
     def parse(txt, token="item", items='title,link'):
+        res = []
         for line in Parser.getitems(txt, token):
             line = line.strip()
             obj = Default()
             for itm in spl(items):
                 val = Parser.getitem(line, itm)
                 if val:
-                    setattr(obj, itm, val.strip())
-            yield obj
+                    val = unescape(val.strip())
+                    val = val.replace("\n", "")
+                    val = striphtml(val)
+                    setattr(obj, itm, val)
+                else:
+                    att = Parser.getattrs(line, itm)
+                    if att:
+                        if itm == "link":
+                            itm = "href"
+                        val = Parser.getvalue(att, itm)
+                        if val:
+                            if itm == "href":
+                                itm = "link"
+                            setattr(obj, itm, val.strip())
+            res.append(obj)
+        return res
 
 
 def getfeed(url, items):
