@@ -7,11 +7,10 @@
 "no tests"
 
 
-import sys
 import unittest
 
 
-from objx.modules.rss import Parser, fmt
+from objx.modules.rss import Parser
 
 
 class TestAtom(unittest.TestCase):

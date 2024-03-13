@@ -7,7 +7,6 @@
 "no tests"
 
 
-import sys
 import unittest
 
 
