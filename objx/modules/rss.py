@@ -206,9 +206,9 @@ class Parser:
         return result
 
     @staticmethod
-    def parse(txt, token="item", items='title,link'):
+    def parse(txt, toke="item", items='title,link'):
         result = []
-        for line in Parser.getitems(txt, token):
+        for line in Parser.getitems(txt, toke):
             line = line.strip()
             obj = Default()
             for itm in spl(items):
