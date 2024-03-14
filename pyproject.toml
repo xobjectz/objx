@@ -33,7 +33,6 @@ classifiers = [
 [tool.setuptools]
 packages = [
     'objx',
-    'objx.modules'
 ]
 zip-safe=true
 

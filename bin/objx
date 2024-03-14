@@ -57,9 +57,6 @@ Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
 Workdir.wd = Cfg.wd
 
 
-from objx import modules
-
-
 if os.path.exists("mods"):
     import mods
 else:
