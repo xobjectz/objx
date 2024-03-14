@@ -141,7 +141,7 @@ def main():
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
     readline.redisplay()
     if 'a' in Cfg.opts:
-        Cfg.mod = ",".join(modules.__dir__())
+        Cfg.mod = ",".join(mods.__dir__())
     if "v" in Cfg.opts:
         debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
     if "h" in Cfg.opts:
