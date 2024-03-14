@@ -46,9 +46,6 @@ Workdir.wd = Cfg.wd
 paylock = _thread.allocate_lock()
 
 
-import objx.modules as modules
-
-
 if os.path.exists("mods"):
     import mods
 else:
@@ -144,7 +141,7 @@ def main():
     global percall
     Errors.output = cprint
     mods.rss.DEBUG = True
-    mds = ",".join(modules.__dir__())
+    mds = ",".join(mods.__dir__())
     nrs = Cfg.index or 1
     nrcommand = len(Client.cmds) or 1
     cli = CLI()
@@ -171,7 +168,7 @@ if __name__ == "__main__":
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
     dte = time.ctime(time.time()).replace("  ", " ")
     debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
-    Cfg.mod =  ",".join(modules.__dir__())
+    Cfg.mod =  ",".join(mods.__dir__())
     if "p" in Cfg.opts:
         profile.runctx(main.__code__, globals(), locals())
     else:
