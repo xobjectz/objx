@@ -9,14 +9,10 @@ SYNOPSIS
 
 ::
 
-    >>> from objx.objects import Object
-    >>> from objx.persist import read, write
+    >>> from objx import Object, dumps, loads
     >>> o = Object()
     >>> o.a = "b"
-    >>> write(o, "test")
-    >>> oo = Object()
-    >>> read(oo, "test")
-    >>> oo
+    >>> loads(dumps(o))
     {"a": "b"}  
 
 

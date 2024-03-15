@@ -33,7 +33,7 @@ class ObjectEncoder(json.JSONEncoder):
         try:
             return json.JSONEncoder.default(self, o)
         except TypeError:
-            return object.__repr__(o)
+            return o.__dict__
 
     def encode(self, o) -> str:
         ""
