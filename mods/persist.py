@@ -12,11 +12,11 @@ import pathlib
 import time
 
 
-from .decoder import load
-from .default import Default
-from .encoder import dump
-from .locking import disklock
-from .objects import Object, fqn, search, update
+from objx.decoder import load
+from objx.default import Default
+from objx.encoder import dump
+from objx.locking import disklock
+from objx.objects import Object, fqn, search, update
 
 
 "classes"

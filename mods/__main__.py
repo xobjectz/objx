@@ -43,10 +43,10 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx.default import Default
-from objx.persist import Workdir
 
 
 from .handler import Client, Event, cmnd
+from .persist import Workdir
 from .runtime import Errors, debug, forever, init, parse_cmd
 
 
@@ -140,7 +140,7 @@ def main():
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
     readline.redisplay()
     if 'a' in Cfg.opts:
-        Cfg.mod = ",".join(mods.__dir__())
+        Cfg.mod = ",".join([x for x in mods.__dir__() if len(x) == 3])
     if "v" in Cfg.opts:
         debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
     if "h" in Cfg.opts:

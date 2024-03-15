@@ -7,7 +7,9 @@
 
 
 from objx.objects import fmt
-from objx.persist import Persist, Workdir, find
+
+
+from .persist import Persist, Workdir, find
 
 
 def fnd(event):

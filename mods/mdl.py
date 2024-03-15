@@ -11,9 +11,9 @@ import time
 
 
 from objx.objects import Object, construct, keys
-from objx.persist import laps
 
 
+from .persist import laps
 from .handler import Event
 from .repeats import Repeater
 from .runtime import Broker

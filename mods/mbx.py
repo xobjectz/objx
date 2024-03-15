@@ -12,10 +12,10 @@ import time
 
 
 from objx.objects import Object, fmt, update
-from objx.persist import Persist, find, fntime, laps, sync
 
 
 from .handler import Client
+from .persist import Persist, find, fntime, laps, sync
 
 
 MONTH = {

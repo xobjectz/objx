@@ -19,10 +19,10 @@ import _thread
 
 from objx.default import Default
 from objx.objects import Object, edit, fmt, keys
-from objx.persist import Persist, last, sync
 
 
 from .handler import Client, Event
+from .persist import Persist, last, sync
 from .runtime import Broker, Errors, debug
 from .threads import launch
 

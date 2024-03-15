@@ -121,12 +121,12 @@ def init(pkg, modstr, disable="", wait=False):
     for modname in spl(modstr):
         if modname in spl(disable):
             continue
-        module = getattr(pkg, modname, None)
-        if not module:
+        mod = getattr(pkg, modname, None)
+        if not mod:
             continue
-        if "init" in dir(module):
-            module.init()
-            mds.append(module)
+        if "init" in dir(mod):
+            mod.init()
+            mds.append(mod)
     return mds
 
 

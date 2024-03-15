@@ -12,10 +12,10 @@ import time as ttime
 
 
 from objx.objects import update
-from objx.persist import Persist, find, laps, sync
 
 
 from .handler import Client, Event
+from .persist import Persist, find, laps, sync
 from .repeats import Timer
 from .runtime import Broker
 from .threads import launch

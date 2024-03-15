@@ -10,10 +10,10 @@ import time
 
 
 from objx.objects import Object
-from objx.persist import Persist, fntime, find, laps, sync
 
 
 from .handler import Client
+from .persist import Persist, fntime, find, laps, sync
 
 
 class NoDate(Exception):

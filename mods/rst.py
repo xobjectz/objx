@@ -16,9 +16,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from objx.default import Default
 from objx.objects import Object
-from objx.persist import Persist, Workdir
 
 
+from .persist import Persist, Workdir
 from .runtime import Errors, debug
 from .threads import launch
 
