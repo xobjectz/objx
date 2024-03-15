@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402,E1102
+# pylint: disable=C,R,W0105
 
 
 "repeater"
@@ -54,7 +54,7 @@ class Repeater(Timer):
         super().run()
 
 
-"utilities"
+"interface"
 
 
 def __dir__():
