@@ -44,8 +44,10 @@ sys.path.insert(0, os.getcwd())
 
 from objx.default import Default
 from objx.persist import Workdir
-from objx.handler import Client, Event, cmnd
-from objx.runtime import Errors, debug, forever, init, parse_cmd
+
+
+from .handler import Client, Event, cmnd
+from .runtime import Errors, debug, forever, init, parse_cmd
 
 
 Cfg         = Default()

@@ -11,12 +11,14 @@ import re
 import time as ttime
 
 
-from objx.handler import Client, Event
 from objx.objects import update
 from objx.persist import Persist, find, laps, sync
-from objx.repeats import Timer
-from objx.runtime import Broker
-from objx.threads import launch
+
+
+from .handler import Client, Event
+from .repeats import Timer
+from .runtime import Broker
+from .threads import launch
 
 
 def init():

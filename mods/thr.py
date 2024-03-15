@@ -10,9 +10,11 @@ import threading
 import time
 
 
-from objx.handler import Client
 from objx.objects import Object, update
 from objx.persist import laps
+
+
+from .handler import Client
 
 
 "defines"

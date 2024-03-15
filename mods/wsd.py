@@ -189,7 +189,7 @@
 from random import SystemRandom
 
 
-from objx.handler import Client
+from .handler import Client
 
 
 "defines"

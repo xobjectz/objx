@@ -17,8 +17,10 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from objx.default import Default
 from objx.objects import Object
 from objx.persist import Persist, Workdir
-from objx.runtime import Errors, debug
-from objx.threads import launch
+
+
+from .runtime import Errors, debug
+from .threads import launch
 
 
 def init():
