@@ -11,7 +11,7 @@ name = "objx"
 description = "objects library"
 version = "65"
 authors = [
-    {name = "xobjectz",email = "objx@proton.me"},
+    {name = "xobjectz", email = "objx@proton.me"},
 ]
 readme = "README.rst"
 license = {text="Public Domain"}
