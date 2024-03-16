@@ -13,7 +13,9 @@ SYNOPSIS
     >>> o = Object()
     >>> o.a = "b"
     >>> loads(dumps(o))
-    {"a": "b"}  
+    <objx.objects.Object object at 0x7ff59c9c9a50>
+    >>> str(o)
+    "{'a': 'b'}"
 
 
 DESCRIPTION
@@ -31,12 +33,6 @@ DESCRIPTION
     methods, so the namespace is not cluttered with method names. This
     makes storing and reading to/from json possible.
 
-    OBJX has all you need to program a unix cli program, such as disk
-    perisistence for configuration files, event handler to handle the
-    client/server connection, code to introspect modules for
-    commands, deferred exception handling to not crash on an error, a
-    parser to parse commandline options and values, etc.
-
     OBJX is Public Domain.
 
 
@@ -44,7 +40,7 @@ AUTHOR
 
 ::
 
-    Bart Thate <bthate@dds.nl>
+    xobjectz <objx@proton.me>
 
 
 COPYRIGHT

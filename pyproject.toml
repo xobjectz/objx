@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "objx"
 description = "objects library"
-version = "64"
+version = "65"
 authors = [
     {name = "xobjectz",email = "objx@proton.me"},
 ]
