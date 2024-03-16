@@ -11,7 +11,7 @@ import os
 import time
 
 
-from objx.objects import Object, fmt, update
+from objx import Object, fmt, update
 
 
 from .handler import Client

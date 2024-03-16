@@ -10,7 +10,7 @@ import datetime
 import time
 
 
-from objx.objects import Object, construct, keys
+from objx import Object, construct, keys
 
 
 from .persist import laps

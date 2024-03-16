@@ -42,7 +42,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx.default import Default
+from objx import Default
 
 
 from .handler import Client, Event, cmnd

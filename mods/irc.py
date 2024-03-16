@@ -17,8 +17,7 @@ import time
 import _thread
 
 
-from objx.default import Default
-from objx.objects import Object, edit, fmt, keys
+from objx import Default, Object, edit, fmt, keys
 
 
 from .handler import Client, Event

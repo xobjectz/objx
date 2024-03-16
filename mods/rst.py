@@ -14,8 +14,7 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from objx.default import Default
-from objx.objects import Object
+from objx import Default, Object
 
 
 from .persist import Persist, Workdir

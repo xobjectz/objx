@@ -6,7 +6,7 @@
 "locate"
 
 
-from objx.objects import fmt
+from objx import fmt
 
 
 from .persist import Persist, Workdir, find

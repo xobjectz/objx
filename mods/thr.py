@@ -10,7 +10,7 @@ import threading
 import time
 
 
-from objx.objects import Object, update
+from objx import Object, update
 
 
 from .persist import laps

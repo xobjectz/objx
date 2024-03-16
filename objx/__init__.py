@@ -6,8 +6,9 @@
 "objects library"
 
 
-from .decoder import loads
-from .encoder import dumps
+from .decoder import *
+from .default import *
+from .encoder import *
 from .objects import *
 
 
@@ -16,8 +17,10 @@ from .objects import *
 
 def __dir__():
     return (
+        'Default',
         'Object',
         'construct',
+        'dump',
         'dumps',
         'edit',
         'fmt',
@@ -25,6 +28,7 @@ def __dir__():
         'ident',
         'items',
         'keys',
+        'load',
         'loads',
         'search',
         'update',

@@ -11,7 +11,7 @@ import re
 import time as ttime
 
 
-from objx.objects import update
+from objx import update
 
 
 from .handler import Client, Event

@@ -9,7 +9,7 @@
 import time
 
 
-from objx.objects import Object
+from objx import Object
 
 
 from .handler import Client
