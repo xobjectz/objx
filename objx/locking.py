@@ -12,7 +12,7 @@ import _thread
 "defines"
 
 
-disklock   = _thread.allocate_lock()
+disklock = _thread.allocate_lock()
 
 
 "interface"

@@ -25,7 +25,6 @@ def __dir__():
         'edit',
         'fmt',
         'fqn',
-        'ident',
         'items',
         'keys',
         'load',
@@ -34,3 +33,6 @@ def __dir__():
         'update',
         'values'
     )
+
+
+__all__ = __dir__()
