@@ -6,11 +6,27 @@
 "a clean namespace"
 
 
+import datetime
 import json
+import os
+import pathlib
 import _thread
 
 
+"defines"
+
+
 disklock = _thread.allocate_lock()
+
+
+def cdir(pth):
+    if os.path.exists(pth):
+        return
+    pth = pathlib.Path(pth)
+    os.makedirs(pth, exist_ok=True)
+
+
+"classes"
 
 
 class Object:
@@ -26,6 +42,9 @@ class Object:
 
     def __str__(self):
         return str(self.__dict__)
+
+
+"methods"
 
 
 def construct(obj, *args, **kwargs):
@@ -91,6 +110,13 @@ def fqn(obj):
     if kin == "type":
         kin = obj.__name__
     return kin
+
+
+def ident(obj):
+    return os.path.join(
+                        fqn(obj),
+                        os.path.join(*str(datetime.datetime.now()).split())
+                       )
 
 
 def items(obj):
@@ -198,14 +224,32 @@ class ObjectEncoder(json.JSONEncoder):
 
 
 def dump(*args, **kw):
-    with disklock:
-        kw["cls"] = ObjectEncoder
-        return json.dump(*args, **kw)
+    kw["cls"] = ObjectEncoder
+    return json.dump(*args, **kw)
 
 
 def dumps(*args, **kw):
     kw["cls"] = ObjectEncoder
     return json.dumps(*args, **kw)
+
+
+"utilities"
+
+
+
+"methods"
+
+def read(obj, pth):
+    with disklock:
+        with open(pth, 'r', encoding='utf-8') as ofile:
+            update(obj, load(ofile))
+
+
+def write(obj, pth):
+    with disklock:
+        cdir(os.path.dirname(pth))
+        with open(pth, 'w', encoding='utf-8') as ofile:
+            dump(obj, ofile, indent=4)
 
 
 "interface"
@@ -214,10 +258,7 @@ def dumps(*args, **kw):
 def __dir__():
     return (
         'Object',
-        'ObjectDecoder',
-        'ObjectEncoder',
         'construct',
-        'disklock',
         'dump',
         'dumps',
         'edit',
@@ -228,9 +269,11 @@ def __dir__():
         'keys',
         'load',
         'loads',
+        'read',
         'search',
         'update',
-        'values'
+        'values',
+        'write'
     )
 
 
