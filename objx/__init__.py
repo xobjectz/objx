@@ -6,14 +6,10 @@
 "a clean namespace"
 
 
-import datetime
 import json
 import os
 import pathlib
 import _thread
-
-
-"defines"
 
 
 disklock = _thread.allocate_lock()
@@ -24,9 +20,6 @@ def cdir(pth):
         return
     pth = pathlib.Path(pth)
     os.makedirs(pth, exist_ok=True)
-
-
-"classes"
 
 
 class Object:
@@ -42,9 +35,6 @@ class Object:
 
     def __str__(self):
         return str(self.__dict__)
-
-
-"methods"
 
 
 def construct(obj, *args, **kwargs):
@@ -112,13 +102,6 @@ def fqn(obj):
     return kin
 
 
-def ident(obj):
-    return os.path.join(
-                        fqn(obj),
-                        os.path.join(*str(datetime.datetime.now()).split())
-                       )
-
-
 def items(obj):
     if isinstance(obj, type({})):
         return obj.items()
@@ -129,6 +112,12 @@ def keys(obj):
     if isinstance(obj, type({})):
         return obj.keys()
     return list(obj.__dict__.keys())
+
+
+def read(obj, pth):
+    with disklock:
+        with open(pth, 'r', encoding='utf-8') as ofile:
+            update(obj, load(ofile))
 
 
 def search(obj, selector):
@@ -156,7 +145,11 @@ def values(obj):
     return obj.__dict__.values()
 
 
-"decoding"
+def write(obj, pth):
+    with disklock:
+        cdir(os.path.dirname(pth))
+        with open(pth, 'w', encoding='utf-8') as ofile:
+            dump(obj, ofile, indent=4)
 
 
 class ObjectDecoder(json.JSONDecoder):
@@ -194,9 +187,6 @@ def loads(string, *args, **kw):
     return json.loads(string, *args, **kw)
 
 
-"encoding"
-
-
 class ObjectEncoder(json.JSONEncoder):
 
     def __init__(self, *args, **kwargs):
@@ -231,25 +221,6 @@ def dump(*args, **kw):
 def dumps(*args, **kw):
     kw["cls"] = ObjectEncoder
     return json.dumps(*args, **kw)
-
-
-"utilities"
-
-
-
-"methods"
-
-def read(obj, pth):
-    with disklock:
-        with open(pth, 'r', encoding='utf-8') as ofile:
-            update(obj, load(ofile))
-
-
-def write(obj, pth):
-    with disklock:
-        cdir(os.path.dirname(pth))
-        with open(pth, 'w', encoding='utf-8') as ofile:
-            dump(obj, ofile, indent=4)
 
 
 "interface"
