@@ -12,11 +12,8 @@ SYNOPSIS
     >>> from objx import Object, dumps, loads
     >>> o = Object()
     >>> o.a = "b"
-    >>> oo = loads(dumps(o))
-    >>> oo 
-    <objx.objects.Object object at 0x7ff59c9c9a50>
-    >>> dumps(oo)
-    '{"a": "b"}'
+    >>> print(loads(dumps(o)))
+    {'a': 'b'}
 
 
 DESCRIPTION

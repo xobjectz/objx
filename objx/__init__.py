@@ -15,13 +15,6 @@ import _thread
 disklock = _thread.allocate_lock()
 
 
-def cdir(pth):
-    if os.path.exists(pth):
-        return
-    pth = pathlib.Path(pth)
-    os.makedirs(pth, exist_ok=True)
-
-
 class Object:
 
     def __contains__(self, key):
@@ -223,11 +216,39 @@ def dumps(*args, **kw):
     return json.dumps(*args, **kw)
 
 
+class Default(Object):
+
+    __slots__ = ("__default__",)
+
+    def __init__(self):
+        Object.__init__(self)
+        self.__default__ = ""
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, self.__default__)
+
+
+def cdir(pth):
+    if os.path.exists(pth):
+        return
+    pth = pathlib.Path(pth)
+    os.makedirs(pth, exist_ok=True)
+
+
+def spl(txt):
+    try:
+        res = txt.split(',')
+    except (TypeError, ValueError):
+        res = txt
+    return [x for x in res if x]
+
+
 "interface"
 
 
 def __dir__():
     return (
+        'Default',
         'Object',
         'construct',
         'dump',
