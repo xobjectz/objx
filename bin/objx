@@ -18,7 +18,7 @@ sys.path.insert(0, os.getcwd())
 
 from objx.default import Default
 from objx.object  import update
-from mods.command import Command, cmnd
+from mods.command import Command, cmnd, parse_cmd
 from mods.errors  import Errors
 from mods.thread  import launch
 from mods.utils   import laps
@@ -91,19 +91,17 @@ Command.add(thr)
 
 
 def main():
+    Cfg = Default()
+    parse_cmd(Cfg, " ".join(sys.argv[1:]))
     if os.path.exists("mods"):
-        import mods.irc
         launch(mods.irc.init)
         while 1:
             try:
                 time.sleep(1.0)
             except (KeyboardInterrupt, EOFError):
                 return
-    evt = cmnd(" ".join(sys.argv[1:]))
-    for line in evt.result:
-        print(line)
-    Errors.show()
 
 
 if __name__ == "__main__":
     main()
+    Errors.show()
