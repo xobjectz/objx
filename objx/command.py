@@ -7,6 +7,7 @@
 
 
 from .default import Default
+from .errors  import Errors
 
 
 class Command:
@@ -34,14 +35,18 @@ class Event(Default):
         self.result.append(txt)
 
 
-def cmnd(txt):
+def cmnd(txt, evt=None):
     "check for and run a command."
-    evt = Event()
+    if evt is None:
+        evt = Event()
     if not txt:
         return evt
     evt.txt = txt
     evt.cmd = evt.txt.split()[0]
     func = getattr(Command.cmds, evt.cmd, None)
     if func:
-        func(evt)
+        try:
+            func(evt)
+        except Exception as ex:
+            Errors.add(ex)
     return evt
