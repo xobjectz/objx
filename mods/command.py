@@ -1,12 +1,14 @@
 # This file is placed in the Public Domain.
 #
-#
+# pylint: disable=C,R,W0105,W0201,W0718
 
 
 "commands"
 
 
-from .default import Default
+from objx.default import Default
+
+
 from .errors  import Errors
 
 
@@ -28,6 +30,7 @@ class Event(Default):
 
     def __init__(self):
         Default.__init__(self)
+        self.orig    = ""
         self.result  = []
 
     def reply(self, txt):
@@ -43,6 +46,10 @@ def cmnd(txt, evt=None):
         return evt
     evt.txt = txt
     evt.cmd = evt.txt.split()[0]
+    try:
+        evt.args = evt.txt.split()[1:]
+    except IndexError:
+        evt.args = []
     func = getattr(Command.cmds, evt.cmd, None)
     if func:
         try:

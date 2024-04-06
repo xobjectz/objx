@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0105,W0718
+# pylint: disable=C,R,W0105,W0212,W0718
 # ruff: noqa: F841
 
 
@@ -18,12 +18,14 @@ import time
 import _thread
 
 
-from objx.broker  import Broker
-from objx.command import Command, Event, cmnd
 from objx.default import Default
-from objx.errors  import Errors
 from objx.object  import Object, edit, fmt, keys
-from objx.thread  import launch
+
+
+from .broker  import Broker
+from .command import Command, Event, cmnd
+from .errors  import Errors
+from .thread  import launch
 
 
 NAME    = __file__.split(os.sep)[-3]
@@ -667,7 +669,9 @@ def cb_privmsg(evt):
         if evt.txt:
             evt.txt = evt.txt[0].lower() + evt.txt[1:]
         debug(f"command from {evt.origin}: {evt.txt}")
-        cmnd(evt.txt, evt)
+        evvt = cmnd(evt.txt, evt)
+        for line in evt.result:
+            bot.say(evt.channel, line)
 
 
 def cb_quit(evt):
