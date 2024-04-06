@@ -6,7 +6,7 @@
 "default"
 
 
-from .object import Object
+from . import Object
 
 
 class Default(Object):

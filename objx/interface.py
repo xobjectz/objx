@@ -6,17 +6,15 @@
 "interface"
 
 
-from . import broker, client, default, errors, event, handler, object
-from . import parser, persist, repeater, thread, timer, utils, workdir
+from . import broker, default, parser, thread
 
 
+from .         import *
+from .         import __dir__
 from .broker   import *
 from .default  import *
-from .errors   import *
-from .object   import *
 from .parser   import *
 from .thread   import *
-from .workdir  import *
 
 
 def __modules__():
@@ -32,16 +30,13 @@ def __modules__():
     )
 
 
-def __dir__():
+def __dir__2():
     all = []
     all.extend(broker.__dir__())
     all.extend(default.__dir__())
-    all.extend(errors.__dir__())
-    all.extend(object.__dir__())
     all.extend(parser.__dir__())
     all.extend(thread.__dir__())
-    all.extend(workdir.__dir__())
-    return sorted(all)
+    return sorted(all) + __dir__()
 
 
 __all__ = __dir__()

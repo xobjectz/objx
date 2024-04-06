@@ -6,7 +6,7 @@
 "parser"
 
 
-from .default import Default
+from . default import Default
 
 
 def parse_cmd(obj, txt=None):
