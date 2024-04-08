@@ -31,7 +31,8 @@ import mods.irc
 
 
 def cmd(event):
-    event.reply(",".join(Command.cmds))
+    "list of commands."
+    event.reply(",".join(sorted(Command.cmds)))
 
 
 def dbg(event):
@@ -87,6 +88,33 @@ Command.add(err)
 Command.add(thr)
 
 
+"utilities"
+
+
+def init(pkg, modstr, disable=""):
+    "start inits in modules."
+    mds = []
+    for modname in spl(modstr):
+        if modname in spl(disable):
+            continue
+        module = getattr(pkg, modname, None)
+        if not module:
+            continue
+        if "init" in dir(module):
+            module.init()
+            mds.append(module)
+    return mds
+
+
+def spl(txt):
+    "split comma separated string into a list."
+    try:
+        res = txt.split(',')
+    except (TypeError, ValueError):
+        res = txt
+    return [x for x in res if x]
+
+
 "runtime"
 
 
@@ -94,7 +122,8 @@ def main():
     Cfg = Default()
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
     if os.path.exists("mods"):
-        launch(mods.irc.init)
+        import mods
+        init(mods, "irc")
         while 1:
             try:
                 time.sleep(1.0)
