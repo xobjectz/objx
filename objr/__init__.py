@@ -136,7 +136,6 @@ class Client(Handler):
 
     def raw(self, txt):
         "raw output."
-        pass
 
     def say(self, channel, txt):
         "say text in a channel."

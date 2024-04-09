@@ -23,18 +23,23 @@ from objx.object  import Object, edit, fmt, keys
 from objx.persist import Persist, last, sync
 
 
-from objr import Broker, Client, Errors, Event, debug, launch
+from objr import Broker, Client, Errors, Event, launch
 
 
 NAME    = __file__.split(os.sep)[-3]
+filter = ["PING", "PONG", "PRIVMSG"]
 get     = Broker.get
 saylock = _thread.allocate_lock()
 
 
-Errors.filter = ["PING", "PONG", "PRIVMSG"]
-
-
 myirc = None
+
+
+def debug(txt):
+    for flt in filter:
+        if flt in txt:
+            return
+    print(txt)
 
 
 def init():

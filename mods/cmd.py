@@ -6,7 +6,7 @@
 "list of commands"
 
 
-from .runtime import Client
+from objr import Client
 
 
 def cmd(event):

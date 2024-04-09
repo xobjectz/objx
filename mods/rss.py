@@ -23,7 +23,7 @@ from objx.object  import Object, fmt, update
 from objx.persist import Persist, find, fntime, last, sync
 
 
-from objr import Broker, Client, Repeater, laps, launch
+from objr import Broker, Client, Repeater, laps, launch, spl
 
 
 def init():

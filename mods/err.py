@@ -9,7 +9,7 @@
 from objx.broker  import Broker
 
 
-from objr import Client
+from objr import Client, Errors
 
 
 def err(event):
