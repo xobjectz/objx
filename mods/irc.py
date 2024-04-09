@@ -18,11 +18,11 @@ import time
 import _thread
 
 
+from objx.broker  import Broker
 from objx.default import Default
 from objx.object  import Object, edit, fmt, keys
 
 
-from .broker  import Broker
 from .command import Command, Event, cmnd
 from .errors  import Errors
 from .thread  import launch
@@ -33,8 +33,12 @@ get     = Broker.get
 saylock = _thread.allocate_lock()
 
 
+Errors.filter = ["PING", "PONG", "PRIVMSG"]
+
+
 def debug(txt):
     print(txt)
+
 
 def init():
     "initialize a irc bot."
@@ -688,6 +692,7 @@ def cb_quit(evt):
 def cfg(event):
     "configure command."
     config = Config()
+    last(config)
     if not event.sets:
         event.reply(
                     fmt(
@@ -698,6 +703,7 @@ def cfg(event):
                    )
     else:
         edit(config, event.sets)
+        sync(config)
         event.reply('ok')
 
 
