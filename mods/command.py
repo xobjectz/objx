@@ -44,12 +44,7 @@ def cmnd(txt, evt=None):
         evt = Event()
     if not txt:
         return evt
-    evt.txt = txt
-    evt.cmd = evt.txt.split()[0]
-    try:
-        evt.args = evt.txt.split()[1:]
-    except IndexError:
-        evt.args = []
+    parse_cmd(evt, txt)
     func = getattr(Command.cmds, evt.cmd, None)
     if func:
         try:
