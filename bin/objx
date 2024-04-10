@@ -42,11 +42,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx.broker   import Broker
-from objx.default  import Default
-from objx.workdir  import Workdir, skel
-
-
+from objx import Default, getwd, setwd, skel
 from objr import Client, Errors, Event, cmnd, debug, parse_cmd, spl
 
 
@@ -56,7 +52,9 @@ Cfg.name    = "objx"
 Cfg.version = "70"
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
-Workdir.workdir  = Cfg.wd
+
+
+setwd(Cfg.wd)
 
 
 if os.path.exists("mods"):
@@ -171,6 +169,7 @@ def main():
         Cfg.mod = ",".join(mods.__dir__())
     if "v" in Cfg.opts:
         debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
+        debug(f"working directory is {getwd()}")
     if "h" in Cfg.opts:
         print(__doc__)
         return

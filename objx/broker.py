@@ -31,7 +31,7 @@ are manipulated instead of an object inherited from that class.
 """
 
 
-from . import Object, keys, values
+from .object import Object, keys, values
 
 
 rpr = object.__repr__

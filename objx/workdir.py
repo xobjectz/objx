@@ -19,6 +19,16 @@ class Workdir(Object):
     workdir = ""
 
 
+def getwd():
+    "return working directory."
+    return Workdir.workdir
+
+
+def setwd(path):
+    "set working directory."
+    Workdir.workdir = path
+
+
 def skel():
     "create directory,"
     cdir(os.path.join(Workdir.workdir, "store", ""))
@@ -41,7 +51,8 @@ def types():
 
 def __dir__():
     return (
-        'Workdir',
+        'getwd',
+        'setwd',
         'skel',
         'store',
         'strip',
