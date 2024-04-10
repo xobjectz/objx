@@ -44,20 +44,6 @@ def strip(pth, nmr=3):
     return os.sep.join(pth.split(os.sep)[-nmr:])
 
 
-def types():
+def liststore():
     "return types stored."
-    return os.listdir(Workdir.store())
-
-
-def __dir__():
-    return (
-        'getwd',
-        'setwd',
-        'skel',
-        'store',
-        'strip',
-        'types'
-    )
-
-
-__all__ = __dir__()
+    return os.listdir(store())

@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0105
+# pylint: disable=C,R,W0105,W0212
 
 
 "handler"
@@ -8,6 +8,7 @@
 
 import queue
 import threading
+import _thread
 
 
 from objx import Object

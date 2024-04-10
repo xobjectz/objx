@@ -18,7 +18,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from objx.broker  import all 
+from objx.broker  import Broker 
 from objx.default import Default
 from objx.object  import Object, fmt, update
 from objx.persist import find, fntime, last, sync, whitelist
@@ -120,7 +120,7 @@ class Fetcher(Object):
             txt = f'[{feedname}] '
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in all():
+            for bot in Broker.objs:
                 if "announce" in dir(bot):
                     bot.announce(txt2.rstrip())
         return counter

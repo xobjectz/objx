@@ -19,8 +19,7 @@ are manipulated instead of an object inherited from that class.
 
 ::
 
-    >>> from objr.broker import Broker
-    >>> from objr.object import Object
+    >>> from objx import Broker, Object
     >>> b = Broker()
     >>> o = Object()
     >>> b.add(o)
@@ -31,7 +30,7 @@ are manipulated instead of an object inherited from that class.
 """
 
 
-from .object import Object, keys, values
+from .object import Object, keys
 
 
 rpr = object.__repr__
@@ -46,10 +45,6 @@ def add(obj):
     "add an object to the broker."
     setattr(Broker.objs, rpr(obj), obj)
 
-def all():
-    "return all objects."
-    return values(Broker.objs)
-
 def first():
     "return first object."
     for key in keys(Broker.objs):
@@ -62,20 +57,3 @@ def get(orig):
 def remove(obj):
     "remove object from broker"
     delattr(Broker.objs, rpr(obj))
-
-
-"interfacce"
-
-
-def __dir__():
-    return (
-        'Broker',
-        'add',
-        'all',
-        'first',
-        'get',
-        'remove'
-    )
-
-
-__all__ = __dir__()

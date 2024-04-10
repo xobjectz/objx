@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0105
+# pylint: disable=C,R,W0105,W0718
 
 
 "client"
@@ -38,7 +38,7 @@ class Client(Handler):
     def raw(self, txt):
         "raw output."
 
-    def say(self, channel, txt):
+    def say(self, _channel, txt):
         "say text in a channel."
         self.raw(txt)
 

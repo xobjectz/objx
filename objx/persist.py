@@ -13,7 +13,7 @@ import time
 
 from .default import Default
 from .object  import Object, fqn, read, search, update, write
-from .workdir import Workdir, store, strip
+from .workdir import liststore, store, strip
 
 
 class Persist(Object):
@@ -51,7 +51,7 @@ def long(name):
             res = named
             break
     if "." not in res:
-        for fnm in types():
+        for fnm in liststore():
             claz = fnm.split(".")[-1]
             if fnm == claz.lower():
                 res = fnm

@@ -6,10 +6,8 @@
 "fleet"
 
 
-from objx.broker import all
-
-
-from objr import Client, name
+from objx import Broker
+from objr import Client, add, name
 
 
 def flt(event):
@@ -19,4 +17,4 @@ def flt(event):
         event.reply(",".join([name(x).split(".")[-1] for x in all()]))
 
 
-Client.add(flt)
+add(flt)

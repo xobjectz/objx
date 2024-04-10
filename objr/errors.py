@@ -23,7 +23,7 @@ def later(exc):
     Errors.errors.append(excp)
 
 
-def format(exc):
+def tostr(exc):
     "format an exception"
     res = ""
     stream = io.StringIO(
@@ -40,7 +40,7 @@ def format(exc):
 
 def out(exc):
     "check if output function is set."
-    txt = str(format(exc))
+    txt = str(tostr(exc))
     print(txt)
 
 

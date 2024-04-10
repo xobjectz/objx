@@ -1,6 +1,6 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,W0105
+# pylint: disable=C,R,W0105,W0718
 
 
 "thread"
@@ -9,6 +9,7 @@
 import queue
 import threading
 import time
+import types
 
 
 from .errors import later
@@ -52,7 +53,23 @@ class Thread(threading.Thread):
 
 def launch(func, *args, **kwargs):
     "launch a thread."
-    nme = kwargs.get("name", repr(func))
+    nme = kwargs.get("name", name(func))
     thread = Thread(func, nme, *args, **kwargs)
     thread.start()
     return thread
+
+
+def name(obj):
+    "return a full qualified name of an object/function/module."
+    typ = type(obj)
+    if isinstance(typ, types.ModuleType):
+        return obj.__name__
+    if '__self__' in dir(obj):
+        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj) and '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    return None
