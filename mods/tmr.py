@@ -11,9 +11,9 @@ import re
 import time as ttime
 
 
-from objx.broker import Broker
-from objx.object import update
-from objx.persist import Persist, find, sync
+from objx.broker  import Broker
+from objx.object  import update
+from objx.persist import find, sync, whitelist
 
 
 from objr import Client, Event, Timer, launch, laps
@@ -62,8 +62,7 @@ class NoDate(Exception):
 
     pass
 
-
-Persist.add(Timer)
+whitelist(Timer)
 
 
 def extract_date(daystr):

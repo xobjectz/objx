@@ -19,16 +19,18 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
+from objx.broker  import Broker
 from objx.default import Default
 from objx.object  import Object, keys, update
-from mods.command import Command, Event, cmnd, parse_cmd
-from mods.errors  import Errors
-from mods.thread  import launch
-from mods.utils   import laps
-from mods.irc     import Handler, debug
 
 
-import mods
+from objr import Client, Event, Errors, cmnd, debug, laps, launch, parse_cmd
+
+
+if os.path.exists("mods"):
+    import mods
+else:
+    mods = None
 
 
 STARTTIME = time.time()
@@ -70,13 +72,16 @@ param.rss = ["http://hnrss.org/newest"]
 param.ver = [""]
 
 
-class CLI(Handler):
+class CLI(Client):
 
     "CLI"
 
     def say(self, _channel, txt):
         if "v" not in Cfg.opts:
             return
+        self.raw(txt)
+
+    def raw(self, txt):
         cprint(txt)
 
 
@@ -103,7 +108,7 @@ def cprint(txt):
 
 def payload(clt):
     "do payload."
-    cmds = sorted(list(keys(Command.cmds)))
+    cmds = sorted(list(keys(Client.cmds)))
     #random.shuffle(cmds)
     with paylock:
         nmr = 0
@@ -137,18 +142,16 @@ def wrap(func):
 
 def main():
     "main"
-    Errors.output = cprint
     nrs = Cfg.index or 1
-    nrcommand = len(Command.cmds) or 1
+    nrcommand = len(Client.cmds) or 1
     thrs = []
     cli = CLI()
-    cli.raw = print
     cli.start()
     for _nr in range(nrs):
         thrs.append(launch(payload, cli))
     for thr in thrs:
         thr.join()
-    #consume(events)
+    consume(events)
     endtime = time.time()
     lap = laps(endtime-STARTTIME)
     percall = (endtime-STARTTIME)/(nrs*nrcommand)

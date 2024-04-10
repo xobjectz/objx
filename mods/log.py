@@ -10,7 +10,7 @@ import time
 
 
 from objx.object  import Object
-from objx.persist import Persist, find, fntime, sync
+from objx.persist import find, fntime, sync, whitelist
 
 
 from objr import Client, laps
@@ -23,7 +23,7 @@ class Log(Object):
         self.txt = ''
 
 
-Persist.add(Log)
+whitelist(Log)
 
 
 def log(event):

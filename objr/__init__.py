@@ -3,11 +3,7 @@
 # pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402,E1102
 
 
-"""event hander
-
-Event handler module
-
-"""
+"event hander"
 
 
 import io
@@ -19,7 +15,7 @@ import types
 import _thread
 
 
-from objx.broker  import Broker
+from objx.broker  import add
 from objx.default import Default
 from objx.object  import Object
 
@@ -59,7 +55,7 @@ class Handler:
     "Handler class"
 
     def __init__(self):
-        self.cbs = Object()
+        self.cbs      = Object()
         self.queue    = queue.Queue()
         self.stopped  = threading.Event()
         self.threaded = True
@@ -111,7 +107,7 @@ class Client(Handler):
     def __init__(self):
         Handler.__init__(self)
         self.register("command", self.command)
-        Broker.add(self)
+        add(self)
 
     @staticmethod
     def add(func):

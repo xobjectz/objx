@@ -18,17 +18,17 @@ import time
 import _thread
 
 
+from objx.broker  import add, get
 from objx.default import Default
 from objx.object  import Object, edit, fmt, keys
-from objx.persist import Persist, last, sync
+from objx.persist import last, sync, whitelist
 
 
-from objr import Broker, Client, Errors, Event, launch
+from objr import Client, Errors, Event, launch
 
 
 NAME    = __file__.split(os.sep)[-3]
 filter = ["PING", "PONG", "PRIVMSG"]
-get     = Broker.get
 saylock = _thread.allocate_lock()
 
 
@@ -53,7 +53,7 @@ def init():
 
 def shutdown():
     debug(f"IRC stopping {myirc}")
-    irc = Broker.get(myirc)
+    irc = get(myirc)
     if irc:
         irc.state.pongcheck = True
         irc.state.keeprunning = False
@@ -89,7 +89,7 @@ class Config(Default):
         self.username = self.username or Config.username
 
 
-Persist.add(Config)
+whitelist(Config)
 
 
 class TextWrap(textwrap.TextWrapper):
@@ -201,7 +201,7 @@ class IRC(Client, Output):
         self.register('PRIVMSG', cb_privmsg)
         self.register('QUIT', cb_quit)
         self.register("366", cb_ready)
-        Broker.add(self)
+        add(self)
 
     def announce(self, txt):
         for channel in self.channels:
@@ -618,7 +618,7 @@ def mre(event):
     if not event.channel:
         event.reply('channel is not set.')
         return
-    bot = Broker.get(event.orig)
+    bot = get(event.orig)
     if 'cache' not in dir(bot):
         event.reply('bot is missing cache')
         return

@@ -18,30 +18,34 @@ class Workdir(Object):
 
     workdir = ""
 
-    @staticmethod
-    def skel():
-        "create directory,"
-        cdir(os.path.join(Workdir.workdir, "store", ""))
 
-    @staticmethod
-    def store(pth=""):
-        "return objects directory."
-        return os.path.join(Workdir.workdir, "store", pth)
+def skel():
+    "create directory,"
+    cdir(os.path.join(Workdir.workdir, "store", ""))
 
-    @staticmethod
-    def strip(pth, nmr=3):
-        "reduce to path with directory."
-        return os.sep.join(pth.split(os.sep)[-nmr:])
 
-    @staticmethod
-    def types():
-        "return types stored."
-        return os.listdir(Workdir.store())
+def store(pth=""):
+    "return objects directory."
+    return os.path.join(Workdir.workdir, "store", pth)
+
+
+def strip(pth, nmr=3):
+    "reduce to path with directory."
+    return os.sep.join(pth.split(os.sep)[-nmr:])
+
+
+def types():
+    "return types stored."
+    return os.listdir(Workdir.store())
 
 
 def __dir__():
     return (
         'Workdir',
+        'skel',
+        'store',
+        'strip',
+        'types'
     )
 
 

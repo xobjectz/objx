@@ -13,7 +13,7 @@ import time
 
 from .default import Default
 from .object  import Object, fqn, read, search, update, write
-from .workdir import Workdir
+from .workdir import Workdir, store, strip
 
 
 class Persist(Object):
@@ -22,41 +22,40 @@ class Persist(Object):
 
     classes = Object()
 
-    @staticmethod
-    def add(clz):
-        "add class to whitelist."
-        name = str(clz).split()[1][1:-2]
-        setattr(Persist.classes, name, clz)
 
-    @staticmethod
-    def fns(mtc=""):
-        "show list of files."
-        dname = ''
-        pth = Workdir.store(mtc)
-        for rootdir, dirs, _files in os.walk(pth, topdown=False):
-            if dirs:
-                for dname in sorted(dirs):
-                    if dname.count('-') == 2:
-                        ddd = os.path.join(rootdir, dname)
-                        fls = sorted(os.listdir(ddd))
-                        for fll in fls:
-                            yield Workdir.strip(os.path.join(ddd, fll))
+def whitelist(clz):
+    "add class to whitelist."
+    name = str(clz).split()[1][1:-2]
+    setattr(Persist.classes, name, clz)
 
-    @staticmethod
-    def long(name):
-        "match from single name to long name."
-        split = name.split(".")[-1].lower()
-        res = name
-        for named in Persist.classes:
-            if split in named.split(".")[-1].lower():
-                res = named
-                break
-        if "." not in res:
-            for fnm in Workdir.types():
-                claz = fnm.split(".")[-1]
-                if fnm == claz.lower():
-                    res = fnm
-        return res
+
+def fns(mtc=""):
+    "show list of files."
+    dname = ''
+    pth = store(mtc)
+    for rootdir, dirs, _files in os.walk(pth, topdown=False):
+        if dirs:
+            for dname in sorted(dirs):
+                if dname.count('-') == 2:
+                    ddd = os.path.join(rootdir, dname)
+                    fls = sorted(os.listdir(ddd))
+                    for fll in fls:
+                        yield strip(os.path.join(ddd, fll))
+
+def long(name):
+    "match from single name to long name."
+    split = name.split(".")[-1].lower()
+    res = name
+    for named in Persist.classes:
+        if split in named.split(".")[-1].lower():
+            res = named
+            break
+    if "." not in res:
+        for fnm in types():
+            claz = fnm.split(".")[-1]
+            if fnm == claz.lower():
+                res = fnm
+    return res
 
 
 def fntime(daystr):
@@ -75,9 +74,9 @@ def fntime(daystr):
 
 def find(mtc, selector=None, index=None, deleted=False):
     "find object matching the selector dict."
-    clz = Persist.long(mtc)
+    clz = long(mtc)
     nrs = -1
-    for fnm in sorted(Persist.fns(clz), key=fntime):
+    for fnm in sorted(fns(clz), key=fntime):
         obj = Default()
         fetch(obj, fnm)
         if not deleted and '__deleted__' in obj:
@@ -92,9 +91,9 @@ def find(mtc, selector=None, index=None, deleted=False):
 
 def fetch(obj, pth):
     "read object from disk."
-    pth2 = Workdir.store(pth)
+    pth2 = store(pth)
     read(obj, pth2)
-    return Workdir.strip(pth)
+    return strip(pth)
 
 
 def ident(obj):
@@ -124,7 +123,7 @@ def sync(obj, pth=None):
     "sync object to disk."
     if pth is None:
         pth = ident(obj)
-    pth2 = Workdir.store(pth)
+    pth2 = store(pth)
     write(obj, pth2)
     return pth
 

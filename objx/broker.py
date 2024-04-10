@@ -31,7 +31,7 @@ are manipulated instead of an object inherited from that class.
 """
 
 
-from objx import Object, keys, values
+from . import Object, keys, values
 
 
 rpr = object.__repr__
@@ -41,31 +41,27 @@ class Broker:
 
     objs = Object()
 
-    @staticmethod
-    def add(obj):
-        "add an object to the broker."
-        setattr(Broker.objs, rpr(obj), obj)
 
-    @staticmethod
-    def all():
-        "return all objects."
-        return values(Broker.objs)
+def add(obj):
+    "add an object to the broker."
+    setattr(Broker.objs, rpr(obj), obj)
 
-    @staticmethod
-    def first():
-        "return first object."
-        for key in keys(Broker.objs):
-            return getattr(Broker.objs, key)
+def all():
+    "return all objects."
+    return values(Broker.objs)
 
-    @staticmethod
-    def get(orig):
-        "return object by origin (repr)"
-        return getattr(Broker.objs, orig, None)
+def first():
+    "return first object."
+    for key in keys(Broker.objs):
+        return getattr(Broker.objs, key)
 
-    @staticmethod
-    def remove(obj):
-        "remove object from broker"
-        delattr(Broker.objs, rpr(obj))
+def get(orig):
+    "return object by origin (repr)"
+    return getattr(Broker.objs, orig, None)
+
+def remove(obj):
+    "remove object from broker"
+    delattr(Broker.objs, rpr(obj))
 
 
 "interfacce"
@@ -74,6 +70,11 @@ class Broker:
 def __dir__():
     return (
         'Broker',
+        'add',
+        'all',
+        'first',
+        'get',
+        'remove'
     )
 
 

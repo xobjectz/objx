@@ -18,12 +18,13 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
+from objx.broker  import all 
 from objx.default import Default
 from objx.object  import Object, fmt, update
-from objx.persist import Persist, find, fntime, last, sync
+from objx.persist import find, fntime, last, sync, whitelist
 
 
-from objr import Broker, Client, Repeater, laps, launch, spl
+from objr import Client, Repeater, laps, launch, spl
 
 
 def init():
@@ -50,7 +51,7 @@ class Rss(Default):
         self.display_list = 'title,link,author'
 
 
-Persist.add(Rss)
+whitelist(Rss)
 
 
 class Seen(Default):
@@ -60,7 +61,7 @@ class Seen(Default):
         self.urls = []
 
 
-Persist.add(Seen)
+whitelist(Seen)
 
 
 class Fetcher(Object):
@@ -119,7 +120,7 @@ class Fetcher(Object):
             txt = f'[{feedname}] '
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in Broker.all():
+            for bot in all():
                 if "announce" in dir(bot):
                     bot.announce(txt2.rstrip())
         return counter

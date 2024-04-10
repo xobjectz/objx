@@ -6,7 +6,7 @@
 "status of bots"
 
 
-from objx.broker  import Broker
+from objx.broker  import all
 
 
 from objr import Client, Errors
@@ -14,7 +14,7 @@ from objr import Client, Errors
 
 def err(event):
     nmr = 0
-    for bot in Broker.all():
+    for bot in all():
         if 'state' in dir(bot):
             event.reply(str(bot.state))
             nmr += 1

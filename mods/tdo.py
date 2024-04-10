@@ -10,7 +10,7 @@ import time
 
 
 from objx.object  import Object
-from objx.persist import Persist, fntime, find, sync
+from objx.persist import fntime, find, sync, whitelist
 
 
 from objr import Client, laps
@@ -28,7 +28,7 @@ class Todo(Object):
         self.txt = ''
 
 
-Persist.add(Todo)
+whitelist(Todo)
 
 
 def dne(event):

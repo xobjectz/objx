@@ -44,19 +44,19 @@ sys.path.insert(0, os.getcwd())
 
 from objx.broker   import Broker
 from objx.default  import Default
-from objx.workdir  import Workdir
+from objx.workdir  import Workdir, skel
 
 
 from objr import Client, Errors, Event, cmnd, debug, parse_cmd, spl
 
 
 Cfg         = Default()
-Cfg.mod     = "irc"
+Cfg.mod     = "cmd,mod"
 Cfg.name    = "objx"
 Cfg.version = "70"
 Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
-Workdir.wd  = Cfg.wd
+Workdir.workdir  = Cfg.wd
 
 
 if os.path.exists("mods"):
@@ -69,10 +69,6 @@ dte = time.ctime(time.time()).replace("  ", " ")
 
 
 class Console(Client):
-
-    def __init__(self):
-        Client.__init__(self)
-        Broker.add(self)
 
     def announce(self, txt):
         pass
@@ -91,6 +87,9 @@ class Console(Client):
     def say(self, channel, txt):
         txt = txt.encode('utf-8', 'replace').decode()
         print(txt)
+
+
+"utilities"
 
 
 def daemon(pidfile, verbose=False):
@@ -112,7 +111,7 @@ def daemon(pidfile, verbose=False):
     os.chdir("/")
     if os.path.exists(pidfile):
         os.unlink(pidfile)
-    Workdir.cdir(os.path.dirname(pidfile))
+    cdir(os.path.dirname(pidfile))
     with open(pidfile, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
 
@@ -152,13 +151,21 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
 
 
+"register"
+
+
 def ver(event):
     event.reply(f"{Cfg.name.upper()} {Cfg.version}")
 
 
+Client.add(ver)
+
+
+"runtime"
+
+
 def main():
-    Workdir.skel()
-    Client.add(ver)
+    skel()
     parse_cmd(Cfg, " ".join(sys.argv[1:]))
     if 'a' in Cfg.opts:
         Cfg.mod = ",".join(mods.__dir__())

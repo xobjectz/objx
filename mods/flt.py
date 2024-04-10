@@ -6,14 +6,17 @@
 "fleet"
 
 
-from objr import Broker, Client, name
+from objx.broker import all
+
+
+from objr import Client, name
 
 
 def flt(event):
     try:
-        event.reply(Broker.all()[int(event.args[0])])
+        event.reply(all()[int(event.args[0])])
     except (IndexError, ValueError):
-        event.reply(",".join([name(x).split(".")[-1] for x in Broker.all()]))
+        event.reply(",".join([name(x).split(".")[-1] for x in all()]))
 
 
 Client.add(flt)
