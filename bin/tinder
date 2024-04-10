@@ -19,7 +19,7 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx import Default, Object, keys, update
+from objx import Default, Object, keys, setwd, update
 from objr import Client, Event, cmnd, debug, errors, laps, launch, parse_cmd
 
 
@@ -29,6 +29,10 @@ else:
     mods = None
 
 
+LAP = 1
+NRS = 1
+NRCOMMAND = 1
+PERCALL = 1
 STARTTIME = time.time()
 
 
@@ -41,14 +45,9 @@ Cfg.version = "110"
 Cfg.wd = ".test"
 
 
-paylock = _thread.allocate_lock()
-
-
 events = []
-LAP = 1
-NRS = 1
-NRCOMMAND = 1
-PERCALL = 1
+paylock = _thread.allocate_lock()
+setwd(Cfg.wd)
 
 
 param = Object()
