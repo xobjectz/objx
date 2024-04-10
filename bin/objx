@@ -43,7 +43,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx import Default, getwd, setwd, skel
-from objr import Client, Errors, Event, cmnd, debug, parse_cmd, spl
+from objr import Client, Event, cmnd, debug, errors, parse_cmd, spl
 
 
 Cfg         = Default()
@@ -195,7 +195,7 @@ def main():
 
 def wrapped():
     wrap(main)
-    Errors.show()
+    errors()
 
 
 if __name__ == "__main__":

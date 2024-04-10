@@ -40,6 +40,7 @@ def __dir__():
         'sync',
         'update',
         'values',
+        'whitelist',
         'write'
     )
 

@@ -18,13 +18,9 @@ import time
 import _thread
 
 
-from objx.broker  import add, get
-from objx.default import Default
-from objx.object  import Object, edit, fmt, keys
-from objx.persist import last, sync, whitelist
-
-
-from objr import Client, Errors, Event, launch
+from objx import Default, Object, add, edit, fmt, get, keys, last, sync
+from objx import whitelist
+from objr import Client, Errors, Event, command, launch
 
 
 NAME    = __file__.split(os.sep)[-3]
@@ -584,7 +580,7 @@ def cb_privmsg(evt):
         if evt.txt:
             evt.txt = evt.txt[0].lower() + evt.txt[1:]
         debug(f"command from {evt.origin}: {evt.txt}")
-        bot.command(evt)
+        command(evt)
 
 
 def cb_quit(evt):

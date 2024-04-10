@@ -140,6 +140,7 @@ def __dir__():
         'last',
         'ident',
         'sync',
+        'whitelist'
     )
 
 

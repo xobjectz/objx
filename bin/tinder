@@ -19,12 +19,8 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx.broker  import Broker
-from objx.default import Default
-from objx.object  import Object, keys, update
-
-
-from objr import Client, Event, Errors, cmnd, debug, laps, launch, parse_cmd
+from objx import Default, Object, keys, update
+from objr import Client, Event, cmnd, debug, errors, laps, launch, parse_cmd
 
 
 if os.path.exists("mods"):
@@ -167,4 +163,5 @@ if __name__ == "__main__":
         profile.runctx(main.__code__, globals(), locals())
     else:
         wrap(main)
-    Errors.show()
+    errors()
+
