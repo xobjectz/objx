@@ -11,12 +11,8 @@ import re
 import time as ttime
 
 
-from objx.broker  import Broker
-from objx.object  import update
-from objx.persist import find, sync, whitelist
-
-
-from objr import Client, Event, Timer, launch, laps
+from objx import find, sync, update, whitelist
+from objr import Client, Event, Timer, first, launch, laps
 
 
 def init():
@@ -25,7 +21,7 @@ def init():
             continue
         diff = float(obj.time) - ttime.time()
         if diff > 0:
-            bot = Broker.first()
+            bot = first()
             evt = Event()
             update(evt, obj)
             evt.orig = object.__repr__(bot)

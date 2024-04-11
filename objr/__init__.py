@@ -6,6 +6,7 @@
 "runtime"
 
 
+from .broker   import *
 from .client   import *
 from .errors   import *
 from .event    import *
@@ -18,14 +19,17 @@ from .utils    import *
 
 def __dir__():
     return (
+        'Broker',
         'Event',
         'Handler',
         'Client',
         'Repeater',
         'Thread',
         'Timer',
+        'add',
         'cmnd',
         'debug',
+        'get',
         'parse_cmd',
         'launch',
         'laps',

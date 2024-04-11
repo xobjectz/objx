@@ -18,13 +18,13 @@ import time
 import _thread
 
 
-from objx import Default, Object, add, edit, fmt, get, keys, last, sync
+from objx import Default, Object, edit, fmt, keys, last, sync
 from objx import whitelist
-from objr import Client, Errors, Event, command, launch
+from objr import Client, Event, add, command, get, later, launch
 
 
 NAME    = __file__.split(os.sep)[-3]
-filter = ["PING", "PONG", "PRIVMSG"]
+filterlist = ["PING", "PONG", "PRIVMSG"]
 saylock = _thread.allocate_lock()
 
 
@@ -32,7 +32,7 @@ myirc = None
 
 
 def debug(txt):
-    for flt in filter:
+    for flt in filterlist:
         if flt in txt:
             return
     print(txt)
@@ -260,7 +260,7 @@ class IRC(Client, Output):
                ) as ex:
             pass
         except Exception as ex:
-            Errors.add(ex)
+            later(ex)
 
     def doconnect(self, server, nck, port=6667):
         while 1:
@@ -412,7 +412,7 @@ class IRC(Client, Output):
                     ConnectionResetError,
                     BrokenPipeError
                    ) as ex:
-                Errors.add(ex)
+                later(ex)
                 self.stop()
                 debug("handler stopped")
                 evt = self.event(str(ex))
@@ -439,7 +439,7 @@ class IRC(Client, Output):
                     ConnectionResetError,
                     BrokenPipeError
                    ) as ex:
-                Errors.add(ex)
+                later(ex)
                 self.stop()
                 return
         self.state.last = time.time()

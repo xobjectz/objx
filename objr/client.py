@@ -6,9 +6,10 @@
 "client"
 
 
-from objx import Object, add
+from objx import Object
 
 
+from .broker  import add
 from .errors  import later
 from .event   import Event
 from .handler import Handler

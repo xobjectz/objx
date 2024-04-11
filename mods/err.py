@@ -6,8 +6,7 @@
 "status of bots"
 
 
-from objx  import Broker
-from objr import Client, Errors, add
+from objr import Broker, Errors, add, tostr
 
 
 def err(event):
@@ -18,7 +17,7 @@ def err(event):
             nmr += 1
     event.reply(f"status: {nmr} errors: {len(Errors.errors)}")
     for exc in Errors.errors:
-        txt = Errors.format(exc)
+        txt = tostr(exc)
         for line in txt.split():
             event.reply(line)
 
