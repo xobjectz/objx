@@ -42,8 +42,17 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx import Default, cdir, setwd, skel
+from objx import Default, Workdir, cdir, skel
 from objr import Client, Command, Event, cmnd, debug, errors, parse_cmd, spl
+
+
+Cfg             = Default()
+Cfg.mod         = "cmd,mod"
+Cfg.name        = "objx"
+Cfg.version     = "70"
+Cfg.wd          = os.path.expanduser(f"~/.{Cfg.name}")
+Cfg.pidfile     = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
+Workdir.workdir = Cfg.wd
 
 
 if os.path.exists("mods"):
@@ -52,16 +61,7 @@ else:
     mods = None
 
 
-Cfg         = Default()
-Cfg.mod     = "cmd,mod"
-Cfg.name    = "objx"
-Cfg.version = "70"
-Cfg.wd      = os.path.expanduser(f"~/.{Cfg.name}")
-Cfg.pidfile = os.path.join(Cfg.wd, f"{Cfg.name}.pid")
-
-
 dte = time.ctime(time.time()).replace("  ", " ")
-setwd(Cfg.wd)
 
 
 class Console(Client):

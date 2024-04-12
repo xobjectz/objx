@@ -16,6 +16,7 @@ def __dir__():
     return (
         'Default',
         'Object',
+        'Workdir',
         'construct',
         'dump',
         'dumps',
@@ -24,7 +25,6 @@ def __dir__():
         'find',
         'fmt',
         'fqn',
-        'getwd',
         'hook',
         'items',
         'keys',
@@ -34,7 +34,6 @@ def __dir__():
         'long',
         'read',
         'search',
-        'setwd',
         'sync',
         'update',
         'values',

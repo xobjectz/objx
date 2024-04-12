@@ -19,9 +19,19 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx import Default, Object, keys, setwd, update
+from objx import Default, Object, Workdir, keys, update
 from objr import Client, Command, Event, cmnd, debug, errors
 from objr import laps, launch, parse_cmd
+
+
+Cfg             = Default()
+Cfg.debug       = True
+Cfg.name        = "tinder"
+Cfg.silent      = False
+Cfg.skip        = ["debug",]
+Cfg.version     = "110"
+Cfg.wd          = ".test"
+Workdir.workdir = Cfg.wd
 
 
 if os.path.exists("mods"):
@@ -37,18 +47,8 @@ PERCALL = 1
 STARTTIME = time.time()
 
 
-Cfg = Default()
-Cfg.debug = True
-Cfg.name = "tinder"
-Cfg.silent = False
-Cfg.skip = ["debug",]
-Cfg.version = "110"
-Cfg.wd = ".test"
-
-
 events = []
 paylock = _thread.allocate_lock()
-setwd(Cfg.wd)
 
 
 param = Object()
@@ -164,4 +164,3 @@ if __name__ == "__main__":
     else:
         wrap(main)
     errors()
-
