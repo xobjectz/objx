@@ -6,7 +6,6 @@
 "runtime"
 
 
-from .broker   import *
 from .client   import *
 from .errors   import *
 from .event    import *
@@ -18,7 +17,6 @@ from .timer    import *
 
 def __dir__():
     return (
-        'Broker',
         'Event',
         'Handler',
         'Client',
