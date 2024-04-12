@@ -20,7 +20,8 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx import Default, Object, keys, setwd, update
-from objr import Client, Event, cmnd, debug, errors, laps, launch, parse_cmd
+from objr import Client, Command, Event, cmnd, debug, errors
+from objr import laps, launch, parse_cmd
 
 
 if os.path.exists("mods"):
@@ -103,7 +104,7 @@ def cprint(txt):
 
 def payload(clt):
     "do payload."
-    cmds = sorted(list(keys(Client.cmds)))
+    cmds = sorted(list(keys(Command.cmds)))
     #random.shuffle(cmds)
     with paylock:
         nmr = 0
@@ -138,7 +139,7 @@ def wrap(func):
 def main():
     "main"
     nrs = Cfg.index or 1
-    nrcommand = len(Client.cmds) or 1
+    nrcommand = len(Command.cmds) or 1
     thrs = []
     cli = CLI()
     cli.start()
