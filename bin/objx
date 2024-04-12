@@ -43,7 +43,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx import Default, Workdir, cdir, skel
-from objr import Client, Command, Event, cmnd, debug, errors, parse_cmd, spl
+from objr import Client, Command, Event, cmnd, errors, parse_cmd, spl
 
 
 Cfg             = Default()
@@ -110,6 +110,10 @@ def daemon(pidfile, verbose=False):
     cdir(os.path.dirname(pidfile))
     with open(pidfile, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
+
+
+def debug(txt):
+    print(txt)
 
 
 def init(pkg, modstr, disable="", wait=False):

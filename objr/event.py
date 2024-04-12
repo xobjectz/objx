@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0105
 
 
-"event hander"
+"event"
 
 
 import threading
@@ -14,7 +14,7 @@ from objx import Default
 
 class Event(Default):
 
-    "Event class"
+    "Event"
 
     def __init__(self):
         Default.__init__(self)

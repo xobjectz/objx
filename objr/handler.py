@@ -19,7 +19,7 @@ from .thread import launch
 
 class Handler:
 
-    "Handler class"
+    "Handler"
 
     def __init__(self):
         self.cbs      = Object()

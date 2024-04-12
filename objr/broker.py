@@ -3,7 +3,7 @@
 # pylint: disable=C,R,W0105,W0212,W0613,W0718,E0402,E1102
 
 
-"""object broker
+"""broker
 
 This Broker class stores objects on their repr name and can thus be
 retrieved by a client presenting a repr of an object.
@@ -19,7 +19,8 @@ are manipulated instead of an object inherited from that class.
 
 ::
 
-    >>> from objx import Broker, Object
+    >>> from objx import Object
+    >>> from objr import Broker
     >>> b = Broker()
     >>> o = Object()
     >>> b.add(o)

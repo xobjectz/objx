@@ -14,7 +14,6 @@ from .handler  import *
 from .repeater import *
 from .thread   import *
 from .timer    import *
-from .utils    import *
 
 
 def __dir__():
