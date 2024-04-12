@@ -38,22 +38,24 @@ rpr = object.__repr__
 
 class Broker:
 
-    objs = Object()
+    "Broker"
 
+    def __init__(self):
+        self.objs = Object()
 
-def add(obj):
-    "add an object to the broker."
-    setattr(Broker.objs, rpr(obj), obj)
+    def add(self, obj):
+        "add an object to the broker."
+        setattr(self.objs, rpr(obj), obj)
 
-def first():
-    "return first object."
-    for key in keys(Broker.objs):
-        return getattr(Broker.objs, key)
+    def first(self):
+        "return first object."
+        for key in keys(self.objs):
+            return getattr(self.objs, key)
 
-def get(orig):
-    "return object by origin (repr)"
-    return getattr(Broker.objs, orig, None)
+    def get(self, orig):
+        "return object by origin (repr)"
+        return getattr(self.objs, orig, None)
 
-def remove(obj):
-    "remove object from broker"
-    delattr(Broker.objs, rpr(obj))
+    def remove(self, obj):
+        "remove object from broker"
+        delattr(self.objs, rpr(obj))

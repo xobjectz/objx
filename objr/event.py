@@ -12,9 +12,6 @@ import threading
 from objx import Default
 
 
-from .broker import  get
-
-
 class Event(Default):
 
     "Event class"
@@ -36,12 +33,6 @@ class Event(Default):
     def reply(self, txt):
         "add text to the result"
         self.result.append(txt)
-
-    def show(self):
-        "display result."
-        bot = get(self.orig)
-        for txt in self.result:
-            bot.say(self.channel, txt)
 
     def wait(self):
         "wait for event to be ready."

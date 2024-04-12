@@ -1,14 +1,13 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=C,R,E0402
+# pylint: disable=C,R,W0611,E0402
 
 
 "locate"
 
 
-from objx.object  import fmt
-from objx.persist import find, long
-from objx.workdir import liststore, skel
+from objx import fmt, find, long, liststore, skel
+from objr import Command
 
 
 def fnd(event):
@@ -31,3 +30,6 @@ def fnd(event):
         nmr += 1
     if not nmr:
         event.reply("no result")
+
+
+#Command.add(fnd)

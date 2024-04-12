@@ -6,15 +6,11 @@
 "status of bots"
 
 
-from objr import Broker, Errors, add, tostr
+from objr import Command, Errors, tostr
 
 
 def err(event):
     nmr = 0
-    for bot in Broker.objs:
-        if 'state' in dir(bot):
-            event.reply(str(bot.state))
-            nmr += 1
     event.reply(f"status: {nmr} errors: {len(Errors.errors)}")
     for exc in Errors.errors:
         txt = tostr(exc)
@@ -22,4 +18,4 @@ def err(event):
             event.reply(line)
 
 
-add(err)
+Command.add(err)

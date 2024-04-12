@@ -6,7 +6,7 @@
 "available modules"
 
 
-from objr import Client
+from objr import Command
 
 
 from . import __dir__
@@ -16,4 +16,4 @@ def mod(event):
     event.reply(",".join(sorted(__dir__())))
 
 
-Client.add(mod)
+Command.add(mod)

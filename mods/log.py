@@ -9,11 +9,8 @@
 import time
 
 
-from objx.object  import Object
-from objx.persist import find, fntime, sync, whitelist
-
-
-from objr import Client, laps
+from objx import Object, find, fntime, sync, whitelist
+from objr import Command, laps
 
 
 class Log(Object):
@@ -42,4 +39,4 @@ def log(event):
     event.reply('ok')
 
 
-Client.add(log)
+Command.add(log)

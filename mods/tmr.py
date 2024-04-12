@@ -12,7 +12,10 @@ import time as ttime
 
 
 from objx import find, sync, update, whitelist
-from objr import Client, Event, Timer, first, launch, laps
+from objr import Command, Event, Timer, launch, laps
+
+
+from .irc import broker
 
 
 def init():
@@ -21,7 +24,7 @@ def init():
             continue
         diff = float(obj.time) - ttime.time()
         if diff > 0:
-            bot = first()
+            bot = broker.first()
             evt = Event()
             update(evt, obj)
             evt.orig = object.__repr__(bot)
@@ -57,6 +60,7 @@ FORMATS = [
 class NoDate(Exception):
 
     pass
+
 
 whitelist(Timer)
 
@@ -221,4 +225,4 @@ def tmr(event):
     launch(timer.start)
 
 
-Client.add(tmr)
+Command.add(tmr)

@@ -42,8 +42,8 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx import Default, cdir, getwd, setwd, skel
-from objr import Client, Event, cmnd, debug, errors, parse_cmd, spl
+from objx import Default, cdir, setwd, skel
+from objr import Client, Command, Event, cmnd, debug, errors, parse_cmd, spl
 
 
 if os.path.exists("mods"):
@@ -154,7 +154,7 @@ def ver(event):
     event.reply(f"{Cfg.name.upper()} {Cfg.version}")
 
 
-Client.add(ver)
+Command.add(ver)
 
 
 "runtime"
@@ -167,7 +167,6 @@ def main():
         Cfg.mod = ",".join(mods.__dir__())
     if "v" in Cfg.opts:
         debug(f"{Cfg.name.upper()} {Cfg.opts.upper()} started {dte}")
-        debug(f"{getwd()}")
     if "h" in Cfg.opts:
         print(__doc__)
         return

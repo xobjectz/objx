@@ -9,11 +9,8 @@
 import time
 
 
-from objx.object  import Object
-from objx.persist import fntime, find, sync, whitelist
-
-
-from objr import Client, laps
+from objx import Object, fntime, find, sync, whitelist
+from objr import Command, laps
 
 
 class NoDate(Exception):
@@ -47,7 +44,7 @@ def dne(event):
         event.reply("nothing todo")
 
 
-Client.add(dne)
+Command.add(dne)
 
 
 def tdo(event):
@@ -66,4 +63,4 @@ def tdo(event):
     event.reply('ok')
 
 
-Client.add(tdo)
+Command.add(tdo)

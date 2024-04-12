@@ -6,10 +6,7 @@
 "client"
 
 
-from objx import Object
-
-
-from .broker  import add
+from .command import Command
 from .errors  import later
 from .event   import Event
 from .handler import Handler
@@ -20,21 +17,19 @@ class Client(Handler):
 
     "Client class"
 
-    cmds = Object()
-
     def __init__(self):
         Handler.__init__(self)
         self.register("command", command)
-        add(self)
+
+    @staticmethod
+    def add(func):
+        "add command to client."
+        setattr(Command.cmds, func.__name__, func)
 
     def announce(self, txt):
         "announce text."
         self.raw(txt)
 
-    @staticmethod
-    def add(func):
-        "add command to client."
-        setattr(Client.cmds, func.__name__, func)
 
     def raw(self, txt):
         "raw output."
@@ -56,19 +51,19 @@ def cmnd(txt, out):
     evn = Event()
     evn.orig = object.__repr__(clt)
     evn.txt = txt
-    command(evn)
+    command(clt, evn)
     evn.wait()
     return evn
 
 
-def command(evt):
+def command(bot, evt):
     "check for and run a command."
     parse_cmd(evt)
-    func = getattr(Client.cmds, evt.cmd, None)
+    func = getattr(Command.cmds, evt.cmd, None)
     if func:
         try:
             func(evt)
         except Exception as exc:
             later(exc)
-    evt.show()
+    bot.show(evt)
     evt.ready()

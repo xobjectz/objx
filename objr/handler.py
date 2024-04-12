@@ -33,7 +33,7 @@ class Handler:
         if not func:
             evt.ready()
             return
-        evt._thr = launch(func, evt)
+        evt._thr = launch(func, self, evt)
 
     def loop(self):
         "proces events until interrupted."

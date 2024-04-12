@@ -31,6 +31,7 @@ def __dir__():
         'last',
         'load',
         'loads',
+        'long',
         'read',
         'search',
         'setwd',

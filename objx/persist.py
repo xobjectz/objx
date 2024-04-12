@@ -138,6 +138,7 @@ def __dir__():
         'fntime',
         'find',
         'last',
+        'long',
         'ident',
         'sync',
         'whitelist'

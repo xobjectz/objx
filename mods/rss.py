@@ -18,9 +18,12 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from objx import Default, Object, fmt, update
-from objx import find, fntime, last, sync, whitelist
-from objr import Broker, Client, Repeater, laps, launch, spl
+from objx import Default, fmt, find, fntime, last, sync
+from objx import values, whitelist, update
+from objr import Command, Repeater, laps, launch, spl
+
+
+from .irc import broker
 
 
 def init():
@@ -60,7 +63,7 @@ class Seen(Default):
 whitelist(Seen)
 
 
-class Fetcher(Object):
+class Fetcher:
 
     def __init__(self):
         self.dosave = False
@@ -116,7 +119,7 @@ class Fetcher(Object):
             txt = f'[{feedname}] '
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in Broker.objs:
+            for bot in values(broker.objs):
                 if "announce" in dir(bot):
                     bot.announce(txt2.rstrip())
         return counter
@@ -232,13 +235,13 @@ class Parser:
 
 def getfeed(url, items):
     if DEBUG:
-        return [Object(), Object()]
+        return [Default(), Default()]
     try:
         result = geturl(url)
     except (ValueError, HTTPError, URLError):
-        return [Object(), Object()]
+        return [Default(), Default()]
     if not result:
-        return [Object(), Object()]
+        return [Default(), Default()]
     if url.endswith('atom'):
         return Parser.parse(str(result.data, 'utf-8'), 'entry', items) or []
     else:
@@ -300,7 +303,7 @@ def dpl(event):
     event.reply('ok')
 
 
-Client.add(dpl)
+Command.add(dpl)
 
 
 def nme(event):
@@ -315,7 +318,7 @@ def nme(event):
     event.reply('ok')
 
 
-Client.add(nme)
+Command.add(nme)
 
 
 def rem(event):
@@ -330,7 +333,7 @@ def rem(event):
     event.reply('ok')
 
 
-Client.add(rem)
+Command.add(rem)
 
 
 def res(event):
@@ -345,7 +348,7 @@ def res(event):
     event.reply('ok')
 
 
-Client.add(res)
+Command.add(res)
 
 
 def rss(event):
@@ -373,4 +376,4 @@ def rss(event):
     event.reply('ok')
 
 
-Client.add(rss)
+Command.add(rss)
