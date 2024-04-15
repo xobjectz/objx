@@ -2,7 +2,7 @@ NAME
 
 ::
 
-    OBJX - objects library
+    OBJX - objects
 
 
 SYNOPSIS
@@ -37,7 +37,7 @@ AUTHOR
 
 ::
 
-    xobjectz <objx@proton.me>
+    Bart Thate <bthate@dds.nl>
 
 
 COPYRIGHT
