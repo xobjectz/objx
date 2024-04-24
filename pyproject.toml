@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "objx"
 description = "objects"
-version = "80"
+version = "81"
 authors = [
     {name = "Bart Thate", email = "bthate@dds.nl"},
 ]

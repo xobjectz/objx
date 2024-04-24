@@ -7,14 +7,13 @@
 
 
 from .object import *
-from .object import cdir
 
 
 def __dir__():
     return (
         'Object',
-        'construct',
         'cdir',
+        'construct',
         'dump',
         'dumps',
         'edit',

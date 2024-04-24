@@ -258,6 +258,7 @@ def cdir(pth):
 def __dir__():
     return (
         'Object',
+        'cdir',
         'construct',
         'dump',
         'dumps',
