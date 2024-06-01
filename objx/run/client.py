@@ -7,8 +7,10 @@
 import inspect
 
 
+from ..lib.object  import Default, Object
+
+
 from .handler import Event, Handler
-from .object  import Default, Object
 from .thread  import later
 
 
