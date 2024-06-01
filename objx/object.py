@@ -1,13 +1,10 @@
 # This file is placed in the Public Domain.
-#
-# pylint: disable=C,R,W0105
 
 
-"objects"
+"clean namespace"
 
 
 import json
-import os
 import pathlib
 import _thread
 
@@ -15,7 +12,7 @@ import _thread
 lock = _thread.allocate_lock()
 
 
-class Object:
+class Object: # pylint: disable=R0902
 
     "Object"
 
@@ -30,6 +27,14 @@ class Object:
 
     def __str__(self):
         return str(self.__dict__)
+
+
+class Default(Object): # pylint: disable=R0902,R0903
+
+    "Default"
+
+    def __getattr__(self, key):
+        return self.__dict__.get(key, "")
 
 
 def construct(obj, *args, **kwargs):
@@ -153,7 +158,8 @@ def values(obj):
 def write(obj, pth):
     "write an object to disk."
     with lock:
-        cdir(os.path.dirname(pth))
+        path = pathlib.Path(pth)
+        path.parent.mkdir(parents=True, exist_ok=True)
         with open(pth, 'w', encoding='utf-8') as ofile:
             dump(obj, ofile, indent=4)
 
@@ -244,21 +250,10 @@ def dumps(*args, **kw):
     return json.dumps(*args, **kw)
 
 
-def cdir(pth):
-    "create directory."
-    if os.path.exists(pth):
-        return
-    pth = pathlib.Path(pth)
-    os.makedirs(pth, exist_ok=True)
-
-
-"interface"
-
-
 def __dir__():
     return (
         'Object',
-        'cdir',
+        'Default',
         'construct',
         'dump',
         'dumps',
@@ -276,6 +271,3 @@ def __dir__():
         'values',
         'write'
     )
-
-
-__all__ = __dir__()
