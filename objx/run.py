@@ -4,11 +4,9 @@
 "runtime"
 
 
-from ..storage.disk    import scancls
-
-
 from .broker  import Broker
 from .client  import scancmd
+from .disk    import scancls
 from .thread  import later
 from .utils   import skip, spl
 

@@ -17,12 +17,12 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from objx.lib.object  import Default, Object, fmt, update, values
-from objx.run.client   import laps
-from objx.run.main     import broker, spl
-from objx.run.thread   import Repeater, launch
-from objx.storage.disk import sync
-from objx.storage.find import find, fntime, last
+from objx.object import Default, Object, fmt, update, values
+from objx.client import laps
+from objx.run    import broker, spl
+from objx.thread import Repeater, launch
+from objx.disk   import sync
+from objx.find   import find, fntime, last
 
 
 def init():

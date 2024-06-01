@@ -7,10 +7,10 @@
 import time
 
 
-from ..client import laps
-from ..disk   import sync
-from ..find   import fntime, find
-from ..object import Object
+from objx.client import laps
+from objx.disk   import sync
+from objx.find   import fntime, find
+from objx.object import Object
 
 
 class NoDate(Exception):

@@ -4,10 +4,10 @@
 "outline processor markup language"
 
 
-from objx.storage.disk import sync
-from objx.storage.find import find
-from objx.lib.object import Default, construct, update
-from objx.run.utils  import shortid, spl
+from objx.disk   import sync
+from objx.find   import find
+from objx.object import Default, construct, update
+from objx.utils  import shortid, spl
 
 
 from .rss import Rss

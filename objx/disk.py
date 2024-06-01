@@ -10,7 +10,7 @@ import os
 import pathlib
 
 
-from ..lib.object import Object, fqn, read, write
+from .object import Object, fqn, read, write
 
 
 class Workdir(Object): # pylint: disable=R0903

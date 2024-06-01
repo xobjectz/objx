@@ -5,7 +5,7 @@
 
 
 
-from objx.run.client import Command
+from objx.client import Command
 
 
 def cmd(event):

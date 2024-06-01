@@ -6,7 +6,7 @@
 "objects"
 
 
-from .lib.object import *
+from .object import *
 
 
 def __dir__():

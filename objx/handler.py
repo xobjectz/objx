@@ -9,9 +9,7 @@ import threading
 import _thread
 
 
-from ..lib.object import Default, Object
-
-
+from .object import Default, Object
 from .thread import launch
 
 
