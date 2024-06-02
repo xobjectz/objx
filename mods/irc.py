@@ -57,7 +57,7 @@ class Config(Default): # pylint: disable=R0902,R0903
     "Config"
 
     channel = f'#{NAME}'
-    commands = False
+    commands = True
     control = '!'
     edited = time.time()
     nick = NAME
