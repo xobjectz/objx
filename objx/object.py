@@ -158,8 +158,7 @@ def values(obj):
 def write(obj, pth):
     "write an object to disk."
     with lock:
-        path = pathlib.Path(pth)
-        path.parent.mkdir(parents=True, exist_ok=True)
+        cdir(pth)
         with open(pth, 'w', encoding='utf-8') as ofile:
             dump(obj, ofile, indent=4)
 
@@ -248,6 +247,11 @@ def dumps(*args, **kw):
     "dump object to string."
     kw["cls"] = ObjectEncoder
     return json.dumps(*args, **kw)
+
+
+def cdir(pth):
+    path = pathlib.Path(pth)
+    path.parent.mkdir(parents=True, exist_ok=True)
 
 
 def __dir__():

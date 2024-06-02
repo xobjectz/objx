@@ -11,14 +11,18 @@ import os
 import unittest
 
 
-from objx.object import Object, read
+from objx.disk   import Workdir, store
+from objx.object import Object, cdir, read
 
 
-class TestBork(unittest.TestCase):
+class TestEmpty(unittest.TestCase):
 
     def test_bork(self):
-        with open("bla", "w") as file:
+        Workdir.workdir = ".test"
+        pth = store("bla")
+        cdir(pth)
+        with open(pth, "w") as file:
             file.write("")
         obj = Object()
-        read(obj, "bla")
+        read(obj, pth)
         self.assertTrue(True)
