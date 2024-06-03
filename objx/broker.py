@@ -5,11 +5,11 @@
 
 
 import datetime
-import inspect
 import os
+import time
 
 
-from .object import Object, fqn, items, keys, search, update
+from .object import Object, fqn, items, keys, search
 
 
 rpr = object.__repr__
