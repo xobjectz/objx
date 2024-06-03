@@ -21,8 +21,6 @@ from objx.object import Default, Object, fmt, update, values
 from objx.client import laps
 from objx.run    import broker, spl
 from objx.thread import Repeater, launch
-from objx.disk   import sync
-from objx.find   import find, fntime, last
 
 
 def init():
@@ -112,10 +110,10 @@ class Fetcher(Object):
                 self.seen.urls.append(uurl)
                 counter += 1
                 if self.dosave:
-                    sync(fed)
+                    broker.add(fed)
                 result.append(fed)
-        if result:
-            sync(self.seen, self.seenfn)
+        #if result:
+        #    broker.add(self.seen, self.seenfn)
         txt = ''
         feedname = getattr(feed, 'name', None)
         if feedname:
@@ -130,13 +128,13 @@ class Fetcher(Object):
     def run(self):
         "fetch all feeds."
         thrs = []
-        for _fn, feed in find('rss'):
+        for _fn, feed in broker.find('rss'):
             thrs.append(launch(self.fetch, feed, name=f"{feed.rss}"))
         return thrs
 
     def start(self, repeat=True):
         "start fetcher."
-        self.seenfn = last(self.seen)
+        self.seenfn = broker.last(self.seen)
         if repeat:
             repeater = Repeater(300.0, self.run)
             repeater.start()
@@ -279,10 +277,10 @@ def dpl(event):
         event.reply('dpl <stringinurl> <item1,item2>')
         return
     setter = {'display_list': event.args[1]}
-    for _fn, feed in find('rss', {'rss': event.args[0]}):
+    for _fn, feed in broker.find('rss', {'rss': event.args[0]}):
         if feed:
             update(feed, setter)
-            sync(feed)
+            broker.add(feed)
     event.reply('ok')
 
 
@@ -292,10 +290,10 @@ def nme(event):
         event.reply('nme <stringinurl> <name>')
         return
     selector = {'rss': event.args[0]}
-    for _fn, feed in find('rss', selector):
+    for _fn, feed in broker.find('rss', selector):
         if feed:
             feed.name = event.args[1]
-            sync(feed)
+            broker.add(feed)
     event.reply('ok')
 
 
@@ -305,10 +303,10 @@ def rem(event):
         event.reply('rem <stringinurl>')
         return
     selector = {'rss': event.args[0]}
-    for fnm, feed in find('rss', selector):
+    for fnm, feed in broker.find('rss', selector):
         if feed:
             feed.__deleted__ = True
-            sync(feed, fnm)
+            broker.add(feed, fnm)
     event.reply('ok')
 
 
@@ -318,10 +316,10 @@ def res(event):
         event.reply('res <stringinurl>')
         return
     selector = {'rss': event.args[0]}
-    for fnm, feed in find('rss', selector, deleted=True):
+    for fnm, feed in broker.find('rss', selector, deleted=True):
         if feed:
             feed.__deleted__ = False
-            sync(feed, fnm)
+            broker.add(feed, fnm)
     event.reply('ok')
 
 
@@ -329,7 +327,7 @@ def rss(event):
     "add a feed."
     if not event.rest:
         nrs = 0
-        for fnm, feed in find('rss'):
+        for fnm, feed in broker.find('rss'):
             nrs += 1
             elp = laps(time.time()-fntime(fnm))
             txt = fmt(feed)
@@ -341,11 +339,11 @@ def rss(event):
     if 'http' not in url:
         event.reply('i need an url')
         return
-    for fnm, result in find('rss', {'rss': url}):
+    for fnm, result in broker.find('rss', {'rss': url}):
         if result:
             event.reply(f'already got {url}')
             return
     feed = Rss()
     feed.rss = event.args[0]
-    sync(feed)
+    broker.add(feed)
     event.reply('ok')

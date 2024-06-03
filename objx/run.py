@@ -4,9 +4,8 @@
 "runtime"
 
 
-from .broker  import Broker
+from .broker  import Broker, scancls
 from .client  import scancmd
-from .disk    import scancls
 from .thread  import later
 from .utils   import skip, spl
 

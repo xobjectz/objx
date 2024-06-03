@@ -15,14 +15,13 @@ import time
 import _thread
 
 
+from objx.broker  import whitelist
 from objx.object  import Default, Object, edit, fmt, keys, values
 from objx.client  import Client, command
 from objx.handler import Event
 from objx.log     import Logging, debug
 from objx.run     import broker
 from objx.thread  import later, launch
-from objx.disk    import sync, whitelist
-from objx.find    import last
 
 
 NAME    = __file__.split(os.sep)[-3]
@@ -507,7 +506,7 @@ class IRC(Client, Output):
 
     def start(self):
         "start bot."
-        last(self.cfg)
+        broker.last(self.cfg)
         if self.cfg.channel not in self.channels:
             self.channels.append(self.cfg.channel)
         self.events.connected.clear()
@@ -622,7 +621,7 @@ def cb_quit(bot, evt):
 def cfg(event):
     "configure command."
     config = Config()
-    path = last(config)
+    path = broker.last(config)
     if not event.sets:
         event.reply(
                     fmt(
@@ -633,7 +632,7 @@ def cfg(event):
                    )
     else:
         edit(config, event.sets)
-        sync(config, path)
+        broker.add(config)
         event.reply('ok')
 
 

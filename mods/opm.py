@@ -4,8 +4,6 @@
 "outline processor markup language"
 
 
-from objx.disk   import sync
-from objx.find   import find
 from objx.object import Default, construct, update
 from objx.utils  import shortid, spl
 
@@ -130,7 +128,6 @@ def imp(event):
         construct(rss, obj)
         rss.rss = rss.xmlUrl
         rss.insertid = insertid
-        sync(rss)
     if nrs:
         event.reply(f"added {nrs} urls.")
 

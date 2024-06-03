@@ -18,7 +18,6 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx.client  import Client, cmnd, parse
-from objx.disk    import Workdir, skel
 from objx.handler import Event
 from objx.log     import debug, enable
 from objx.object  import Default
@@ -40,9 +39,6 @@ Cfg.name        = __file__.rsplit(os.sep, maxsplit=1)[-1]
 Cfg.version     = "81"
 Cfg.wdr         = os.path.expanduser(f"~/.{Cfg.name}")
 Cfg.pidfile     = os.path.join(Cfg.wdr, f"{Cfg.name}.pid")
-
-
-Workdir.workdir = Cfg.wdr
 
 
 class Console(Client):
@@ -95,7 +91,6 @@ def main():
     "main"
     setout(print)
     parse(Cfg, " ".join(sys.argv[1:]))
-    skel()
     Cfg.mod = ",".join(modules.__dir__())
     if "v" in Cfg.opts:
         enable(print)
