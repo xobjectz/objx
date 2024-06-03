@@ -20,7 +20,6 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx.client  import Client, Command, laps, parse
-from objx.disk    import Workdir
 from objx.handler import Event
 from objx.log     import debug, enable
 from objx.object  import Default, Object, keys
@@ -41,20 +40,18 @@ PERCALL = 1
 STARTTIME = time.time()
 
 
-path = os.path.dirname(modules.__file__)
+path    = os.path.dirname(modules.__file__)
+workdir = ".test"
 
 
-Cfg             = Default()
-Cfg.debug       = True
-Cfg.mod         = ""
-Cfg.name        = "tinder"
-Cfg.silent      = False
-Cfg.skip        = ["debug",]
-Cfg.version     = "19"
-Cfg.wdr         = ".test"
-
-
-Workdir.workdir = Cfg.wdr
+Cfg         = Default()
+Cfg.debug   = True
+Cfg.mod     = ""
+Cfg.name    = "tinder"
+Cfg.silent  = False
+Cfg.skip    = ["debug",]
+Cfg.version = "19"
+Cfg.wdr     = ".test"
 
 
 events = []
@@ -170,8 +167,8 @@ def main():
 if __name__ == "__main__":
     parse(Cfg, " ".join(sys.argv[1:]))
     if "f" in Cfg.opts:
-        if os.path.exists(Workdir.workdir):
-            shutil.rmtree(Workdir.workdir)
+        if os.path.exists(workdir):
+            shutil.rmtree(workdir)
     Cfg.mod = lsmod(path)
     enable(print)
     dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])

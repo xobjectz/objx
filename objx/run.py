@@ -4,7 +4,7 @@
 "runtime"
 
 
-from .broker  import Broker, scancls
+from .broker  import Broker
 from .client  import scancmd
 from .thread  import later
 from .utils   import skip, spl
@@ -41,7 +41,6 @@ def scan(pkg, modstr, disable=""):
         if not module:
             continue
         scancmd(module)
-        scancls(module)
     return mds
 
 

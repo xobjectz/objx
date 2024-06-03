@@ -4,7 +4,8 @@
 "outline processor markup language"
 
 
-from objx.object import Default, construct, update
+from objx.object import Default, construct, items, update
+from objx.run    import broker
 from objx.utils  import shortid, spl
 
 
@@ -98,7 +99,7 @@ def exp(event):
     "export to opml."
     event.reply(TEMPLATE)
     nrs = 0
-    for _fn, obj in find("rss"):
+    for _fn, obj in items(broker.objs):
         nrs += 1
         name = obj.name or f"url{nrs}"
         txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'

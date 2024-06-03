@@ -15,7 +15,6 @@ import time
 import _thread
 
 
-from objx.broker  import whitelist
 from objx.object  import Default, Object, edit, fmt, keys, values
 from objx.client  import Client, command
 from objx.handler import Event
@@ -80,8 +79,6 @@ class Config(Default): # pylint: disable=R0902,R0903
         self.server = self.server or Config.server
         self.username = self.username or Config.username
 
-
-whitelist(Config)
 
 
 class TextWrap(textwrap.TextWrapper):

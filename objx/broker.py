@@ -4,10 +4,12 @@
 "broker"
 
 
+import datetime
 import inspect
+import os
 
 
-from .object import Object, fqn, keys, search
+from .object import Object, fqn, items, keys, search, update
 
 
 rpr = object.__repr__
@@ -24,10 +26,15 @@ class Broker:
         "add an object to the broker."
         setattr(self.objs, ident(obj), obj)
 
+    def all(self):
+        "return all objects."
+        return self.objs
+
     def find(self, selector=None, index=None, deleted=False):
         "find objects stored in the broker."
         if selector is None:
             selector = {}
+        nrs = 0
         for key, obj in items(self.objs):
             if not deleted and '__deleted__' in dir(obj):
                 continue
@@ -38,15 +45,14 @@ class Broker:
                 continue
             yield (key, obj)
 
-    def last(selector=None):
+    def last(self, selector=None):
         "return last object saved."
         if selector is None:
             selector = {}
-        result = sorted(self.find(selector), key=fntime(x[0]))
+        result = sorted(self.find(selector))
         res = None
         if result:
             inp = result[-1]
-            update(obj, inp[-1])
             res = inp[0]
         return res
 
@@ -84,45 +90,6 @@ def ident(obj):
                         fqn(obj),
                         os.path.join(*str(datetime.datetime.now()).split())
                        )
-
-
-class Whitelist(Object): # pylint: disable=R0903
-
-    "Whitelist"
-
-    classes = Object()
-
-
-def scancls(mod) -> None:
-    "scan module for classes."
-    for key, clz in inspect.getmembers(mod, inspect.isclass):
-        if key.startswith("cb"):
-            continue
-        if not issubclass(clz, Object):
-            continue
-        whitelist(clz)
-
-
-def whitelist(clz):
-    "add class to whitelist."
-    name = str(clz).split()[1][1:-2]
-    setattr(Whitelist.classes, name, clz)
-
-
-def long(name):
-    "match from single name to long name."
-    split = name.split(".")[-1].lower()
-    res = name
-    for named in Whitelist.classes:
-        if split in named.split(".")[-1].lower():
-            res = named
-            break
-    if "." not in res:
-        for fnm in lsstore():
-            claz = fnm.split(".")[-1]
-            if fnm == claz.lower():
-                res = fnm
-    return res
 
 
 def __dir__():

@@ -277,7 +277,7 @@ def dpl(event):
         event.reply('dpl <stringinurl> <item1,item2>')
         return
     setter = {'display_list': event.args[1]}
-    for _fn, feed in broker.find('rss', {'rss': event.args[0]}):
+    for _fn, feed in broker.find({'rss': event.args[0]}):
         if feed:
             update(feed, setter)
             broker.add(feed)
@@ -290,7 +290,7 @@ def nme(event):
         event.reply('nme <stringinurl> <name>')
         return
     selector = {'rss': event.args[0]}
-    for _fn, feed in broker.find('rss', selector):
+    for _fn, feed in broker.find(selector):
         if feed:
             feed.name = event.args[1]
             broker.add(feed)
@@ -339,7 +339,7 @@ def rss(event):
     if 'http' not in url:
         event.reply('i need an url')
         return
-    for fnm, result in broker.find('rss', {'rss': url}):
+    for fnm, result in broker.find({'rss': url}):
         if result:
             event.reply(f'already got {url}')
             return
