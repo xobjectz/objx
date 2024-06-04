@@ -19,15 +19,24 @@ class Broker:
 
     "Broker"
 
+    fqn = []
+
     def __init__(self):
         self.objs = Object()
 
     def add(self, obj):
         "add an object to the broker."
         setattr(self.objs, ident(obj), obj)
+        name = fqn(obj)
+        Broker.fqn.append(name)
 
-    def all(self):
+    def all(self, fqn):
         "return all objects."
+        if fqn:
+            names = [x for x in keys(self.objs) if fqn in x]
+            for name in names:
+                yield name, getattr(self.objs, name)
+            return
         return self.objs
 
     def find(self, selector=None, index=None, deleted=False, match=None):
@@ -92,6 +101,23 @@ def ident(obj):
                         fqn(obj),
                         os.path.join(*str(datetime.datetime.now()).split())
                        )
+
+
+def long(name):
+    "match from single name to long name."
+    split = name.split(".")[-1].lower()
+    res = name
+    for named in keys(broker.objs):
+        if split in named.split(".")[-1].lower():
+            res = named
+            break
+    if "." not in res:
+        for fnm in lsstore():
+            claz = fnm.split(".")[-1]
+            if fnm == claz.lower():
+                res = fnm
+    return res
+
 
 
 def __dir__():

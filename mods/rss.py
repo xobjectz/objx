@@ -17,6 +17,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
+from objx.broker import fntime
 from objx.object import Default, Object, fmt, update, values
 from objx.client import laps
 from objx.run    import broker, spl
@@ -326,6 +327,7 @@ def rss(event):
         nrs = 0
         for fnm, feed in broker.all('rss'):
             nrs += 1
+            print(fnm)
             elp = laps(time.time()-fntime(fnm))
             txt = fmt(feed)
             event.reply(f'{nrs} {txt} {elp}')
