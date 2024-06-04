@@ -280,7 +280,6 @@ def dpl(event):
     for _fn, feed in broker.find({'rss': event.args[0]}):
         if feed:
             update(feed, setter)
-            broker.add(feed)
     event.reply('ok')
 
 
@@ -293,7 +292,6 @@ def nme(event):
     for _fn, feed in broker.find(selector):
         if feed:
             feed.name = event.args[1]
-            broker.add(feed)
     event.reply('ok')
 
 
@@ -319,7 +317,6 @@ def res(event):
     for fnm, feed in broker.find('rss', selector, deleted=True):
         if feed:
             feed.__deleted__ = False
-            broker.add(feed, fnm)
     event.reply('ok')
 
 
@@ -327,7 +324,7 @@ def rss(event):
     "add a feed."
     if not event.rest:
         nrs = 0
-        for fnm, feed in broker.find('rss'):
+        for fnm, feed in broker.all('rss'):
             nrs += 1
             elp = laps(time.time()-fntime(fnm))
             txt = fmt(feed)

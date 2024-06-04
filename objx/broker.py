@@ -30,12 +30,14 @@ class Broker:
         "return all objects."
         return self.objs
 
-    def find(self, selector=None, index=None, deleted=False):
+    def find(self, selector=None, index=None, deleted=False, match=None):
         "find objects stored in the broker."
         if selector is None:
             selector = {}
         nrs = 0
         for key, obj in items(self.objs):
+            if match and match not in key:
+                continue
             if not deleted and '__deleted__' in dir(obj):
                 continue
             if selector and not search(obj, selector):
