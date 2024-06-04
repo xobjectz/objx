@@ -318,6 +318,7 @@ def res(event):
     for fnm, feed in broker.find('rss', selector, deleted=True):
         if feed:
             feed.__deleted__ = False
+            broker.add(feed, fnm)
     event.reply('ok')
 
 

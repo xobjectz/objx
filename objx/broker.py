@@ -23,10 +23,11 @@ class Broker:
     def __init__(self):
         self.objs = Object()
 
-    def add(self, obj):
+    def add(self, obj, name=None):
         "add an object to the broker."
         setattr(self.objs, ident(obj), obj)
-        name = fqn(obj)
+        if name is None:
+            name = fqn(obj)
         if name not in Broker.fqns:
             Broker.fqns.append(name)
 

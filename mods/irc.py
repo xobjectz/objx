@@ -618,7 +618,7 @@ def cb_quit(bot, evt):
 def cfg(event):
     "configure command."
     config = Config()
-    path = broker.last(config)
+    broker.last(config)
     if not event.sets:
         event.reply(
                     fmt(

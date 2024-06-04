@@ -7,10 +7,10 @@
 import time
 
 
+from objx.broker import fntime
 from objx.client import laps
-from objx.disk   import sync
-from objx.find   import fntime, find
 from objx.object import Object
+from objx.run    import broker
 
 
 class NoDate(Exception):
@@ -34,10 +34,10 @@ def dne(event):
         return
     selector = {'txt': event.args[0]}
     nmr = 0
-    for fnm, obj in find('todo', selector):
+    for fnm, obj in broker.find(selector, match="Todo"):
         nmr += 1
         obj.__deleted__ = True
-        sync(obj, fnm)
+        broker.add(obj, fnm)
         event.reply('ok')
         break
     if not nmr:
@@ -48,7 +48,7 @@ def tdo(event):
     "add todo."
     if not event.rest:
         nmr = 0
-        for fnm, obj in find('todo'):
+        for fnm, obj in broker.all('todo'):
             lap = laps(time.time()-fntime(fnm))
             event.reply(f'{nmr} {obj.txt} {lap}')
             nmr += 1
@@ -57,5 +57,5 @@ def tdo(event):
         return
     obj = Todo()
     obj.txt = event.rest
-    sync(obj)
+    broker.add(obj)
     event.reply('ok')
