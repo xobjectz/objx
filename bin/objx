@@ -24,9 +24,8 @@
 
 """
 
-import importlib
 import os
-import readline
+import readline # pylint: disable=W0611
 import sys
 import termios
 import time
@@ -38,7 +37,7 @@ sys.path.insert(0, os.getcwd())
 from objx.client  import Client, cmnd, parse
 from objx.handler import Event
 from objx.log     import debug, enable
-from objx.object  import Default, update
+from objx.object  import Default
 from objx.run     import broker, init, scan
 from objx.thread  import errors, setout
 
@@ -85,6 +84,7 @@ class Console(Client):
 
 
 def getmods(path, modname="mods"):
+    "return modules"
     path = os.path.dirname(path)
     if path not in sys.path:
         sys.path.insert(0, path)
