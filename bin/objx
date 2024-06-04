@@ -4,9 +4,27 @@
 # pylint: disable=C0413,C0103
 
 
-"main"
+"""OBJX
 
+    objx  <cmd> [key=val] [key==val]
+    objx  [-a] [-c] [-h] [-v]
+    objxd 
 
+    options are:
+
+    -a     load all modules
+    -c     start console
+    -h     show help
+    -v     use verbose
+
+    the cmd command show available commands.
+    
+    $ objx cmd
+    cfg,cmd,dpl,err,exp,imp,mod,mre,nme,pwd,rem,res,rss,thr
+
+"""
+
+import importlib
 import os
 import readline
 import sys
@@ -20,24 +38,19 @@ sys.path.insert(0, os.getcwd())
 from objx.client  import Client, cmnd, parse
 from objx.handler import Event
 from objx.log     import debug, enable
-from objx.object  import Default
+from objx.object  import Default, update
 from objx.run     import broker, init, scan
 from objx.thread  import errors, setout
 
 
-if os.path.exists("mods"):
-    import mods as modules
-else:
-    modules = None
-
-
 Cfg             = Default()
 Cfg.dis         = ""
-Cfg.mod         = "cmd,err,log,mod,req,tdo,thr"
+Cfg.mod         = "cmd,err,mod,thr"
 Cfg.opts        = ""
 Cfg.name        = __file__.rsplit(os.sep, maxsplit=1)[-1]
 Cfg.version     = "81"
 Cfg.wdr         = os.path.expanduser(f"~/.{Cfg.name}")
+Cfg.mdir        = os.path.join(Cfg.wdr, "mods")
 Cfg.pidfile     = os.path.join(Cfg.wdr, f"{Cfg.name}.pid")
 
 
@@ -71,6 +84,13 @@ class Console(Client):
         print(txt)
 
 
+def getmods(path, modname="mods"):
+    path = os.path.dirname(path)
+    if path not in sys.path:
+        sys.path.insert(0, path)
+    return __import__(modname)
+
+
 def wrap(func):
     "restore console."
     old2 = None
@@ -85,19 +105,24 @@ def wrap(func):
     finally:
         if old2:
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
+    errors()
 
 
 def main():
     "main"
     setout(print)
     parse(Cfg, " ".join(sys.argv[1:]))
-    Cfg.mod = ",".join(dir(modules))
+    if "h" in Cfg.opts:
+        print(__doc__)
+        return
+    Cfg.mdir = Cfg.sets.mdir or Cfg.mdir
+    modules = getmods(Cfg.mdir)
+    if "a" in Cfg.opts:
+        Cfg.mod = ",".join(dir(modules))
     if "v" in Cfg.opts:
         enable(print)
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
         debug(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
-    if "h" in Cfg.opts:
-        print(__doc__)
     scan(modules, Cfg.mod, Cfg.sets.dis)
     if "c" in Cfg.opts:
         init(modules, Cfg.mod, Cfg.sets.dis)
@@ -110,6 +135,4 @@ def main():
 
 
 if __name__ == "__main__":
-    readline.redisplay()
     wrap(main)
-    errors()
