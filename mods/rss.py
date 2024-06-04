@@ -129,7 +129,7 @@ class Fetcher(Object):
     def run(self):
         "fetch all feeds."
         thrs = []
-        for _fn, feed in broker.find('rss'):
+        for _fn, feed in broker.all('rss'):
             thrs.append(launch(self.fetch, feed, name=f"{feed.rss}"))
         return thrs
 
@@ -327,7 +327,6 @@ def rss(event):
         nrs = 0
         for fnm, feed in broker.all('rss'):
             nrs += 1
-            print(fnm)
             elp = laps(time.time()-fntime(fnm))
             txt = fmt(feed)
             event.reply(f'{nrs} {txt} {elp}')

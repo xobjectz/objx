@@ -5,7 +5,6 @@
 
 
 import datetime
-import os
 import time
 
 
@@ -19,7 +18,7 @@ class Broker:
 
     "Broker"
 
-    fqn = []
+    fqns = []
 
     def __init__(self):
         self.objs = Object()
@@ -28,16 +27,15 @@ class Broker:
         "add an object to the broker."
         setattr(self.objs, ident(obj), obj)
         name = fqn(obj)
-        Broker.fqn.append(name)
+        if name not in Broker.fqns:
+            Broker.fqns.append(name)
 
-    def all(self, fqn):
+    def all(self, name=None):
         "return all objects."
-        if fqn:
-            names = [x for x in keys(self.objs) if fqn in x]
-            for name in names:
-                yield name, getattr(self.objs, name)
-            return
-        return self.objs
+        for key, obj in items(self.objs):
+            if name and name not in key:
+                continue 
+            yield key, getattr(self.objs, key)
 
     def find(self, selector=None, index=None, deleted=False, match=None):
         "find objects stored in the broker."
@@ -56,11 +54,11 @@ class Broker:
                 continue
             yield (key, obj)
 
-    def last(self, selector=None):
+    def last(self, obj, selector=None):
         "return last object saved."
         if selector is None:
             selector = {}
-        result = sorted(self.find(selector))
+        result = sorted(self.all(fqn(obj)), key=lambda x: fntime(x[0]))
         res = None
         if result:
             inp = result[-1]
@@ -84,7 +82,7 @@ class Broker:
 def fntime(daystr):
     "convert file name to it's saved time."
     daystr = daystr.replace('_', ':')
-    datestr = ' '.join(daystr.split(os.sep)[-2:])
+    datestr = ' '.join(daystr.split("/")[-2:])
     if '.' in datestr:
         datestr, rest = datestr.rsplit('.', 1)
     else:
@@ -97,27 +95,11 @@ def fntime(daystr):
 
 def ident(obj):
     "return an id for an object."
-    return os.path.join(
-                        fqn(obj),
-                        os.path.join(*str(datetime.datetime.now()).split())
-                       )
+    return pjoin(fqn(obj), *str(datetime.datetime.now()).split())
 
 
-def long(name):
-    "match from single name to long name."
-    split = name.split(".")[-1].lower()
-    res = name
-    for named in keys(broker.objs):
-        if split in named.split(".")[-1].lower():
-            res = named
-            break
-    if "." not in res:
-        for fnm in lsstore():
-            claz = fnm.split(".")[-1]
-            if fnm == claz.lower():
-                res = fnm
-    return res
-
+def pjoin(*args):
+    return "/".join(args)
 
 
 def __dir__():
