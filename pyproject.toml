@@ -41,6 +41,17 @@ zip-safe=true
 "share/doc/objx" = [
     "README.rst"
 ]
+"share/objx/mods" = [
+    "mods/cmd.py",
+    "mods/err.py",
+    "mods/irc.py",
+    "mods/log.py",
+    "mods/mod.py",
+    "mods/opm.py",
+    "mods/rss.py",
+    "mods/tdo.py",
+    "mods/thr.py"
+]
 
 [tool.setuptools.exclude-package-data]
 "*" = [
