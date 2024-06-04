@@ -34,8 +34,8 @@ class Broker:
         "return all objects."
         for key, obj in items(self.objs):
             if name and name not in key:
-                continue 
-            yield key, getattr(self.objs, key)
+                continue
+            yield key, obj
 
     def find(self, selector=None, index=None, deleted=False, match=None):
         "find objects stored in the broker."
@@ -99,6 +99,7 @@ def ident(obj):
 
 
 def pjoin(*args):
+    "path join."
     return "/".join(args)
 
 
