@@ -1,1 +1,1 @@
-pylint objx mods bin/objx  bin/tinder
+pylint objx bin/tinder

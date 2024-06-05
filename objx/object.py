@@ -4,6 +4,7 @@
 "clean namespace"
 
 
+import datetime
 import json
 import pathlib
 import _thread
@@ -104,6 +105,11 @@ def fqn(obj):
     if kin == "type":
         kin = obj.__name__
     return kin
+
+
+def ident(obj):
+    "return an id for an object."
+    return pjoin(fqn(obj), *str(datetime.datetime.now()).split())
 
 
 def items(obj):
@@ -255,6 +261,11 @@ def cdir(pth):
     path.parent.mkdir(parents=True, exist_ok=True)
 
 
+def pjoin(*args):
+    "path join."
+    return "/".join(args)
+
+
 def __dir__():
     return (
         'Object',
@@ -266,6 +277,7 @@ def __dir__():
         'fmt',
         'fqn',
         'hook',
+        'ident',
         'items',
         'keys',
         'load',
