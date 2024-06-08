@@ -6,14 +6,16 @@
 "objects"
 
 
-from .default import Default
 from .object  import *
+from .default import Default
+from .config  import Config
 
 
 def __dir__():
     return (
-        'Object',
+        'Config',
         'Default',
+        'Object',
         'cdir',
         'construct',
         'dump',
