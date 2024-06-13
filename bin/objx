@@ -240,15 +240,12 @@ class CLI(Handler):
 
     def say(self, _channel, txt):
         "echo on verbose."
-        if "v" not in Cfg.opts:
-            return
         self.raw(txt)
 
     def raw(self, txt):
         "print to screen."
         txt = txt.encode('utf-8', 'replace').decode()
         print(txt)
-
 
     def show(self, evt):
         "show results into a channel."
