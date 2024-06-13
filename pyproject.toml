@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "objx"
 description = "objects library"
-version = "81"
+version = "82"
 authors = [
     {name = "Bart Thate", email = "bthate@dds.nl"},
 ]
@@ -40,17 +40,6 @@ zip-safe=true
 [tool.setuptools.data-files]
 "share/doc/objx" = [
     "README.rst"
-]
-"share/objx/mods" = [
-    "mods/cmd.py",
-    "mods/err.py",
-    "mods/irc.py",
-    "mods/log.py",
-    "mods/mod.py",
-    "mods/opm.py",
-    "mods/rss.py",
-    "mods/tdo.py",
-    "mods/thr.py"
 ]
 
 [tool.setuptools.exclude-package-data]

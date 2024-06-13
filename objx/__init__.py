@@ -7,7 +7,9 @@
 
 
 from .object  import *
+from .decoder import read
 from .default import Default
+from .encoder import write
 from .config  import Config
 
 
@@ -16,18 +18,14 @@ def __dir__():
         'Config',
         'Default',
         'Object',
-        'cdir',
         'construct',
-        'dump',
-        'dumps',
         'edit',
         'fmt',
         'fqn',
-        'hook',
+        'ident',
         'items',
         'keys',
-        'load',
-        'loads',
+        'match',
         'read',
         'search',
         'update',
