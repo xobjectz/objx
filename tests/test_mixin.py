@@ -10,7 +10,7 @@
 import unittest
 
 
-from objx import Object
+from objx.iface import Object
 
 
 class Mix:

@@ -6,7 +6,7 @@
 "configuration"
 
 
-from . import Default
+from .default import Default
 
 
 class Config(Default):
