@@ -1,0 +1,422 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+#
+# pylint: disable=R0902,R0903,W0713
+
+
+"created clients"
+
+
+import os
+import pathlib
+import queue
+import profile
+import shutil
+import sys
+import termios
+import time
+import threading
+import _thread
+
+
+sys.path.insert(0, os.getcwd())
+
+
+from objx.iface import Default, Object, keys, ident, read, write
+
+
+if os.path.exists("mods"):
+    import mods
+else:
+    mods = None    
+
+
+Cfg         = Default()
+Cfg.debug   = True
+Cfg.mod     = ""
+Cfg.name    = "tinder"
+Cfg.silent  = False
+Cfg.skip    = ["debug",]
+Cfg.version = "19"
+Cfg.wdr     = ".test"
+
+
+class Workdir(Object):
+
+    "Workdir"
+
+    workdir = ""
+
+    @staticmethod
+    def types():
+        "return types stored."
+        return os.listdir(Workdir.store())
+
+    @staticmethod
+    def skel():
+        "create directory,"
+        pth  = os.path.join(Workdir.workdir, "store", "")
+        path = pathlib.Path(pth)
+        path.mkdir(parents=True, exist_ok=True)
+
+    @staticmethod
+    def store(pth=""):
+        "return objects directory."
+        return os.path.join(Workdir.workdir, "store", pth)
+
+
+def fetch(obj, pth):
+    "read object from disk."
+    with lock:
+        pth2 = Workdir.store(pth)
+        read(obj, pth2)
+        return strip(pth)
+
+
+def sync(obj, pth=None):
+    "sync object to disk."
+    with lock:
+        if pth is None:
+            pth = ident(obj)
+        pth2 = Workdir.store(pth)
+        write(obj, pth2)
+        return pth
+
+
+class Thread(threading.Thread):
+
+    "Thread"
+
+    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
+        super().__init__(None, self.run, thrname, (), {}, daemon=daemon)
+        self._result   = None
+        self.name      = thrname or repr(func)
+        self.out       = None
+        self.queue     = queue.Queue()
+        self.sleep     = None
+        self.starttime = time.time()
+        self.queue.put_nowait((func, args))
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        yield from dir(self)
+
+    def join(self, timeout=1.0):
+        "join this thread."
+        super().join(timeout)
+        return self._result
+
+    def run(self):
+        "run this thread's payload."
+        func, args = self.queue.get()
+        try:
+            self._result = func(*args)
+        except Exception as ex: # pylint: disable=W0718
+            later(ex)
+            if args and "Event" in str(type(args[0])):
+                args[0].ready()
+
+
+def launch(func, *args, **kwargs):
+    "launch a thread."
+    nme = kwargs.get("name", repr(func))
+    thread = Thread(func, nme, *args, **kwargs)
+    thread.start()
+    return thread
+
+
+class Commands:
+
+    "Commands"
+
+    cmds = Object()
+
+
+    @staticmethod
+    def add(func):
+        "add command."
+        setattr(Commands.cmds, func.__name__, func)
+
+
+def command(bot, evt):
+    "check for and run a command."
+    parse(evt)
+    func = getattr(Commands.cmds, evt.cmd, None)
+    if func:
+        try:
+            func(evt)
+        except Exception as exc: # pylint: disable=W0718
+            later(exc)
+    bot.show(evt)
+    evt.ready()
+
+
+class Event(Default):
+
+    "Event"
+
+    def __init__(self):
+        Default.__init__(self)
+        self._thr    = None
+        self._ready  = threading.Event()
+        self.done    = False
+        self.orig    = None
+        self.result  = []
+        self.txt     = ""
+        self.type    = "event"
+
+    def ready(self):
+        "event is ready."
+        self._ready.set()
+
+    def reply(self, txt):
+        "add text to the result"
+        self.result.append(txt)
+
+    def wait(self):
+        "wait for event to be ready."
+        if self._thr:
+            self._thr.join()
+        self._ready.wait()
+        return self.result
+
+
+class Handler:
+
+    "Handler"
+
+    def __init__(self):
+        self.cbs      = Object()
+        self.queue    = queue.Queue()
+        self.stopped  = threading.Event()
+        self.threaded = True
+
+    def callback(self, evt):
+        "call callback based on event type."
+        func = getattr(self.cbs, evt.type, None)
+        if not func:
+            evt.ready()
+            return
+        evt._thr = launch(func, self, evt) # pylint: disable=W0212
+
+    def loop(self):
+        "proces events until interrupted."
+        while not self.stopped.is_set():
+            try:
+                evt = self.poll()
+                self.callback(evt)
+            except (KeyboardInterrupt, EOFError):
+                _thread.interrupt_main()
+
+    def poll(self):
+        "function to return event."
+        return self.queue.get()
+
+    def put(self, evt):
+        "put event into the queue."
+        self.queue.put_nowait(evt)
+
+    def register(self, typ, cbs):
+        "register callback for a type."
+        setattr(self.cbs, typ, cbs)
+
+    def start(self):
+        "start the event loop."
+        launch(self.loop)
+
+    def stop(self):
+        "stop the event loop."
+        self.stopped.set()
+
+
+class CLI(Handler):
+
+    "CLI"
+
+
+    def __init__(self):
+        Handler.__init__(self)
+        self.register("event", command)
+
+    def say(self, _channel, txt):
+        "echo on verbose."
+        if "v" not in Cfg.opts:
+            return
+        self.raw(txt)
+
+    def raw(self, txt):
+        "print to screen."
+        txt = txt.encode('utf-8', 'replace').decode()
+        print(txt)
+
+
+    def show(self, evt):
+        "show results into a channel."
+        for txt in evt.result:
+            self.say(evt.channel, txt)
+
+
+class Console(CLI):
+
+    "Console"
+
+    def announce(self, txt):
+        "disable announce."
+
+    def callback(self, evt):
+        "wait for callback."
+        CLI.callback(self, evt)
+        evt.wait()
+
+    def poll(self):
+        "poll console and create event."
+        evt = Event()
+        evt.orig = object.__repr__(self)
+        evt.txt = input("> ")
+        evt.type = "command"
+        return evt
+
+
+def cmnd(txt, outer=None):
+    "do a command using the provided output function."
+    cli = CLI()
+    evn = Event()
+    evn.orig = repr(cli)
+    evn.txt = txt
+    command(cli, evn)
+    evn.wait()
+    return evn
+
+
+def lsmod(pth):
+    "return list of modules in a directory."
+    return ",".join(sorted([x[:-3] for x in os.listdir(pth) if not x.startswith("__") and not x.endswith("~")]))
+
+
+def parse(obj, txt=None):
+    "parse a string for a command."
+    args = []
+    obj.args    = obj.args or []
+    obj.cmd     = obj.cmd or ""
+    obj.gets    = obj.gets or Default()
+    obj.hasmods = obj.hasmod or False
+    obj.index   = None
+    obj.mod     = obj.mod or ""
+    obj.opts    = obj.opts or ""
+    obj.result  = obj.reult or []
+    obj.sets    = obj.sets or Default()
+    obj.txt     = txt or obj.txt or ""
+    obj.otxt    = obj.txt
+    _nr = -1
+    for spli in obj.otxt.split():
+        if spli.startswith("-"):
+            try:
+                obj.index = int(spli[1:])
+            except ValueError:
+                obj.opts += spli[1:]
+            continue
+        if "==" in spli:
+            key, value = spli.split("==", maxsplit=1)
+            if key in obj.gets:
+                val = getattr(obj.gets, key)
+                value = val + "," + value
+            setattr(obj.gets, key, value)
+            continue
+        if "=" in spli:
+            key, value = spli.split("=", maxsplit=1)
+            if key == "mod":
+                obj.hasmods = True
+                if obj.mod:
+                    obj.mod += f",{value}"
+                else:
+                    obj.mod = value
+                continue
+            setattr(obj.sets, key, value)
+            continue
+        _nr += 1
+        if _nr == 0:
+            obj.cmd = spli
+            continue
+        args.append(spli)
+    if args:
+        obj.args = args
+        obj.txt  = obj.cmd or ""
+        obj.rest = " ".join(obj.args)
+        obj.txt  = obj.cmd + " " + obj.rest
+    else:
+        obj.txt = obj.cmd or ""
+
+
+def scan(pkg, modstr, disable=""):
+    "scan modules for commands and classes"
+    mds = []
+    for modname in spl(modstr):
+        if skip(modname, disable):
+            continue
+        module = getattr(pkg, modname, None)
+        if not module:
+            continue
+        scancmd(module)
+    return mds
+
+
+def scancmd(mod) -> None:
+    "scan module for commands."
+    for key, cmd in inspect.getmembers(mod, inspect.isfunction):
+        if key.startswith("cb"):
+            continue
+        if 'event' in cmd.__code__.co_varnames:
+            Commands.add(cmd)
+
+
+def spl(txt):
+    "split comma separated string into a list."
+    try:
+        res = txt.split(',')
+    except (TypeError, ValueError):
+        res = txt
+    return [x for x in res if x]
+
+
+def strip(pth, nmr=3):
+    "reduce to path with directory."
+    return os.sep.join(pth.split(os.sep)[-nmr:])
+
+
+def wrap(func):
+    "reset terminal."
+    old2 = None
+    try:
+        old2 = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        func()
+    except (KeyboardInterrupt, EOFError):
+        print("")
+    finally:
+        if old2:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
+
+
+def main():
+    "main"
+    Workdir.workdir = Cfg.wdr
+    parse(Cfg, " ".join(sys.argv[1:]))
+    if "v" in Cfg.opts:
+        dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
+        debug(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
+    scan(mods, Cfg.mod)
+    if "c" in Cfg.opts:
+        csl = Console()
+        csl.start()
+        while 1:
+            time.sleep(1.0)
+    elif Cfg.otxt:
+        cmnd(Cfg.otxt)
+            
+
+if __name__ == "__main__":
+    wrap(main)
