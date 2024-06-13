@@ -7,6 +7,7 @@
 "created clients"
 
 
+import inspect
 import os
 import pathlib
 import queue
@@ -145,10 +146,7 @@ def command(bot, evt):
     parse(evt)
     func = getattr(Commands.cmds, evt.cmd, None)
     if func:
-        try:
-            func(evt)
-        except Exception as exc: # pylint: disable=W0718
-            later(exc)
+        func(evt)
     bot.show(evt)
     evt.ready()
 
@@ -279,7 +277,7 @@ class Console(CLI):
         return evt
 
 
-def cmnd(txt, outer=None):
+def cmnd(txt):
     "do a command using the provided output function."
     cli = CLI()
     evn = Event()
@@ -371,6 +369,14 @@ def scancmd(mod) -> None:
             Commands.add(cmd)
 
 
+def skip(nme, skipp):
+    "check for skipping"
+    for skp in spl(skipp):
+        if skp in nme:
+            return True
+    return False
+
+
 def spl(txt):
     "split comma separated string into a list."
     try:
@@ -401,9 +407,16 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
 
 
+def cmd(event):
+    "list commands."
+    event.reply(",".join(sorted(list(Commands.cmds))))
+
+
 def main():
     "main"
     Workdir.workdir = Cfg.wdr
+    Commands.add(cmd)
+    Cfg.mod = ",".join(dir(mods))
     parse(Cfg, " ".join(sys.argv[1:]))
     if "v" in Cfg.opts:
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
