@@ -9,7 +9,9 @@
 
 import inspect
 import os
+import profile
 import queue
+import shutil
 import sys
 import termios
 import time
@@ -21,7 +23,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx.default import Default
-from objx.object  import Object
+from objx.object  import Object, keys
 from objx.persist import Persist
 from objx.thread  import launch
 from objx.utils   import laps, parse, spl
@@ -112,7 +114,6 @@ class Event(Default):
         self._thr    = None
         self._ready  = threading.Event()
         self.done    = False
-        self.orig    = None
         self.result  = []
         self.txt     = ""
         self.type    = "command"
@@ -202,8 +203,9 @@ class CLI(Handler):
 
     def raw(self, txt):
         "print to screen."
-        txt = txt.encode('utf-8', 'replace').decode()
-        print(txt)
+        if "v" in Cfg.opts:
+            txt = txt.encode('utf-8', 'replace').decode()
+            print(txt)
 
     def show(self, evt):
         "show results into a channel."
@@ -226,7 +228,6 @@ class Console(CLI):
     def poll(self):
         "poll console and create event."
         evt = Event()
-        evt.orig = object.__repr__(self)
         evt.txt = input("> ")
         evt.type = "command"
         return evt
@@ -239,7 +240,6 @@ def cmnd(txt):
     "do a command using the provided output function."
     cli = CLI()
     evn = Event()
-    evn.orig = repr(cli)
     evn.txt = txt
     command(cli, evn)
     evn.wait()
@@ -266,11 +266,10 @@ def payload(clt):
     #random.shuffle(cmds)
     with paylock:
         nmr = 0
-        for cmd in cmds:
-            for ex in getattr(param, cmd, [""]):
+        for cmdd in cmds:
+            for ex in getattr(param, cmdd, [""]):
                 evt = Event()
-                evt.orig = object.__repr__(clt)
-                evt.txt = cmd + " " + ex
+                evt.txt = cmdd + " " + ex
                 evt.type = "command"
                 clt.put(evt)
                 events.append(evt)
@@ -338,7 +337,9 @@ def main():
     cli = CLI()
     cli.start()
     for _nr in range(nrs):
-        launch(payload, cli)
+        thrs.append(launch(payload, cli))
+    for thr in thrs:
+        thr.join()
     consume(events)
     endtime = time.time()
     lap = laps(endtime-STARTTIME)
@@ -349,12 +350,12 @@ def main():
 if __name__ == "__main__":
     parse(Cfg, " ".join(sys.argv[1:]))
     if "f" in Cfg.opts:
-        if os.path.exists(workdir):
-            shutil.rmtree(workdir)
+        if os.path.exists(Persist.workdir):
+            shutil.rmtree(Persist.workdir)
     Cfg.mod = ",".join(dir(MODS))
     if "v" in Cfg.opts:
-        dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
-        print(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
+        DTE = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
+        print(f'{DTE} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
     if "p" in Cfg.opts:
         profile.runctx(main.__code__, globals(), locals())
     else:

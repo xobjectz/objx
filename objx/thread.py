@@ -1,14 +1,16 @@
 # This file is placed in the Public Domain.
 #
-# pylint: disable=R0903
+# pylint: disable=R0903,W0105,E1102
 
 
 "threads with deferred exception handling."
 
 
+import io
 import queue
 import threading
 import time
+import traceback
 
 
 from .utils  import named
