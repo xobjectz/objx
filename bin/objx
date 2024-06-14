@@ -20,8 +20,11 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx.iface import Default, Object, Persist
-from objx.iface import parse, spl
+from objx.default import Default
+from objx.object  import Object
+from objx.persist import Persist
+from objx.thread  import launch
+from objx.utils   import parse, spl
 
 
 if os.path.exists("mods"):
@@ -37,9 +40,6 @@ Cfg.name    = "objx"
 Cfg.silent  = False
 Cfg.version = "83"
 Cfg.wdr     = ".test"
-
-
-"commands"
 
 
 class Commands:
@@ -62,9 +62,6 @@ class Commands:
                 continue
             if 'event' in cmdz.__code__.co_varnames:
                 Commands.add(cmdz)
-
-
-"event"
 
 
 class Event(Default):
@@ -95,9 +92,6 @@ class Event(Default):
             self._thr.join()
         self._ready.wait()
         return self.result
-
-
-"handler"
 
 
 class Handler:
@@ -141,14 +135,11 @@ class Handler:
 
     def start(self):
         "start the event loop."
-        self.loop()
+        launch(self.loop)
 
     def stop(self):
         "stop the event loop."
         self.stopped.set()
-
-
-"command line interface"
 
 
 class CLI(Handler):
@@ -196,9 +187,6 @@ class Console(CLI):
         return evt
 
 
-"utilitites"
-
-
 def cmnd(txt):
     "do a command using the provided output function."
     cli = CLI()
@@ -232,11 +220,6 @@ def command(bot, evt):
         func(evt)
     bot.show(evt)
     evt.ready()
-
-
-"methods"
-
-
 
 
 "commands"
@@ -279,6 +262,8 @@ def main():
     if "c" in Cfg.opts:
         csl = Console()
         csl.start()
+        while 1:
+            time.sleep(1.0)
     elif Cfg.otxt:
         cmnd(Cfg.otxt)
 

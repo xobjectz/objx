@@ -4,7 +4,7 @@
 "modules"
 
 
-from . import fnd, log, mod, tdo, ver
+from . import fnd, log, mod, tdo, thr, ver
 
 
 def __dir__():
@@ -13,5 +13,6 @@ def __dir__():
         'log',
         'mod',
         'tdo',
+        'thr',
         'ver'
     )

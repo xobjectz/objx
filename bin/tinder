@@ -20,8 +20,11 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx.iface import Default, Object, Persist
-from objx.iface import parse, spl
+from objx.default import Default
+from objx.object  import Object
+from objx.persist import Persist
+from objx.thread  import launch
+from objx.utils   import laps, parse, spl
 
 
 if os.path.exists("mods"):
@@ -174,7 +177,7 @@ class Handler:
 
     def start(self):
         "start the event loop."
-        self.loop()
+        launch(self.loop)
 
     def stop(self):
         "stop the event loop."
@@ -335,8 +338,8 @@ def main():
     cli = CLI()
     cli.start()
     for _nr in range(nrs):
-        payload(cli)
-    #consume(events)
+        launch(payload, cli)
+    consume(events)
     endtime = time.time()
     lap = laps(endtime-STARTTIME)
     percall = (endtime-STARTTIME)/(nrs*nrcommand)

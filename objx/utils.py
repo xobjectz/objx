@@ -6,6 +6,7 @@
 
 import os
 import time
+import types
 
 
 from .default import Default
@@ -63,6 +64,25 @@ def laps(seconds, short=True):
         txt += f"{sec}s"
     txt = txt.strip()
     return txt
+
+
+def named(obj):
+    "return a full qualified name of an object/function/module."
+    # pylint: disable=R0911
+    typ = type(obj)
+    if isinstance(typ, types.ModuleType):
+        return obj.__name__
+    if '__builtins__' in dir(typ):
+        return obj.__name__
+    if '__self__' in dir(obj):
+        return f'{obj.__self__.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj) and '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    if '__class__' in dir(obj):
+        return f"{obj.__class__.__module__}.{obj.__class__.__name__}"
+    if '__name__' in dir(obj):
+        return f'{obj.__class__.__name__}.{obj.__name__}'
+    return None
 
 
 def parse(obj, txt=None):
