@@ -4,9 +4,9 @@
 "list of commands."
 
 
-version = "1"
+VERSION = "1"
 
 
 def ver(event):
     "list commands."
-    event.reply(f"OBJX version {version}")
+    event.reply(f"OBJX version {VERSION}")

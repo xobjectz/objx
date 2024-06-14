@@ -9,7 +9,6 @@
 
 import inspect
 import os
-import pathlib
 import queue
 import sys
 import termios
@@ -22,7 +21,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx.iface import Default, Object, Persist
-from objx.iface import ident, parse, read, strip, write
+from objx.iface import parse, spl
 
 
 if os.path.exists("mods"):
@@ -220,15 +219,6 @@ def scan(pkg, modstr):
             continue
         Commands.scan(module)
     return mds
-
-
-def spl(txt):
-    "split comma separated string into a list."
-    try:
-        res = txt.split(',')
-    except (TypeError, ValueError):
-        res = txt
-    return [x for x in res if x]
 
 
 "callbacks"

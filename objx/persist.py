@@ -12,7 +12,7 @@ from .decoder import read
 from .default import Default
 from .encoder import write
 from .locks   import disklock
-from .object  import Object, ident
+from .object  import Object, fqn, ident, search, update
 from .utils   import fntime, strip
 
 
@@ -99,7 +99,7 @@ def last(obj, selector=None):
     if selector is None:
         selector = {}
     result = sorted(
-                    find(fqn(obj), selector),
+                    Persist.find(fqn(obj), selector),
                     key=lambda x: fntime(x[0])
                    )
     res = None
