@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
 #
-# pylint: disable=R0902,R0903,W0713
+# pylint: disable=R0902,R0903,W0212,W0713
 
 
 "created clients"
@@ -84,50 +84,6 @@ def sync(obj, pth=None):
         return pth
 
 
-class Thread(threading.Thread):
-
-    "Thread"
-
-    def __init__(self, func, thrname, *args, daemon=True, **kwargs):
-        super().__init__(None, self.run, thrname, (), {}, daemon=daemon)
-        self._result   = None
-        self.name      = thrname or repr(func)
-        self.out       = None
-        self.queue     = queue.Queue()
-        self.sleep     = None
-        self.starttime = time.time()
-        self.queue.put_nowait((func, args))
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        yield from dir(self)
-
-    def join(self, timeout=1.0):
-        "join this thread."
-        super().join(timeout)
-        return self._result
-
-    def run(self):
-        "run this thread's payload."
-        func, args = self.queue.get()
-        try:
-            self._result = func(*args)
-        except Exception as ex: # pylint: disable=W0718
-            later(ex)
-            if args and "Event" in str(type(args[0])):
-                args[0].ready()
-
-
-def launch(func, *args, **kwargs):
-    "launch a thread."
-    nme = kwargs.get("name", repr(func))
-    thread = Thread(func, nme, *args, **kwargs)
-    thread.start()
-    return thread
-
-
 class Commands:
 
     "Commands"
@@ -163,7 +119,7 @@ class Event(Default):
         self.orig    = None
         self.result  = []
         self.txt     = ""
-        self.type    = "event"
+        self.type    = "command"
 
     def ready(self):
         "event is ready."
@@ -197,7 +153,7 @@ class Handler:
         if not func:
             evt.ready()
             return
-        evt._thr = launch(func, self, evt) # pylint: disable=W0212
+        func(self, evt)
 
     def loop(self):
         "proces events until interrupted."
@@ -222,7 +178,7 @@ class Handler:
 
     def start(self):
         "start the event loop."
-        launch(self.loop)
+        self.loop()
 
     def stop(self):
         "stop the event loop."
@@ -236,7 +192,7 @@ class CLI(Handler):
 
     def __init__(self):
         Handler.__init__(self)
-        self.register("event", command)
+        self.register("command", command)
 
     def say(self, _channel, txt):
         "echo on verbose."
@@ -417,13 +373,11 @@ def main():
     parse(Cfg, " ".join(sys.argv[1:]))
     if "v" in Cfg.opts:
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
-        debug(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
+        print(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
     scan(mods, Cfg.mod)
     if "c" in Cfg.opts:
         csl = Console()
         csl.start()
-        while 1:
-            time.sleep(1.0)
     elif Cfg.otxt:
         cmnd(Cfg.otxt)
             
