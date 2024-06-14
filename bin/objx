@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
 #
-# pylint: disable=R0902,R0903,W0212,W0713
+# pylint: disable=R0902,R0903,C0413,W0105,W0212
 
 
-"created clients"
+"objects"
 
 
 import inspect
 import os
 import pathlib
 import queue
-import profile
-import shutil
 import sys
 import termios
 import time
@@ -23,23 +21,28 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx.iface import Default, Object, keys, ident, read, write
+from objx.iface import Default, Object, ident, read, write
 
 
 if os.path.exists("mods"):
-    import mods
+    import mods as MODS
 else:
-    mods = None    
+    MODS = None
 
 
 Cfg         = Default()
 Cfg.debug   = True
 Cfg.mod     = ""
-Cfg.name    = "tinder"
+Cfg.name    = "objx"
 Cfg.silent  = False
-Cfg.skip    = ["debug",]
-Cfg.version = "19"
+Cfg.version = "83"
 Cfg.wdr     = ".test"
+
+
+lock = _thread.allocate_lock()
+
+
+"working directory"
 
 
 class Workdir(Object):
@@ -71,7 +74,7 @@ def fetch(obj, pth):
     with lock:
         pth2 = Workdir.store(pth)
         read(obj, pth2)
-        return strip(pth)
+        return os.sep.join(pth.split(os.sep)[-3:])
 
 
 def sync(obj, pth=None):
@@ -82,6 +85,9 @@ def sync(obj, pth=None):
         pth2 = Workdir.store(pth)
         write(obj, pth2)
         return pth
+
+
+"commands"
 
 
 class Commands:
@@ -96,15 +102,17 @@ class Commands:
         "add command."
         setattr(Commands.cmds, func.__name__, func)
 
+    @staticmethod
+    def scan(mod) -> None:
+        "scan module for commands."
+        for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
+            if key.startswith("cb"):
+                continue
+            if 'event' in cmdz.__code__.co_varnames:
+                Commands.add(cmdz)
 
-def command(bot, evt):
-    "check for and run a command."
-    parse(evt)
-    func = getattr(Commands.cmds, evt.cmd, None)
-    if func:
-        func(evt)
-    bot.show(evt)
-    evt.ready()
+
+"event"
 
 
 class Event(Default):
@@ -135,6 +143,9 @@ class Event(Default):
             self._thr.join()
         self._ready.wait()
         return self.result
+
+
+"handler"
 
 
 class Handler:
@@ -185,6 +196,9 @@ class Handler:
         self.stopped.set()
 
 
+"command line interface"
+
+
 class CLI(Handler):
 
     "CLI"
@@ -230,6 +244,9 @@ class Console(CLI):
         return evt
 
 
+"utilitites"
+
+
 def cmnd(txt):
     "do a command using the provided output function."
     cli = CLI()
@@ -239,11 +256,6 @@ def cmnd(txt):
     command(cli, evn)
     evn.wait()
     return evn
-
-
-def lsmod(pth):
-    "return list of modules in a directory."
-    return ",".join(sorted([x[:-3] for x in os.listdir(pth) if not x.startswith("__") and not x.endswith("~")]))
 
 
 def parse(obj, txt=None):
@@ -300,34 +312,15 @@ def parse(obj, txt=None):
         obj.txt = obj.cmd or ""
 
 
-def scan(pkg, modstr, disable=""):
+def scan(pkg, modstr):
     "scan modules for commands and classes"
     mds = []
     for modname in spl(modstr):
-        if skip(modname, disable):
-            continue
         module = getattr(pkg, modname, None)
         if not module:
             continue
-        scancmd(module)
+        Commands.scan(module)
     return mds
-
-
-def scancmd(mod) -> None:
-    "scan module for commands."
-    for key, cmd in inspect.getmembers(mod, inspect.isfunction):
-        if key.startswith("cb"):
-            continue
-        if 'event' in cmd.__code__.co_varnames:
-            Commands.add(cmd)
-
-
-def skip(nme, skipp):
-    "check for skipping"
-    for skp in spl(skipp):
-        if skp in nme:
-            return True
-    return False
 
 
 def spl(txt):
@@ -339,9 +332,33 @@ def spl(txt):
     return [x for x in res if x]
 
 
-def strip(pth, nmr=3):
-    "reduce to path with directory."
-    return os.sep.join(pth.split(os.sep)[-nmr:])
+"callbacks"
+
+
+def command(bot, evt):
+    "check for and run a command."
+    parse(evt)
+    func = getattr(Commands.cmds, evt.cmd, None)
+    if func:
+        func(evt)
+    bot.show(evt)
+    evt.ready()
+
+
+"methods"
+
+
+
+
+"commands"
+
+
+def cmd(event):
+    "list commands."
+    event.reply(",".join(sorted(list(Commands.cmds))))
+
+
+"runtime"
 
 
 def wrap(func):
@@ -360,27 +377,22 @@ def wrap(func):
             termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
 
 
-def cmd(event):
-    "list commands."
-    event.reply(",".join(sorted(list(Commands.cmds))))
-
-
 def main():
     "main"
     Workdir.workdir = Cfg.wdr
     Commands.add(cmd)
-    Cfg.mod = ",".join(dir(mods))
+    Cfg.mod = ",".join(dir(MODS))
     parse(Cfg, " ".join(sys.argv[1:]))
     if "v" in Cfg.opts:
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
         print(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
-    scan(mods, Cfg.mod)
+    scan(MODS, Cfg.mod)
     if "c" in Cfg.opts:
         csl = Console()
         csl.start()
     elif Cfg.otxt:
         cmnd(Cfg.otxt)
-            
+
 
 if __name__ == "__main__":
     wrap(main)

@@ -1,1 +1,1 @@
-pylint objx
+pylint objx bin/objx tests
