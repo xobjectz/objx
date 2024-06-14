@@ -21,7 +21,8 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx.iface import Default, Object, ident, read, write
+from objx.iface import Default, Object, Persist
+from objx.iface import ident, parse, read, strip, write
 
 
 if os.path.exists("mods"):
@@ -37,54 +38,6 @@ Cfg.name    = "objx"
 Cfg.silent  = False
 Cfg.version = "83"
 Cfg.wdr     = ".test"
-
-
-lock = _thread.allocate_lock()
-
-
-"working directory"
-
-
-class Workdir(Object):
-
-    "Workdir"
-
-    workdir = ""
-
-    @staticmethod
-    def types():
-        "return types stored."
-        return os.listdir(Workdir.store())
-
-    @staticmethod
-    def skel():
-        "create directory,"
-        pth  = os.path.join(Workdir.workdir, "store", "")
-        path = pathlib.Path(pth)
-        path.mkdir(parents=True, exist_ok=True)
-
-    @staticmethod
-    def store(pth=""):
-        "return objects directory."
-        return os.path.join(Workdir.workdir, "store", pth)
-
-
-def fetch(obj, pth):
-    "read object from disk."
-    with lock:
-        pth2 = Workdir.store(pth)
-        read(obj, pth2)
-        return os.sep.join(pth.split(os.sep)[-3:])
-
-
-def sync(obj, pth=None):
-    "sync object to disk."
-    with lock:
-        if pth is None:
-            pth = ident(obj)
-        pth2 = Workdir.store(pth)
-        write(obj, pth2)
-        return pth
 
 
 "commands"
@@ -258,60 +211,6 @@ def cmnd(txt):
     return evn
 
 
-def parse(obj, txt=None):
-    "parse a string for a command."
-    args = []
-    obj.args    = obj.args or []
-    obj.cmd     = obj.cmd or ""
-    obj.gets    = obj.gets or Default()
-    obj.hasmods = obj.hasmod or False
-    obj.index   = None
-    obj.mod     = obj.mod or ""
-    obj.opts    = obj.opts or ""
-    obj.result  = obj.reult or []
-    obj.sets    = obj.sets or Default()
-    obj.txt     = txt or obj.txt or ""
-    obj.otxt    = obj.txt
-    _nr = -1
-    for spli in obj.otxt.split():
-        if spli.startswith("-"):
-            try:
-                obj.index = int(spli[1:])
-            except ValueError:
-                obj.opts += spli[1:]
-            continue
-        if "==" in spli:
-            key, value = spli.split("==", maxsplit=1)
-            if key in obj.gets:
-                val = getattr(obj.gets, key)
-                value = val + "," + value
-            setattr(obj.gets, key, value)
-            continue
-        if "=" in spli:
-            key, value = spli.split("=", maxsplit=1)
-            if key == "mod":
-                obj.hasmods = True
-                if obj.mod:
-                    obj.mod += f",{value}"
-                else:
-                    obj.mod = value
-                continue
-            setattr(obj.sets, key, value)
-            continue
-        _nr += 1
-        if _nr == 0:
-            obj.cmd = spli
-            continue
-        args.append(spli)
-    if args:
-        obj.args = args
-        obj.txt  = obj.cmd or ""
-        obj.rest = " ".join(obj.args)
-        obj.txt  = obj.cmd + " " + obj.rest
-    else:
-        obj.txt = obj.cmd or ""
-
-
 def scan(pkg, modstr):
     "scan modules for commands and classes"
     mds = []
@@ -379,7 +278,7 @@ def wrap(func):
 
 def main():
     "main"
-    Workdir.workdir = Cfg.wdr
+    Persist.workdir = Cfg.wdr
     Commands.add(cmd)
     Cfg.mod = ",".join(dir(MODS))
     parse(Cfg, " ".join(sys.argv[1:]))

@@ -7,10 +7,8 @@
 import _thread
 
 
-lock = _thread.allocate_lock()
-
-
-"interface"
+disklock = _thread.allocate_lock()
+lock     = _thread.allocate_lock()
 
 
 def __dir__():

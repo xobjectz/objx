@@ -2,10 +2,14 @@
 #
 #
 
-from . import ver
+from . import fnd, log, mod, tdo, ver
 
 
 def __dir__():
     return (
-        'ver',
+        'fnd',
+        'log',
+        'mod',
+        'tdo',
+        'ver'
     )
