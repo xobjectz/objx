@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
+#
+# pylint: disable=E1102
 
 
 "handler"
@@ -23,7 +25,6 @@ class Commands:
 
     cmds = Object()
 
-
     @staticmethod
     def add(func):
         "add command."
@@ -39,27 +40,13 @@ class Commands:
                 Commands.add(cmdz)
 
 
-def scan(pkg, modstr):
-    "scan modules for commands and classes"
-    mds = []
-    for modname in spl(modstr):
-        module = getattr(pkg, modname, None)
-        if not module:
-            continue
-        Commands.scan(module)
-    return mds
-
-
 class Event(Default):
 
     "Event"
 
     def __init__(self):
         Default.__init__(self)
-        self._thr    = None
         self._ready  = threading.Event()
-        self.done    = False
-        self.orig    = None
         self.result  = []
         self.txt     = ""
         self.type    = "command"
@@ -74,8 +61,6 @@ class Event(Default):
 
     def wait(self):
         "wait for event to be ready."
-        if self._thr:
-            self._thr.join()
         self._ready.wait()
         return self.result
 
@@ -134,7 +119,6 @@ class CLI(Handler):
 
     out = None
 
-
     def __init__(self):
         Handler.__init__(self)
         self.register("command", command)
@@ -145,9 +129,9 @@ class CLI(Handler):
 
     def raw(self, txt):
         "print to screen."
-        if CLI.out:
+        if self.out:
             txt = txt.encode('utf-8', 'replace').decode()
-            CLI.out(txt)
+            self.out(txt)
 
     def show(self, evt):
         "show results into a channel."
@@ -160,7 +144,6 @@ def cmnd(txt, outer):
     cli = CLI()
     cli.out = outer
     evn = Event()
-    evn.orig = repr(cli)
     evn.txt = txt
     command(cli, evn)
     evn.wait()
@@ -175,6 +158,17 @@ def command(bot, evt):
         func(evt)
     bot.show(evt)
     evt.ready()
+
+
+def scan(pkg, modstr):
+    "scan modules for commands and classes"
+    mds = []
+    for modname in spl(modstr):
+        module = getattr(pkg, modname, None)
+        if not module:
+            continue
+        Commands.scan(module)
+    return mds
 
 
 def __dir__():

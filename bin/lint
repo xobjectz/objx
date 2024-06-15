@@ -1,1 +1,1 @@
-pylint objx mods bin/objx tests
+pylint objx objr mods bin/objx bin/tinder tests

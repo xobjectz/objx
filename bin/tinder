@@ -36,9 +36,9 @@ else:
 LAP = 1
 NRS = 1
 NRCOMMAND = 1
-PERCALL = 1
+PERCALL   = 1
 STARTTIME = time.time()
-CLI.out   = print 
+CLI.out   = print
 
 
 Cfg         = Default()

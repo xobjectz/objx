@@ -17,7 +17,7 @@ sys.path.insert(0, os.getcwd())
 
 
 from objx.default import Default
-from objr.handler import Commands, Event, Handler, command, scan
+from objr.handler import CLI, Commands, Event, Handler, cmnd, command, scan
 from objr.persist import Persist
 from objr.utils   import parse
 
@@ -37,30 +37,6 @@ Cfg.version = "83"
 Cfg.wdr     = ".test"
 
 
-class CLI(Handler):
-
-    "CLI"
-
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.register("command", command)
-
-    def say(self, _channel, txt):
-        "echo on verbose."
-        self.raw(txt)
-
-    def raw(self, txt):
-        "print to screen."
-        txt = txt.encode('utf-8', 'replace').decode()
-        print(txt)
-
-    def show(self, evt):
-        "show results into a channel."
-        for txt in evt.result:
-            self.say(evt.channel, txt)
-
-
 class Console(CLI):
 
     "Console"
@@ -76,24 +52,9 @@ class Console(CLI):
     def poll(self):
         "poll console and create event."
         evt = Event()
-        evt.orig = object.__repr__(self)
         evt.txt = input("> ")
         evt.type = "command"
         return evt
-
-
-def cmnd(txt):
-    "do a command using the provided output function."
-    cli = CLI()
-    evn = Event()
-    evn.orig = repr(cli)
-    evn.txt = txt
-    command(cli, evn)
-    evn.wait()
-    return evn
-
-
-"commands"
 
 
 def cmd(event):
@@ -101,14 +62,11 @@ def cmd(event):
     event.reply(",".join(sorted(list(Commands.cmds))))
 
 
-"runtime"
-
-
 def wrap(func):
     "reset terminal."
-    old2 = None
+    old3 = None
     try:
-        old2 = termios.tcgetattr(sys.stdin.fileno())
+        old3 = termios.tcgetattr(sys.stdin.fileno())
     except termios.error:
         pass
     try:
@@ -116,8 +74,8 @@ def wrap(func):
     except (KeyboardInterrupt, EOFError):
         print("")
     finally:
-        if old2:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old2)
+        if old3:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old3)
 
 
 def main():
@@ -132,11 +90,12 @@ def main():
     scan(MODS, Cfg.mod)
     if "c" in Cfg.opts:
         csl = Console()
+        csl.out = print
         csl.start()
         while 1:
             time.sleep(1.0)
     elif Cfg.otxt:
-        cmnd(Cfg.otxt)
+        cmnd(Cfg.otxt, print)
 
 
 if __name__ == "__main__":
