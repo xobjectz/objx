@@ -1,4 +1,6 @@
 # This file is placed in the Public Domain.
+#
+# pylint: disable=R0903
 
 
 "todo list"
@@ -8,8 +10,8 @@ import time
 
 
 from objx.object  import Object
-from objx.persist import Persist, sync
-from objx.utils   import fntime, laps
+from objr.persist import Persist, sync
+from objr.utils   import fntime, laps
 
 
 class NoDate(Exception):
@@ -17,7 +19,7 @@ class NoDate(Exception):
     "no matching date"
 
 
-class Todo(Object): # pylint: disable=R0903
+class Todo(Object):
 
     "Todo"
 

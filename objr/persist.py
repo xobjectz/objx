@@ -8,12 +8,12 @@ import os
 import pathlib
 
 
-from .decoder import read
-from .default import Default
-from .encoder import write
-from .locks   import disklock
-from .object  import Object, fqn, ident, search, update
-from .utils   import fntime, strip
+from objx.decoder import read
+from objx.default import Default
+from objx.encoder import write
+from objx.locks   import disklock
+from objx.object  import Object, fqn, ident, search, update
+from objr.utils   import fntime, strip
 
 
 class Persist(Object):

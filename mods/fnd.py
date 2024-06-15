@@ -5,7 +5,7 @@
 
 
 from objx.object  import fmt
-from objx.persist import Persist
+from objr.persist import Persist
 
 
 def fnd(event):
