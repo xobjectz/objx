@@ -12,16 +12,13 @@ from .decoder import read
 from .default import Default
 from .encoder import write
 from .config  import Config
-from .utils   import *
 
 
 def __dir__():
     return (
         'Config',
         'Default',
-        'parse',
         'read',
-        'strip',
         'write'
     ) + __odir__()
 

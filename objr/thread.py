@@ -113,7 +113,6 @@ class Timer(Object):
         self.name  = thrname or named(func)
         self.state = {}
         self.timer = None
-        broker.add(self)
 
     def run(self):
         "run the payload in a thread."

@@ -1,29 +1,25 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
+#
+# pylint: disable=C0413,W0105
 
 
 "objects"
 
 
-import inspect
 import os
-import queue
 import sys
 import termios
 import time
-import threading
-import _thread
 
 
 sys.path.insert(0, os.getcwd())
 
 
 from objx.default import Default
-from objx.object  import Object
-from objr.handler import Commands, Event, Handler
+from objr.handler import Commands, Event, Handler, command, scan
 from objr.persist import Persist
-from objr.thread  import launch
-from objr.utils   import parse, spl
+from objr.utils   import parse
 
 
 if os.path.exists("mods"):
@@ -95,30 +91,6 @@ def cmnd(txt):
     command(cli, evn)
     evn.wait()
     return evn
-
-
-def scan(pkg, modstr):
-    "scan modules for commands and classes"
-    mds = []
-    for modname in spl(modstr):
-        module = getattr(pkg, modname, None)
-        if not module:
-            continue
-        Commands.scan(module)
-    return mds
-
-
-"callbacks"
-
-
-def command(bot, evt):
-    "check for and run a command."
-    parse(evt)
-    func = getattr(Commands.cmds, evt.cmd, None)
-    if func:
-        func(evt)
-    bot.show(evt)
-    evt.ready()
 
 
 "commands"
