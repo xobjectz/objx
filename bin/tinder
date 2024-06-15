@@ -1,21 +1,18 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
 #
-# pylint: disable=R0902,R0903,C0413,W0105,W0212
+# pylint: disable=C0413
 
 
 "tinder"
 
 
-import inspect
 import os
 import profile
-import queue
 import shutil
 import sys
 import termios
 import time
-import threading
 import _thread
 
 
@@ -24,9 +21,10 @@ sys.path.insert(0, os.getcwd())
 
 from objx.default import Default
 from objx.object  import Object, keys
-from objx.persist import Persist
-from objx.thread  import launch
-from objx.utils   import laps, parse, spl
+from objr.handler import CLI, Commands, Event, scan
+from objr.persist import Persist
+from objr.thread  import launch
+from objr.utils   import laps, parse
 
 
 if os.path.exists("mods"):
@@ -35,20 +33,12 @@ else:
     MODS = None
 
 
-Cfg         = Default()
-Cfg.debug   = True
-Cfg.mod     = ""
-Cfg.name    = "objx"
-Cfg.silent  = False
-Cfg.version = "83"
-Cfg.wdr     = ".test"
-
-
 LAP = 1
 NRS = 1
 NRCOMMAND = 1
 PERCALL = 1
 STARTTIME = time.time()
+CLI.out   = print 
 
 
 Cfg         = Default()
@@ -76,174 +66,6 @@ param.mod = [""]
 param.tdo = ["mekker", ""]
 param.ver = [""]
 
-
-"commands"
-
-
-class Commands:
-
-    "Commands"
-
-    cmds = Object()
-
-
-    @staticmethod
-    def add(func):
-        "add command."
-        setattr(Commands.cmds, func.__name__, func)
-
-    @staticmethod
-    def scan(mod) -> None:
-        "scan module for commands."
-        for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
-            if key.startswith("cb"):
-                continue
-            if 'event' in cmdz.__code__.co_varnames:
-                Commands.add(cmdz)
-
-
-"event"
-
-
-class Event(Default):
-
-    "Event"
-
-    def __init__(self):
-        Default.__init__(self)
-        self._thr    = None
-        self._ready  = threading.Event()
-        self.done    = False
-        self.result  = []
-        self.txt     = ""
-        self.type    = "command"
-
-    def ready(self):
-        "event is ready."
-        self._ready.set()
-
-    def reply(self, txt):
-        "add text to the result"
-        self.result.append(txt)
-
-    def wait(self):
-        "wait for event to be ready."
-        if self._thr:
-            self._thr.join()
-        self._ready.wait()
-        return self.result
-
-
-"handler"
-
-
-class Handler:
-
-    "Handler"
-
-    def __init__(self):
-        self.cbs      = Object()
-        self.queue    = queue.Queue()
-        self.stopped  = threading.Event()
-        self.threaded = True
-
-    def callback(self, evt):
-        "call callback based on event type."
-        func = getattr(self.cbs, evt.type, None)
-        if not func:
-            evt.ready()
-            return
-        func(self, evt)
-
-    def loop(self):
-        "proces events until interrupted."
-        while not self.stopped.is_set():
-            try:
-                evt = self.poll()
-                self.callback(evt)
-            except (KeyboardInterrupt, EOFError):
-                _thread.interrupt_main()
-
-    def poll(self):
-        "function to return event."
-        return self.queue.get()
-
-    def put(self, evt):
-        "put event into the queue."
-        self.queue.put_nowait(evt)
-
-    def register(self, typ, cbs):
-        "register callback for a type."
-        setattr(self.cbs, typ, cbs)
-
-    def start(self):
-        "start the event loop."
-        launch(self.loop)
-
-    def stop(self):
-        "stop the event loop."
-        self.stopped.set()
-
-
-"command line interface"
-
-
-class CLI(Handler):
-
-    "CLI"
-
-
-    def __init__(self):
-        Handler.__init__(self)
-        self.register("command", command)
-
-    def say(self, _channel, txt):
-        "echo on verbose."
-        self.raw(txt)
-
-    def raw(self, txt):
-        "print to screen."
-        if "v" in Cfg.opts:
-            txt = txt.encode('utf-8', 'replace').decode()
-            print(txt)
-
-    def show(self, evt):
-        "show results into a channel."
-        for txt in evt.result:
-            self.say(evt.channel, txt)
-
-
-class Console(CLI):
-
-    "Console"
-
-    def announce(self, txt):
-        "disable announce."
-
-    def callback(self, evt):
-        "wait for callback."
-        CLI.callback(self, evt)
-        evt.wait()
-
-    def poll(self):
-        "poll console and create event."
-        evt = Event()
-        evt.txt = input("> ")
-        evt.type = "command"
-        return evt
-
-
-"utilitites"
-
-
-def cmnd(txt):
-    "do a command using the provided output function."
-    cli = CLI()
-    evn = Event()
-    evn.txt = txt
-    command(cli, evn)
-    evn.wait()
-    return evn
 
 def consume(evts):
     "wait for events."
@@ -277,39 +99,9 @@ def payload(clt):
         return nmr
 
 
-def scan(pkg, modstr):
-    "scan modules for commands and classes"
-    mds = []
-    for modname in spl(modstr):
-        module = getattr(pkg, modname, None)
-        if not module:
-            continue
-        Commands.scan(module)
-    return mds
-
-
-"callbacks"
-
-
-def command(bot, evt):
-    "check for and run a command."
-    parse(evt)
-    func = getattr(Commands.cmds, evt.cmd, None)
-    if func:
-        func(evt)
-    bot.show(evt)
-    evt.ready()
-
-
-"commands"
-
-
 def cmd(event):
     "list commands."
     event.reply(",".join(sorted(list(Commands.cmds))))
-
-
-"runtime"
 
 
 def wrap(func):
