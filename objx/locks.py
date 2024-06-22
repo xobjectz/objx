@@ -7,11 +7,14 @@
 import _thread
 
 
-disklock = _thread.allocate_lock()
-lock     = _thread.allocate_lock()
+brokerlock = _thread.allocate_lock()
+disklock   = _thread.allocate_lock()
+lock       = _thread.allocate_lock()
 
 
 def __dir__():
     return (
-        "lock",
+        'brokerlock',
+        'disklock',
+        'lock'
     )

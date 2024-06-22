@@ -7,11 +7,6 @@
 
 
 import datetime
-import pathlib
-import _thread
-
-
-lock = _thread.allocate_lock()
 
 
 class Object:
@@ -157,21 +152,12 @@ def values(obj):
     return obj.__dict__.values()
 
 
-"utilities"
-
-
-def cdir(pth):
-    "create directory."
-    path = pathlib.Path(pth)
-    path.parent.mkdir(parents=True, exist_ok=True)
+"interface"
 
 
 def pjoin(*args):
     "path join."
     return "/".join(args)
-
-
-"interface"
 
 
 def __dir__():

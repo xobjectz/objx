@@ -1,5 +1,0 @@
-grep -R sys objx 
-grep -R "print(" objx
-grep -R __import__ objx 
-grep -R importlib objx
-#grep -R "import os" objx
