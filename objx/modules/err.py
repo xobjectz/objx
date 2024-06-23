@@ -4,7 +4,7 @@
 "deferred exception handling"
 
 
-from ..ifc import Errors
+from ..errors import Errors
 
 
 def err(event):

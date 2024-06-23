@@ -107,7 +107,7 @@ def scan(pkg, modstr, disable=None):
 
 def modnames():
     "list all modules."
-    return sorted(set([x for x in dir(modules) + dir(mods) if not x.startswith("__")]))
+    return sorted({x for x in dir(modules) + dir(mods) if not x.startswith("__")})
 
 
 def privileges(username):

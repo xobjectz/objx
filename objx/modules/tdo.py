@@ -9,7 +9,9 @@
 import time
 
 
-from ..ifc import Object, find, fntime, laps, sync
+from ..object  import Object
+from ..persist import find, sync
+from ..utils   import fntime, laps
 
 
 class NoDate(Exception):
