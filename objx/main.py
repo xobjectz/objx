@@ -30,7 +30,13 @@ from .utils    import spl
 
 
 from . import modules
-from . import user as mods
+from . import user 
+
+
+if os.path.exists("mods"):
+    import mods
+else:
+    mods = None
 
 
 def cmnd(txt, outer):
@@ -107,7 +113,7 @@ def scan(pkg, modstr, disable=None):
 
 def modnames():
     "list all modules."
-    return sorted({x for x in dir(modules) + dir(mods) if not x.startswith("__")})
+    return sorted({x for x in dir(modules) + dir(user) if not x.startswith("__")})
 
 
 def privileges(username):
@@ -162,16 +168,18 @@ def main():
         privileges(Cfg.user)
         modstr = "," + ",".join(modnames())
         init(modules, modstr)
-        init(mods, modstr)
+        init(user, modstr)
         wait = True
     elif "c" in Cfg.opts:
         csl = Console()
         if "i" in Cfg.opts:
             init(modules, Cfg.mod, Cfg.dis)
+            init(user, Cfg.mod, Cfg.dis)
             init(mods, Cfg.mod, Cfg.dis)
         csl.start()
         wait = True
     scan(modules, Cfg.mod, Cfg.dis)
+    scan(user, Cfg.mod, Cfg.dis)
     scan(mods, Cfg.mod, Cfg.dis)
     if Cfg.otxt:
         cmnd(Cfg.otxt, print)

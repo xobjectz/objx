@@ -6,6 +6,7 @@
 "outline processor markup language"
 
 
+import os
 import uuid
 
 
@@ -128,6 +129,9 @@ def imp(event):
         event.reply("imp <filename>")
         return
     fnm = event.args[0]
+    if not os.path.exists(fnm):
+        event.reply(f"no {fnm} file found.")
+        return
     with open(fnm, "r", encoding="utf-8") as file:
         txt = file.read()
     prs = Parser()
