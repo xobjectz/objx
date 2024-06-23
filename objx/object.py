@@ -171,9 +171,7 @@ def __dir__():
         'items',
         'keys',
         'match',
-        'read',
         'search',
         'update',
         'values',
-        'write'
     )
