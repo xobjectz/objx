@@ -54,8 +54,7 @@ class UDP(Object):
         "annouce on bots."
         if addr:
             Config.addr = addr
-        for name, bot in broker.all("irc"):
-            print("yo!")
+        for _name, bot in broker.all("irc"):
             bot.announce(txt.replace("\00", ""))
 
     def loop(self):
