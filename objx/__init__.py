@@ -14,10 +14,8 @@ from .config  import *
 
 def __dir__():
     return sorted((
-        'Config',
-        'Default',
         'dumps',
         'loads',
-        'read'
-        'write',
+        'read',
+        'write'
     ) + __odir__())
