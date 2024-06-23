@@ -107,7 +107,7 @@ def scan(pkg, modstr, disable=None):
 
 def modnames():
     "list all modules."
-    return sorted([x for x in dir(modules) + dir(mods) if not x.startswith("__")])
+    return sorted(set([x for x in dir(modules) + dir(mods) if not x.startswith("__")]))
 
 
 def privileges(username):
@@ -151,9 +151,10 @@ def main():
         print(TXT)
         return
     if "v" in Cfg.opts:
-        Logging.out = Errors.out = print
+        Logging.out = print
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
-        print(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
+        modiess = ",".join([x.upper() for x in modnames()])
+        print(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {modiess}'.replace("  ", " "))
     wait = False
     if "d" in Cfg.opts:
         Cfg.user = getpass.getuser()
