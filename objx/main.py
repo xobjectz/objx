@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-#
 # pylint: disable=W0212,W0718,E0401
 
 
@@ -39,7 +38,7 @@ else:
     MODS = None
 
 
-def cmnd(txt, outer):
+def cmnd(txt, outer=print):
     "do a command using the provided output function."
     cli = CLI()
     cli.out = outer
@@ -147,7 +146,6 @@ def wrapped():
 
 def main():
     "main"
-    Errors.out = print
     readline.redisplay()
     skel()
     parse(Cfg, " ".join(sys.argv[1:]))
@@ -157,13 +155,13 @@ def main():
         print(TXT)
         return
     if "v" in Cfg.opts:
-        Logging.out = print
         dte = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
         modiess = ",".join([x.upper() for x in modnames()])
         print(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {modiess}'.replace("  ", " "))
     wait = False
     if "d" in Cfg.opts:
         Cfg.user = getpass.getuser()
+        CLI.out = Errors.out = Logging.out = None
         daemon(Cfg.pidfile, "-v" in sys.argv)
         privileges(Cfg.user)
         modstr = "," + ",".join(modnames())
@@ -182,7 +180,7 @@ def main():
     scan(user, Cfg.mod, Cfg.dis)
     scan(MODS, Cfg.mod, Cfg.dis)
     if Cfg.otxt:
-        cmnd(Cfg.otxt, print)
+        cmnd(Cfg.otxt)
     if wait or "w" in Cfg.opts:
         while 1:
             time.sleep(1.0)

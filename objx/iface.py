@@ -1,5 +1,4 @@
 # This file is placed in the Public Domain.
-#
 # pylint: disable=W0401,W0611,W0614,W0622
 
 
@@ -20,6 +19,7 @@ from .errors   import *
 from .event    import *
 from .handler  import *
 from .log      import *
+from .object   import *
 from .parse    import *
 from .persist  import *
 from .repeater import *

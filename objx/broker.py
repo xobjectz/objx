@@ -1,6 +1,4 @@
 # This file is placed in the Public Domain.
-#
-#
 
 
 "broker"
@@ -91,5 +89,4 @@ class Broker:
 def __dir__():
     return (
         'Broker',
-        'fntime'
     )
