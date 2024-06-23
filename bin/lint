@@ -1,1 +1,1 @@
-pylint objx
+pylint objx files tests
