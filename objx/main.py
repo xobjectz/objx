@@ -5,12 +5,12 @@
 "main"
 
 
-from .cli      import CLI
-from .commands import Commands, command
-from .errors   import later
-from .event    import Event
-from .persist  import Persist
-from .utils    import spl
+from .cli   import CLI
+from .cmds  import Commands, command
+from .defer import later
+from .event import Event
+from .disk  import Persist
+from .utils import spl
 
 
 def cmnd(txt, outer):

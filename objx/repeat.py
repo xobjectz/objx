@@ -4,7 +4,7 @@
 "at repeating intervals"
 
 
-from .thread import launch
+from .launch import launch
 from .timer  import Timer
 
 

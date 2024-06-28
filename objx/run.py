@@ -7,9 +7,9 @@
 import os
 
 
-from .broker  import Broker
-from .config  import Config
-from .persist import Persist
+from .broke  import Broker
+from .config import Config
+from .disk   import Persist
 
 
 Cfg         = Config()

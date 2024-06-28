@@ -15,7 +15,7 @@ from ..object import update
 from ..run    import broker
 from ..timer  import Timer
 from ..utils  import laps
-from ..thread import launch
+from ..launch import launch
 
 
 def init():

@@ -8,10 +8,10 @@ import os
 import uuid
 
 
-from ..default import Default
-from ..object  import construct, update
-from ..persist import find, sync
-from ..utils   import spl
+from ..dft    import Default
+from ..object import construct, update
+from ..disk   import find, sync
+from ..utils  import spl
 
 
 from .rss import Rss

@@ -18,13 +18,13 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from ..default  import Default
-from ..object   import Object, fmt, update, values
-from ..persist  import find, last, sync
-from ..repeater import Repeater
-from ..thread   import launch
-from ..run      import broker
-from ..utils    import fntime, laps, spl
+from ..dft    import Default
+from ..object import Object, fmt, update, values
+from ..disk   import find, last, sync
+from ..repeat import Repeater
+from ..launch import launch
+from ..run    import broker
+from ..utils  import fntime, laps, spl
 
 
 def init():

@@ -10,8 +10,8 @@ import threading
 import time
 
 
-from .errors import later
-from .utils  import named
+from .defer import later
+from .utils import named
 
 
 class Thread(threading.Thread):

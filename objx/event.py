@@ -8,7 +8,7 @@
 import threading
 
 
-from .default import Default
+from .dft import Default
 
 
 class Event(Default):

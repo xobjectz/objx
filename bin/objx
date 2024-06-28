@@ -19,15 +19,15 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx.cli      import CLI
-from objx.errors   import Errors, errors
-from objx.event    import Event
-from objx.help     import TXT
-from objx.log      import Logging
-from objx.main     import cmnd, init, scan
-from objx.parse    import parse
-from objx.persist  import skel
-from objx.run      import Cfg
+from objx.cli   import CLI
+from objx.defer import Errors, errors
+from objx.event import Event
+from objx.help  import TXT
+from objx.log   import Logging
+from objx.main  import cmnd, init, scan
+from objx.parse import parse
+from objx.disk  import skel
+from objx.run   import Cfg
 
 
 from objx import modules

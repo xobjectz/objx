@@ -4,7 +4,7 @@
 "broker"
 
 
-from .locks  import brokerlock
+from .lock   import brokerlock
 from .object import Object, fqn, ident, keys, search, update
 from .utils  import fntime
 

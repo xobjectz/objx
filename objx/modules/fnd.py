@@ -4,8 +4,8 @@
 "locate"
 
 
-from ..object  import fmt
-from ..persist import find, long, skel, types
+from ..object import fmt
+from ..disk   import find, long, skel, types
 
 
 def fnd(event):

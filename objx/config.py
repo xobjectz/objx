@@ -5,7 +5,7 @@
 "configuration"
 
 
-from .default import Default
+from .dft import Default
 
 
 class Config(Default):

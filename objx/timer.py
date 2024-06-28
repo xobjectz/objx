@@ -9,7 +9,7 @@ import threading
 
 
 from .object import Object
-from .thread import launch
+from .launch import launch
 from .utils  import named
 
 

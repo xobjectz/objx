@@ -10,12 +10,12 @@ import os
 import pathlib
 
 
-from .decoder import read
-from .default import Default
-from .encoder import write
-from .object  import Object, fqn, ident, search, update
-from .locks   import disklock
-from .utils   import fntime, strip
+from .decode import read
+from .dft    import Default
+from .encode import write
+from .object import Object, fqn, ident, search, update
+from .lock   import disklock
+from .utils  import fntime, strip
 
 
 class Persist(Object):

@@ -19,20 +19,20 @@ import _thread
 sys.path.insert(0, os.getcwd())
 
 
-from objx.commands import Commands
-from objx.cli      import CLI
-from objx.default  import Default
-from objx.errors   import Errors, errors
-from objx.event    import Event
-from objx.log      import Logging
-from objx.main     import scan
-from objx.run      import broker
-from objx.object   import Object, ident, keys
-from objx.parse    import parse
-from objx.persist  import Persist
-from objx.run      import broker
-from objx.thread   import launch
-from objx.utils    import laps
+from objx.cmds   import Commands
+from objx.cli    import CLI
+from objx.dft    import Default
+from objx.defer  import Errors, errors
+from objx.event  import Event
+from objx.log    import Logging
+from objx.main   import scan
+from objx.run    import broker
+from objx.object import Object, ident, keys
+from objx.parse  import parse
+from objx.disk   import Persist
+from objx.run    import broker
+from objx.launch import launch
+from objx.utils  import laps
 
 
 from objx import modules
