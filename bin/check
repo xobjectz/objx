@@ -1,7 +1,7 @@
 grep -R objx objx
-grep -R "print(" objx bin/tinder
-grep -R __import__ objx bin/tinder
-grep -R importlib objx bin/tinder
-grep -R "import sys" objx bin/tinder
-#grep -R sys objx bin/tinder
-#grep -R "import os" objx bin/tinder
+grep -R "print(" objx
+grep -R __import__ objx
+grep -R importlib objx 
+grep -R "import sys" objx 
+#grep -R sys objx 
+#grep -R "import os" objx

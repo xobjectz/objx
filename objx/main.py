@@ -16,7 +16,7 @@ from .utils import spl
 def cmnd(txt, outer):
     "do a command using the provided output function."
     if not txt:
-        return
+        return None
     cli = CLI(outer)
     evn = Event()
     evn.txt = txt
