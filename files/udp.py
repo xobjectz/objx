@@ -16,7 +16,7 @@ import time
 from objx.object import Object, fmt
 from objx.log    import debug
 from objx.run    import broker
-from objx.thread import launch
+from objx.launch import launch
 
 
 def init():
