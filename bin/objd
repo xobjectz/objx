@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # This file is placed in the Public Domain.
-# pylint: disable=C0413,W0212,E0401
+# pylint: disable=C0413,W0212,W0718,E0401
 
 
 "main"
@@ -10,25 +10,33 @@ import getpass
 import os
 import pathlib
 import pwd
-import readline
 import sys
-import termios
 import time
 
 
+from objx.cfg   import Config
 from objx.cli   import CLI
-from objx.defer import Errors, errors
-from objx.event import Event
-from objx.help  import TXT
+from objx.defer import Errors, errors, later
+from objx.disk  import Persist
 from objx.log   import Logging
-from objx.main  import cmnd, init, scan
-from objx.parse import parse
-from objx.disk  import skel
-from objx.run   import Cfg
+from objx.main  import init, scan
 
 
 from objx import mods
 from objx import user
+
+
+Cfg         = Config()
+Cfg.dis     = ""
+Cfg.mod     = "cmd,err,mod,thr"
+Cfg.opts    = ""
+Cfg.name    = "objx"
+Cfg.user    = getpass.getuser()
+Cfg.wdr     = os.path.expanduser(f"~/.{Cfg.name}")
+Cfg.pidfile = os.path.join(Cfg.wdr, f"{Cfg.name}.pid")
+
+
+Persist.workdir = Cfg.wdr
 
 
 def daemon(pidfile, verbose=False):
@@ -58,13 +66,14 @@ def daemon(pidfile, verbose=False):
 
 
 def forever():
+    "it never ends, until ctl-c."
     while True:
         time.sleep(1.0)
 
 
 def modnames():
     "list all modules."
-    return sorted({x for x in dir(mods) + dir(user) + dir(MODS) if not x.startswith("__")})
+    return sorted({x for x in dir(mods) + dir(user) if not x.startswith("__")})
 
 
 def privileges(username):
@@ -88,8 +97,11 @@ def wrap(func):
 def main():
     "main"
     daemon(Cfg.pidfile, "-v" in sys.argv)
+    privileges(Cfg.user)
     CLI.out = Errors.out = Logging.out = None
     modstr = "," + ",".join(modnames())
+    scan(mods, modstr)
+    scan(user, modstr)
     init(mods, modstr)
     init(user, modstr)
     forever()

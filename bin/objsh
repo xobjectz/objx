@@ -19,6 +19,7 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
+from objx.cfg   import Config
 from objx.cli   import CLI
 from objx.defer import Errors, errors
 from objx.event import Event
@@ -26,8 +27,7 @@ from objx.help  import TXT
 from objx.log   import Logging
 from objx.main  import cmnd, init, scan
 from objx.parse import parse
-from objx.disk  import skel
-from objx.run   import Cfg
+from objx.disk  import Persist, skel
 
 
 from objx import mods
@@ -38,6 +38,18 @@ if os.path.exists("mods"):
     import mods as MODS
 else:
     MODS = None
+
+
+Cfg         = Config()
+Cfg.dis     = ""
+Cfg.mod     = "cmd,err,mod,thr"
+Cfg.opts    = ""
+Cfg.name    = "objx"
+Cfg.wdr     = os.path.expanduser(f"~/.{Cfg.name}")
+Cfg.pidfile = os.path.join(Cfg.wdr, f"{Cfg.name}.pid")
+
+
+Persist.workdir = Cfg.wdr
 
 
 class Console(CLI):

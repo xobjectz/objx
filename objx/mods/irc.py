@@ -590,6 +590,7 @@ def cb_notice(bot, evt):
 
 def cb_privmsg(bot, evt):
     "privmsg callback."
+    print(evt)
     if not bot.cfg.commands:
         return
     if evt.txt:
