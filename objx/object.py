@@ -2,7 +2,7 @@
 # pylint: disable=R0902,W0105
 
 
-"clean namespace"
+"a clean namespace"
 
 
 import datetime

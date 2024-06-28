@@ -24,10 +24,6 @@ classifiers = [
 ]
 
 
-[project.scripts]
-"objx" = "objx.main:wrapped"
-
-
 [project.urls]
 "home" = "https://pypi.org/project/objx"
 "bugs" = "https://github.com/xobjectz/objx/issues"
@@ -35,6 +31,9 @@ classifiers = [
 
 
 [tool.setuptools]
+scripts-files = [
+    "bin/objx",
+]
 packages = [
     'objx',
     'objx.modules',
