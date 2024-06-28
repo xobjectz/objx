@@ -172,6 +172,8 @@ FILES
 ::
 
     ~/.objx
+    ~/.local/bin/objd
+    ~/.local/bin/objsh
     ~/.local/bin/objx
     ~/.local/pipx/venvs/objx/
 
