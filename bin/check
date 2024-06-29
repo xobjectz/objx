@@ -1,7 +1,7 @@
-grep -R objx objx
+#grep -R objx objx
 grep -R "print(" objx
 grep -R __import__ objx
-grep -R importlib objx 
+#grep -R importlib objx 
 grep -R "import sys" objx 
 grep -R inspect objx
 #grep -R sys objx 

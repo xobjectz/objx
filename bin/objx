@@ -19,18 +19,19 @@ import time
 sys.path.insert(0, os.getcwd())
 
 
-from objx.cli   import CLI
-from objx.cfg   import Config
-from objx.defer import Errors, errors
-from objx.event import Event
-from objx.help  import TXT
-from objx.log   import Logging
-from objx.main  import cmnd, init
-from objx.parse import parse
-from objx.disk  import Persist
+from objx.cfg    import Config
+from objx.cli    import CLI
+from objx.cmds   import Commands, add, dump
+from objx.defer  import Errors, errors
+from objx.disk   import Persist
+from objx.encode import dumps
+from objx.event  import Event
+from objx.help   import TXT
+from objx.log    import Logging
+from objx.main   import cmnd, init
+from objx.parse  import parse
 
 
-from objx import mods
 from objx import user
 
 
@@ -77,11 +78,6 @@ def forever():
         time.sleep(1.0)
 
 
-def modnames():
-    "list all modules."
-    return sorted({x for x in dir(mods) + dir(user) + dir(MODS) if not x.startswith("__")})
-
-
 def wrap(func):
     "reset terminal."
     old3 = None
@@ -104,10 +100,14 @@ def wrapped():
     errors()
 
 
+def dmp(event):
+    event.reply(dumps(Commands.modnames, indent=4))
+
+
 def main():
     "main"
     parse(Cfg, " ".join(sys.argv[1:]))
-    Cfg.mod += "," + ",".join(modnames())
+    add(dmp)
     Cfg.dis = Cfg.sets.dis
     cmnd(Cfg.otxt, print)
 
