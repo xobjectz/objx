@@ -6,10 +6,9 @@
 
 
 from .cli   import CLI
-from .cmds  import Commands, command
+from .cmds  import command
 from .defer import later
 from .event import Event
-from .disk  import Persist
 from .utils import spl
 
 

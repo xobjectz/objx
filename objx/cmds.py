@@ -1,10 +1,11 @@
 # This file is placed in the Public Domain.
+#
+# pylint: disable=R0903
 
 
 "commands"
 
 
-from .encode import dumps
 from .object import Object, construct
 from .parse  import parse
 from .table  import ondemand
@@ -40,7 +41,7 @@ class Commands:
     modnames = Object()
     construct(modnames, MODNAMES)
 
-    
+
 def add(func):
     "add command."
     setattr(Commands.cmds, func.__name__, func)
@@ -64,14 +65,9 @@ def command(bot, evt):
     evt.ready()
 
 
-def dump():
-    print(dumps(Commands.modnames, indent=4))
-
-
 def __dir__():
     return (
         'Commands',
         'add',
-        'command',
-        'dump'
+        'command'
     )

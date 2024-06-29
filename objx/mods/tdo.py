@@ -8,7 +8,7 @@
 import time
 
 
-from ..cmds   import Commands
+from ..cmds   import add
 from ..object import Object
 from ..disk   import find, sync, whitelist
 from ..utils  import fntime, laps
@@ -28,7 +28,7 @@ class Todo(Object):
         self.txt = ''
 
 
-whitelist.add(Todo)
+whitelist(Todo)
 
 
 def dne(event):

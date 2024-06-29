@@ -17,7 +17,7 @@ import _thread
 
 
 from ..cli    import CLI
-from ..cmds   import Commands, add, command
+from ..cmds   import add, command
 from ..dft    import Default
 from ..disk   import whitelist
 from ..defer  import later

@@ -22,7 +22,7 @@ from urllib.parse import quote_plus, urlencode
 
 from ..cmds   import add
 from ..dft    import Default
-from ..object import Object, construct, fmt, update, values
+from ..object import Object, construct, fmt, update
 from ..disk   import find, last, sync, whitelist
 from ..repeat import Repeater
 from ..launch import launch
@@ -38,6 +38,15 @@ def init():
 
 
 DEBUG = False
+
+
+TEMPLATE = """<opml version="1.0">
+    <head>
+        <title>rssbot opml</title>
+    </head>
+    <body>
+        <outline title="rssbot opml" text="24/7 feed fetcher">"""
+
 
 
 fetchlock = _thread.allocate_lock()
@@ -58,6 +67,7 @@ class Rss(Default):
     def __init__(self):
         Default.__init__(self)
         self.display_list = 'title,link,author'
+        self.insertid      = None
         self.rss          = ''
 
 
@@ -71,7 +81,6 @@ class Seen(Default):
     def __init__(self):
         Default.__init__(self)
         self.urls = []
-
 
 
 whitelist(Seen)
@@ -130,6 +139,7 @@ class Fetcher(Object):
                 if self.dosave:
                     sync(fed)
                 result.append(fed)
+            sync(self.seen, self.seenfn)
         if silent:
             return counter
         txt = ''
@@ -138,7 +148,7 @@ class Fetcher(Object):
             txt = f'[{feedname}] '
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in values(broker.objs):
+            for bot in broker.all("irc"):
                 if "announce" in dir(bot):
                     bot.announce(txt2.rstrip())
         return counter
@@ -399,13 +409,6 @@ def syn(event):
 add(syn)
 
 
-TEMPLATE = """<opml version="1.0">
-    <head>
-        <title>rssbot opml</title>
-    </head>
-    <body>
-        <outline title="rssbot opml" text="24/7 feed fetcher">"""
-
 
 class OPMLParser:
 
@@ -524,9 +527,9 @@ def imp(event):
         #if obj.xmlUrl and broker.find({"rss": obj.xmlUrl}):
         #    event.reply(f"skipping {obj.xmlUrl}")
         #    continue
-        rss = Rss()
-        construct(rss, obj)
-        rss.rss = rss.xmlUrl
+        feed = Rss()
+        construct(feed, obj)
+        rss.rss = obj.xmlUrl
         rss.insertid = insertid
         sync(rss)
         nrs += 1
