@@ -25,7 +25,7 @@ from objx.defer import Errors, errors
 from objx.event import Event
 from objx.help  import TXT
 from objx.log   import Logging
-from objx.main  import cmnd, init, scan
+from objx.main  import cmnd, init
 from objx.parse import parse
 from objx.disk  import Persist, skel
 
@@ -118,9 +118,6 @@ def main():
         modiess = ",".join([x.upper() for x in modnames()])
         print(f'{dte} {Cfg.name.upper()} {Cfg.opts.upper()} {modiess}'.replace("  ", " "))
     csl = Console(print)
-    scan(mods, Cfg.mod, Cfg.dis)
-    scan(user, Cfg.mod, Cfg.dis)
-    scan(MODS, Cfg.mod, Cfg.dis)
     if "i" in Cfg.opts:
         init(mods, Cfg.mod, Cfg.dis)
         init(user, Cfg.mod, Cfg.dis)

@@ -25,7 +25,7 @@ from objx.defer import Errors, errors
 from objx.event import Event
 from objx.help  import TXT
 from objx.log   import Logging
-from objx.main  import cmnd, init, scan
+from objx.main  import cmnd, init
 from objx.parse import parse
 from objx.disk  import Persist
 
