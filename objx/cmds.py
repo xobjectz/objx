@@ -4,9 +4,6 @@
 "commands"
 
 
-import inspect
-
-
 from .object import Object
 from .parse  import parse
 
@@ -18,20 +15,11 @@ class Commands:
     cmds     = Object()
     modnames = Object()
 
-    @staticmethod
-    def add(func):
-        "add command."
-        setattr(Commands.cmds, func.__name__, func)
-        setattr(Commands.modnames, func.__name__, func.__module__)
-
-    @staticmethod
-    def scan(mod) -> None:
-        "scan module for commands."
-        for key, cmdz in inspect.getmembers(mod, inspect.isfunction):
-            if key.startswith("cb"):
-                continue
-            if 'event' in cmdz.__code__.co_varnames:
-                Commands.add(cmdz)
+    
+def add(func):
+    "add command."
+    setattr(Commands.cmds, func.__name__, func)
+    setattr(Commands.modnames, func.__name__, func.__module__)
 
 
 def command(bot, evt):
@@ -47,5 +35,6 @@ def command(bot, evt):
 def __dir__():
     return (
         'Commands',
+        'add',
         'command'
     )

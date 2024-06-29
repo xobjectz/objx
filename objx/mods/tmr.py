@@ -10,6 +10,7 @@ import re
 import time as ttime
 
 
+from ..cmds   import add
 from ..event  import Event
 from ..object import update
 from ..run    import broker
@@ -226,3 +227,6 @@ def tmr(event):
     update(timer, event)
     launch(timer.start)
     return res
+
+
+add(tmr)

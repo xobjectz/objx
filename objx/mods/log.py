@@ -9,7 +9,7 @@ import time
 
 
 from ..object import Object
-from ..disk   import find, sync
+from ..disk   import find, sync, whitelist
 from ..utils  import fntime, laps
 
 
@@ -20,6 +20,9 @@ class Log(Object):
     def __init__(self):
         super().__init__()
         self.txt = ''
+
+
+whitelist(Log)
 
 
 def log(event):

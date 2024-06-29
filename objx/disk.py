@@ -5,7 +5,6 @@
 "persistence"
 
 
-import inspect
 import os
 import pathlib
 
@@ -24,20 +23,6 @@ class Persist(Object):
 
     fqns = []
     workdir = ""
-
-
-    @staticmethod
-    def scan(mod) -> None:
-        "scan module for commands."
-        for _key, clz in inspect.getmembers(mod, inspect.isclass):
-            if not issubclass(clz, Object):
-                continue
-            Persist.whitelist(clz)
-
-    @staticmethod
-    def whitelist(clz):
-        "whitelist classes."
-        Persist.fqns.append(fqn(clz))
 
 
 def fetch(obj, pth):
@@ -134,6 +119,11 @@ def sync(obj, pth=None):
 def types():
     "return types stored."
     return os.listdir(store())
+
+
+def whitelist(clz):
+    "whitelist classes."
+    Persist.fqns.append(fqn(clz))
 
 
 def __dir__():

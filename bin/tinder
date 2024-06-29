@@ -25,7 +25,6 @@ from objx.dft    import Default
 from objx.defer  import Errors, errors
 from objx.event  import Event
 from objx.log    import Logging
-from objx.main   import scan
 from objx.run    import broker
 from objx.object import Object, ident, keys
 from objx.parse  import parse
@@ -35,7 +34,7 @@ from objx.launch import launch
 from objx.utils  import laps
 
 
-from objx import modules
+from objx import mods
 from objx import user
 
 
@@ -110,7 +109,7 @@ def consume(evts):
 
 def modnames():
     "list all modules."
-    return sorted({x for x in dir(modules) + dir(user) + dir(MODS) if not x.startswith("__")})
+    return sorted({x for x in dir(mods) + dir(user) + dir(MODS) if not x.startswith("__")})
 
 
 def payload(clt):
@@ -155,9 +154,6 @@ def main():
     if "v" in Cfg.opts:
         DTE = " ".join(time.ctime(time.time()).replace("  ", " ").split()[1:])
         print(f'{DTE} {Cfg.name.upper()} {Cfg.opts.upper()} {Cfg.mod.upper()}'.replace("  ", " "))
-    scan(modules, Cfg.mod, Cfg.dis)
-    scan(user, Cfg.mod, Cfg.dis)
-    scan(MODS, Cfg.mod, Cfg.dis)
     nrs = Cfg.index or 1
     nrcommand = len(Commands.cmds) or 1
     cli = CLII()

@@ -8,8 +8,9 @@
 import time
 
 
+from ..cmds   import Commands
 from ..object import Object
-from ..disk   import find, sync
+from ..disk   import find, sync, whitelist
 from ..utils  import fntime, laps
 
 
@@ -25,6 +26,9 @@ class Todo(Object):
     def __init__(self):
         Object.__init__(self)
         self.txt = ''
+
+
+whitelist.add(Todo)
 
 
 def dne(event):
@@ -44,6 +48,9 @@ def dne(event):
         event.reply("nothing todo")
 
 
+add(dne)
+
+
 def tdo(event):
     "add todo."
     if not event.rest:
@@ -59,3 +66,6 @@ def tdo(event):
     obj.txt = event.rest
     sync(obj)
     event.reply('ok')
+
+
+add(tdo)

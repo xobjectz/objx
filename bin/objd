@@ -19,7 +19,7 @@ from objx.cli   import CLI
 from objx.defer import Errors, errors, later
 from objx.disk  import Persist
 from objx.log   import Logging
-from objx.main  import init, scan
+from objx.main  import init
 
 
 from objx import mods
@@ -100,8 +100,6 @@ def main():
     privileges(Cfg.user)
     CLI.out = Errors.out = Logging.out = None
     modstr = "," + ",".join(modnames())
-    scan(mods, modstr)
-    scan(user, modstr)
     init(mods, modstr)
     init(user, modstr)
     forever()

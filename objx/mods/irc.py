@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=R0902,R0903
+# pylint: disable=R0902,R0903,R0912,R0915,W0718
 
 
 "internet relay chat"
@@ -17,8 +17,9 @@ import _thread
 
 
 from ..cli    import CLI
-from ..cmds   import command
+from ..cmds   import Commands, add, command
 from ..dft    import Default
+from ..disk   import whitelist
 from ..defer  import later
 from ..event  import Event
 from ..handle import Handler
@@ -75,6 +76,9 @@ class Config(Default):
         self.realname = self.realname or Config.realname
         self.server = self.server or Config.server
         self.username = self.username or Config.username
+
+
+whitelist(Config)
 
 
 class TextWrap(textwrap.TextWrapper):
@@ -206,23 +210,6 @@ class IRC(CLI, Handler, Output):
         for channel in self.channels:
             self.oput(channel, txt)
 
-    def docommand(self, cmd, *args):
-        "send command to server."
-        with saylock:
-            if not args:
-                self.raw(cmd)
-            elif len(args) == 1:
-                self.raw(f'{cmd.upper()} {args[0]}')
-            elif len(args) == 2:
-                txt = ' '.join(args[1:])
-                self.raw(f'{cmd.upper()} {args[0]} :{txt}')
-            elif len(args) >= 3:
-                txt = ' '.join(args[2:])
-                self.raw("{cmd.upper()} {args[0]} {args[1]} :{txt}")
-            if (time.time() - self.state.last) < 5.0:
-                time.sleep(5.0)
-            self.state.last = time.time()
-
     def connect(self, server, port=6667):
         "connect to server."
         self.state.nrconnect += 1
@@ -266,8 +253,25 @@ class IRC(CLI, Handler, Output):
                 BrokenPipeError
                ) as _ex:
             pass
-        except Exception as ex: # pylint: disable=W0718
+        except Exception as ex:
             later(ex)
+
+    def docommand(self, cmd, *args):
+        "send command to server."
+        with saylock:
+            if not args:
+                self.raw(cmd)
+            elif len(args) == 1:
+                self.raw(f'{cmd.upper()} {args[0]}')
+            elif len(args) == 2:
+                txt = ' '.join(args[1:])
+                self.raw(f'{cmd.upper()} {args[0]} :{txt}')
+            elif len(args) >= 3:
+                txt = ' '.join(args[2:])
+                self.raw("{cmd.upper()} {args[0]} {args[1]} :{txt}")
+            if (time.time() - self.state.last) < 5.0:
+                time.sleep(5.0)
+            self.state.last = time.time()
 
     def doconnect(self, server, nck, port=6667):
         "loop until connected."
@@ -285,6 +289,13 @@ class IRC(CLI, Handler, Output):
             debug(f"sleeping {self.cfg.sleep} seconds")
             time.sleep(self.cfg.sleep)
         self.logon(server, nck)
+
+    def dosay(self, channel, txt):
+        "method for output cache."
+        self.events.joined.wait()
+        txt = str(txt).replace('\n', '')
+        txt = txt.replace('  ', ' ')
+        self.docommand('PRIVMSG', channel, txt)
 
     def event(self, txt):
         "create an event."
@@ -346,10 +357,8 @@ class IRC(CLI, Handler, Output):
         self.direct(f'NICK {nck}')
         self.direct(f'USER {nck} {server} {server} {nck}')
 
-
     def parsing(self, txt):
         "parse text into an event."
-        # pylint: disable=R0912,R0915
         rawstr = str(txt)
         rawstr = rawstr.replace('\u0001', '')
         rawstr = rawstr.replace('\001', '')
@@ -471,13 +480,6 @@ class IRC(CLI, Handler, Output):
         self.events.connected.clear()
         self.events.joined.clear()
         self.doconnect(self.cfg.server, self.cfg.nick, int(self.cfg.port))
-
-    def dosay(self, channel, txt):
-        "method for output cache."
-        self.events.joined.wait()
-        txt = str(txt).replace('\n', '')
-        txt = txt.replace('  ', ' ')
-        self.docommand('PRIVMSG', channel, txt)
 
     def say(self, channel, txt):
         "say text on channel."
@@ -630,6 +632,9 @@ def cfg(event):
         event.reply('ok')
 
 
+add(cfg)
+
+
 def mre(event):
     "show from output cache."
     if not event.channel:
@@ -650,6 +655,9 @@ def mre(event):
     event.reply(f'{size} more in cache')
 
 
+add(mre)
+
+
 def pwd(event):
     "create a base64 password."
     if len(event.args) != 2:
@@ -662,3 +670,6 @@ def pwd(event):
     base = base64.b64encode(enc)
     dcd = base.decode('ascii')
     event.reply(dcd)
+
+
+add(pwd)

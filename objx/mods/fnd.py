@@ -4,6 +4,7 @@
 "locate"
 
 
+from ..cmds   import add
 from ..object import fmt
 from ..disk   import find, long, skel, types
 
@@ -23,3 +24,6 @@ def fnd(event):
         nmr += 1
     if not nmr:
         event.reply("no result")
+
+
+add(fnd)

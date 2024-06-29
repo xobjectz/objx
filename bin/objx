@@ -109,9 +109,6 @@ def main():
     parse(Cfg, " ".join(sys.argv[1:]))
     Cfg.mod += "," + ",".join(modnames())
     Cfg.dis = Cfg.sets.dis
-    scan(mods, Cfg.mod, Cfg.dis)
-    scan(user, Cfg.mod, Cfg.dis)
-    scan(MODS, Cfg.mod, Cfg.dis)
     cmnd(Cfg.otxt, print)
 
 
