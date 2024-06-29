@@ -67,7 +67,7 @@ class Rss(Default):
     def __init__(self):
         Default.__init__(self)
         self.display_list = 'title,link,author'
-        self.insertid      = None
+        self.insertid     = None
         self.rss          = ''
 
 
@@ -148,7 +148,7 @@ class Fetcher(Object):
             txt = f'[{feedname}] '
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in broker.all("irc"):
+            for _id, bot in broker.all("irc"):
                 if "announce" in dir(bot):
                     bot.announce(txt2.rstrip())
         return counter
