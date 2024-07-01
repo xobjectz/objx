@@ -8,6 +8,7 @@
 import pathlib
 import time
 import types
+import _thread
 
 
 SEP = "/"
@@ -31,6 +32,15 @@ def fntime(daystr):
     if rest:
         timed += float('.' + rest)
     return timed
+
+
+def forever():
+    "it doesn't stop, until ctrl-c"
+    while True:
+        try:
+            time.sleep(1.0)
+        except (KeyboardInterrupt, EOFError):
+            _thread.interrupt_main()
 
 
 def laps(seconds, short=True):
@@ -75,9 +85,9 @@ def laps(seconds, short=True):
 
 def named(obj):
     "return a full qualified name of an object/function/module."
-    typ = type(obj)
-    if isinstance(typ, types.ModuleType):
+    if isinstance(obj, types.ModuleType):
         return obj.__name__
+    typ = type(obj)
     if '__builtins__' in dir(typ):
         return obj.__name__
     if '__self__' in dir(obj):
