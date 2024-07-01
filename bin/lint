@@ -1,1 +1,2 @@
-pylint objx files tests
+pylint objx files tests bin/objx bin/objd bin/objsh
+
