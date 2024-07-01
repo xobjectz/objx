@@ -46,8 +46,8 @@ class Thread(threading.Thread):
             self._result = func(*args)
         except Exception as ex:
             later(ex)
-            if args and "Event" in str(type(args[0])):
-                args[0].ready()
+        if args and "Event" in str(type(args[0])):
+            args[0].ready()
 
 
 def launch(func, *args, **kwargs):

@@ -6,6 +6,7 @@
 "commands"
 
 
+from .launch import launch
 from .object import Object
 from .parse  import parse
 
@@ -29,9 +30,11 @@ def command(bot, evt):
     "check for and run a command."
     parse(evt)
     func = getattr(Commands.cmds, evt.cmd, None)
+    if "threaded" in dir(func) and func.threaded:
+        evt._thr = launch(func, evt)
     if func:
         func(evt)
-    bot.show(evt)
+        bot.show(evt)
     evt.ready()
 
 

@@ -305,9 +305,10 @@ def dpl(event):
         event.reply('dpl <stringinurl> <item1,item2>')
         return
     setter = {'display_list': event.args[1]}
-    for _fn, feed in find("rss", {'rss': event.args[0]}):
+    for fnm, feed in find("rss", {'rss': event.args[0]}):
         if feed:
             update(feed, setter)
+            sync(feed, fnm)
     event.reply('ok')
 
 
@@ -320,9 +321,10 @@ def nme(event):
         event.reply('nme <stringinurl> <name>')
         return
     selector = {'rss': event.args[0]}
-    for _fn, feed in find("rss", selector):
+    for fnm, feed in find("rss", selector):
         if feed:
             feed.name = event.args[1]
+            sync(feed, fnm)
     event.reply('ok')
 
 
@@ -334,11 +336,12 @@ def rem(event):
     if len(event.args) != 1:
         event.reply('rem <stringinurl>')
         return
-    for _fnm, feed in find("rss"):
+    for fnm, feed in find("rss"):
         if event.args[0] not in feed.rss:
             continue
         if feed:
             feed.__deleted__ = True
+            sync(feed, fnm)
     event.reply('ok')
 
 
@@ -394,6 +397,7 @@ add(rss)
 def syn(event):
     "synchronize feeds."
     fetcher = Fetcher()
+    fetcher.start(False)
     thrs = fetcher.run(True)
     nrs = 0
     for thr in thrs:
@@ -402,6 +406,7 @@ def syn(event):
     event.reply(f"{nrs} feeds synced")
 
 
+syn.threaded = True
 add(syn)
 
 

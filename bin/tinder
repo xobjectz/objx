@@ -34,8 +34,11 @@ from objx.launch import launch
 from objx.utils  import laps
 
 
-from objx import mods
+from objx import modules
 from objx import user
+
+
+modules.rss.DEBUG = True
 
 
 if os.path.exists("mods"):
@@ -109,7 +112,7 @@ def consume(evts):
 
 def modnames():
     "list all modules."
-    return sorted({x for x in dir(mods) + dir(user) + dir(MODS) if not x.startswith("__")})
+    return sorted({x for x in dir(modules) + dir(user) + dir(MODS) if not x.startswith("__")})
 
 
 def payload(clt):
@@ -186,4 +189,5 @@ if __name__ == "__main__":
         profile.runctx(main.__code__, globals(), locals())
     else:
         wrap(main)
+    errors()
     sys.exit()
