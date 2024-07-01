@@ -42,7 +42,7 @@ def fns(mtc=""):
             for dname in sorted(dirs):
                 if dname.count('-') == 2:
                     ddd = os.path.join(rootdir, dname)
-                    fls = sorted(os.listdir(ddd))
+                    fls = sorted(os.scandir(ddd))
                     for fll in fls:
                         yield strip(os.path.join(ddd, fll))
 
@@ -118,7 +118,7 @@ def sync(obj, pth=None):
 
 def types():
     "return types stored."
-    return os.listdir(store())
+    return os.scandir(store())
 
 
 def whitelist(clz):

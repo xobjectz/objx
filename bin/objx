@@ -21,7 +21,7 @@ sys.path.insert(0, os.getcwd())
 
 from objx.cfg    import Config
 from objx.cli    import CLI
-from objx.cmds   import Commands, add, dump
+from objx.cmds   import Commands, add
 from objx.defer  import Errors, errors
 from objx.disk   import Persist
 from objx.encode import dumps
