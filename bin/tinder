@@ -101,7 +101,6 @@ def consume(evts):
     fixed = []
     res = []
     for evt in evts:
-        print(f"wait {evt.txt}")
         res.append(evt.wait())
         fixed.append(evt)
     for fff in fixed:
