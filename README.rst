@@ -84,6 +84,11 @@ CONFIGURATION
     $ objx rem <url>
     $ objx nme <url> <name>
 
+    opml
+
+    $ objx exp
+    $ objx imp <filename>
+
 
 USAGE
 
