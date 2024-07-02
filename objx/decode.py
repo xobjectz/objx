@@ -21,7 +21,8 @@ class ObjectDecoder(json.JSONDecoder):
 
     def decode(self, s, _w=None):
         "decoding string to object."
-        with jsonlock:
+        #with jsonlock:
+        if True:
             val = json.JSONDecoder.decode(self, s)
             if not val:
                 val = {}

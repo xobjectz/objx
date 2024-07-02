@@ -23,7 +23,6 @@ class Handler:
         self.cbs      = Object()
         self.queue    = queue.Queue()
         self.stopped  = threading.Event()
-        self.threaded = False
 
     def callback(self, evt):
         "call callback based on event type."
@@ -32,14 +31,7 @@ class Handler:
         if not func:
             evt.ready()
             return
-        if self.threaded:
-            evt._thr = launch(func, self, evt)
-        else:
-            try:
-                func(self, evt)
-            except Exception as ex:
-                later(ex)
-                evt.ready()
+        evt._thr = launch(func, self, evt)
 
     def loop(self):
         "proces events until interrupted."

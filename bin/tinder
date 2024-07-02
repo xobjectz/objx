@@ -27,7 +27,7 @@ from objx.disk   import skel
 from objx.event  import Event
 from objx.log    import Logging
 from objx.run    import broker
-from objx.object import Object, ident, keys
+from objx.object import Object, fmt, ident, keys
 from objx.parse  import parse
 from objx.disk   import Persist
 from objx.run    import broker
@@ -101,6 +101,7 @@ def consume(evts):
     fixed = []
     res = []
     for evt in evts:
+        print(f"wait {evt.txt}")
         res.append(evt.wait())
         fixed.append(evt)
     for fff in fixed:
