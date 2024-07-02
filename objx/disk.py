@@ -27,7 +27,8 @@ class Persist(Object):
 
 def fetch(obj, pth):
     "read object from disk."
-    with disklock:
+    #with disklock:
+    if True:
         pth2 = store(pth)
         read(obj, pth2)
         return os.sep.join(pth.split(os.sep)[-3:])
@@ -107,7 +108,8 @@ def store(pth=""):
 
 def sync(obj, pth=None):
     "sync object to disk."
-    with disklock:
+    #with disklock:
+    if True:
         if pth is None:
             pth = ident(obj)
         pth2 = store(pth)

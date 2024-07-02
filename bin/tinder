@@ -23,6 +23,7 @@ from objx.cmds   import Commands
 from objx.cli    import CLI
 from objx.dft    import Default
 from objx.defer  import Errors, errors
+from objx.disk   import skel
 from objx.event  import Event
 from objx.log    import Logging
 from objx.run    import broker
@@ -185,6 +186,7 @@ if __name__ == "__main__":
     if "f" in Cfg.opts:
         if os.path.exists(Persist.workdir):
             shutil.rmtree(Persist.workdir)
+    skel()
     if "p" in Cfg.opts:
         profile.runctx(main.__code__, globals(), locals())
     else:

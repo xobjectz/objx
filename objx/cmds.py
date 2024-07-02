@@ -18,7 +18,6 @@ class Commands:
     cmds     = Object()
     modnames = Object()
 
-
 def add(func):
     "add command."
     setattr(Commands.cmds, func.__name__, func)
@@ -30,8 +29,6 @@ def command(bot, evt):
     "check for and run a command."
     parse(evt)
     func = getattr(Commands.cmds, evt.cmd, None)
-    if "threaded" in dir(func) and func.threaded:
-        evt._thr = launch(func, evt)
     if func:
         func(evt)
         bot.show(evt)

@@ -407,7 +407,7 @@ def syn(event):
 
 
 syn.threaded = True
-add(syn)
+#add(syn)
 
 
 
