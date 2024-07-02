@@ -92,15 +92,15 @@ def long(name):
 
 def skel():
     "create directory,"
-    stor = os.path.join(Persist.workdir, "store")
-    if not os.path.exists(stor):
-        path = pathlib.Path(stor)
-        path.mkdir(parents=True, exist_ok=True)
+    stor = os.path.join(Persist.workdir, "store", "")
+    path = pathlib.Path(stor)
+    path.mkdir(parents=True, exist_ok=True)
 
 
 def store(pth=""):
     "return objects directory."
-    if not os.path.exists(Persist.workdir):
+    stor = os.path.join(Persist.workdir, "store", "")
+    if not os.path.exists(stor):
         skel()
     return os.path.join(Persist.workdir, "store", pth)
 

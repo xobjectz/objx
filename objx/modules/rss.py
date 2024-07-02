@@ -34,6 +34,7 @@ def init():
     "start fetcher."
     fetcher = Fetcher()
     fetcher.start()
+    debug(f"started {fmt(fetcher)}")
     return fetcher
 
 
@@ -139,7 +140,9 @@ class Fetcher(Object):
                 if self.dosave:
                     sync(fed)
                 result.append(fed)
-            sync(self.seen, self.seenfn)
+        print(self.seenfn)
+        self.seenfn = sync(self.seen, self.seenfn)
+        print(self.seenfn)
         if silent:
             return counter
         txt = ''

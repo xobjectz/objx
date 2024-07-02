@@ -17,7 +17,7 @@ import time
 from objx.cfg   import Config
 from objx.cli   import CLI
 from objx.defer import Errors, errors, later
-from objx.disk  import Persist
+from objx.disk  import Persist, skel
 from objx.log   import Logging
 from objx.main  import init
 
@@ -39,7 +39,7 @@ Cfg.pidfile = os.path.join(Cfg.wdr, f"{Cfg.name}.pid")
 Persist.workdir = Cfg.wdr
 
 
-def daemon(pidfile, verbose=False):
+def daemon(verbose=False):
     "switch to background."
     pid = os.fork()
     if pid != 0:
@@ -57,11 +57,14 @@ def daemon(pidfile, verbose=False):
             os.dup2(ses.fileno(), sys.stderr.fileno())
     os.umask(0)
     os.chdir("/")
-    if os.path.exists(pidfile):
-        os.unlink(pidfile)
-    path = pathlib.Path(pidfile)
+
+
+def pidfile(pid):
+    if os.path.exists(pid):
+        os.unlink(pid)
+    path = pathlib.Path(pid)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(pidfile, "w", encoding="utf-8") as fds:
+    with open(pid, "w", encoding="utf-8") as fds:
         fds.write(str(os.getpid()))
 
 
@@ -96,9 +99,12 @@ def wrap(func):
 
 def main():
     "main"
-    daemon(Cfg.pidfile, "-v" in sys.argv)
+    daemon("-v" in sys.argv)
+    skel()
+    pidfile(Cfg.pidfile)
     privileges(Cfg.user)
-    CLI.out = Errors.out = Logging.out = None
+    if "-v" not in sys.argv:
+        CLI.out = Errors.out = Logging.out = None
     modstr = "," + ",".join(modnames())
     init(modules, modstr)
     init(user, modstr)

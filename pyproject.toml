@@ -38,7 +38,7 @@ script-files = [
 ]
 packages = [
     'objx',
-    'objx.mods',
+    'objx.modules',
     'objx.user'
 ]
 zip-safe=true
