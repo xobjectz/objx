@@ -141,9 +141,7 @@ class Fetcher(Object):
                 if self.dosave:
                     sync(fed)
                 result.append(fed)
-        print(self.seenfn)
         self.seenfn = sync(self.seen, self.seenfn)
-        print(self.seenfn)
         if silent:
             return counter
         txt = ''
