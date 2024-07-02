@@ -26,6 +26,7 @@ from ..object import Object, construct, fmt, update
 from ..disk   import find, last, sync, whitelist
 from ..repeat import Repeater
 from ..launch import launch
+from ..log    import debug
 from ..run    import broker
 from ..utils  import fntime, laps, spl
 

@@ -8,7 +8,7 @@
 import json
 
 
-from .lock   import lock, jsonlock
+from .lock   import lock
 from .object import Object, construct, update
 
 
@@ -21,12 +21,10 @@ class ObjectDecoder(json.JSONDecoder):
 
     def decode(self, s, _w=None):
         "decoding string to object."
-        #with jsonlock:
-        if True:
-            val = json.JSONDecoder.decode(self, s)
-            if not val:
-                val = {}
-            return hook(val)
+        val = json.JSONDecoder.decode(self, s)
+        if not val:
+            val = {}
+        return hook(val)
 
     def raw_decode(self, s, idx=0):
         "decode partial string to object."

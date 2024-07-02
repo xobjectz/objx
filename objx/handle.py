@@ -1,5 +1,5 @@
 # This file is placed in the Public Domain.
-# pylint: disable=W0718
+# pylint: disable=W0212,W0718
 
 
 "handler"
@@ -10,7 +10,6 @@ import threading
 import _thread
 
 
-from .defer  import later
 from .object import Object
 from .launch import launch
 

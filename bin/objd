@@ -60,6 +60,7 @@ def daemon(verbose=False):
 
 
 def pidfile(pid):
+    "write the pid to a file."
     if os.path.exists(pid):
         os.unlink(pid)
     path = pathlib.Path(pid)
