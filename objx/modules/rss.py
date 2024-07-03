@@ -497,10 +497,10 @@ def exp(event):
     "export to opml."
     event.reply(TEMPLATE)
     nrs = 0
-    for _fn, objr in find("rss"):
+    for _fn, ooo in find("rss"):
         nrs += 1
         obj = Default()
-        update(obj, objr)
+        update(obj, ooo)
         name = obj.name or f"url{nrs}"
         txt = f'<outline name="{name}" display_list="{obj.display_list}" xmlUrl="{obj.rss}"/>'
         event.reply(" "*12 + txt)
@@ -532,9 +532,9 @@ def imp(event):
         #    continue
         feed = Rss()
         construct(feed, obj)
-        rss.rss = obj.xmlUrl
-        rss.insertid = insertid
-        sync(rss)
+        feed.rss = obj.xmlUrl
+        feed.insertid = insertid
+        sync(feed)
         nrs += 1
     if nrs:
         event.reply(f"added {nrs} urls.")
